@@ -63,7 +63,7 @@ struct vote_counter
       out_auth = auth;
    }
 
-   void finish_2_3( authority& out_auth )
+   /*void finish_2_3( authority& out_auth )
    {
       if( total_votes == 0 )
          return;
@@ -73,7 +73,7 @@ struct vote_counter
       auth.weight_threshold = weight;
       out_auth = auth;
    }
-
+*/
    bool is_empty()const
    {
       return (total_votes == 0);

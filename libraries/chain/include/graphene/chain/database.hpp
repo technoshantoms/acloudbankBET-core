@@ -498,6 +498,31 @@ namespace graphene { namespace chain {
           */
          bool fill_limit_order( const limit_order_object& order, const asset& pays, const asset& receives,
                bool cull_if_small, const price& fill_price, const bool is_maker );
+
+         ///@}
+
+         //////////////////// db_bet.cpp ////////////////////
+
+         /// @{ @group Betting Market Helpers
+         void cancel_bet(const bet_object& bet, bool create_virtual_op = true);
+         void cancel_all_unmatched_bets_on_betting_market(const betting_market_object& betting_market);
+         void cancel_all_unmatched_bets_on_betting_market_group(const betting_market_group_object& betting_market_group);
+         void validate_betting_market_group_resolutions(const betting_market_group_object& betting_market_group,
+                                                        const std::map<betting_market_id_type, betting_market_resolution_type>& resolutions);
+         void resolve_betting_market_group(const betting_market_group_object& betting_market_group,
+                                           const std::map<betting_market_id_type, betting_market_resolution_type>& resolutions);
+         void settle_betting_market_group(const betting_market_group_object& betting_market_group);
+         void remove_completed_events();
+         /**
+          * @brief Process a new bet
+          * @param new_bet_object The new bet to process
+          * @return true if order was completely filled; false otherwise
+          *
+          * This function takes a new bet and attempts to match it with existing
+          * bets already on the books.
+          */
+         bool place_bet(const bet_object& new_bet_object);
+         ///@}
          /***
           * @brief attempt to fill a call order
           * @param order the order
