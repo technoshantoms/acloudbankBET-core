@@ -2326,6 +2326,37 @@ order_book wallet_api::get_order_book( const string& base, const string& quote, 
 {
    return( my->_remote_db->get_order_book( base, quote, limit ) );
 }
+// default ctor necessary for FC_REFLECT
+
+order_book wallet_api::get_order_book( const string& base, const string& quote, unsigned limit )
+{
+   return( my->_remote_db->get_order_book( base, quote, limit ) );
+}
+
+asset wallet_api::get_total_matched_bet_amount_for_betting_market_group(betting_market_group_id_type group_id)
+{
+    return( my->_remote_bookie->get_total_matched_bet_amount_for_betting_market_group(group_id) );
+}
+
+std::vector<event_object> wallet_api::get_events_containing_sub_string(const std::string& sub_string, const std::string& language)
+{
+    return( my->_remote_bookie->get_events_containing_sub_string(sub_string, language) );
+}
+
+binned_order_book wallet_api::get_binned_order_book(graphene::chain::betting_market_id_type betting_market_id, int32_t precision)
+{
+    return( my->_remote_bookie->get_binned_order_book(betting_market_id, precision) );
+}
+
+std::vector<matched_bet_object> wallet_api::get_matched_bets_for_bettor(account_id_type bettor_id) const
+{
+    return( my->_remote_bookie->get_matched_bets_for_bettor(bettor_id) );
+}
+
+std::vector<matched_bet_object> wallet_api::get_all_matched_bets_for_bettor(account_id_type bettor_id, bet_id_type start, unsigned limit) const
+{
+    return( my->_remote_bookie->get_all_matched_bets_for_bettor(bettor_id, start, limit) );
+}
 
 // custom operations
 signed_transaction wallet_api::account_store_map(string account, string catalog, bool remove,
@@ -2349,13 +2380,19 @@ signed_block_with_info::signed_block_with_info( const signed_block& block )
       transaction_ids.push_back( tx.id() );
 }
 
-vesting_balance_object_with_info::vesting_balance_object_with_info(
-      const vesting_balance_object& vbo,
-      fc::time_point_sec now )
+vesting_balance_object_with_info::vesting_balance_object_with_info()
+   : vesting_balance_object()
+{
+}
+
+vesting_balance_object_with_info::vesting_balance_object_with_info( const vesting_balance_object& vbo, fc::time_point_sec now )
    : vesting_balance_object( vbo )
 {
    allowed_withdraw = get_allowed_withdraw( now );
-   allowed_withdraw_time = now;
+   if(vbo.balance_type == vesting_balance_type::gpos)
+      allowed_withdraw_time = vbo.policy.get<linear_vesting_policy>().begin_timestamp + vbo.policy.get<linear_vesting_policy>().vesting_cliff_seconds;
+   else
+      allowed_withdraw_time = now;
 }
 
 } } // graphene::wallet

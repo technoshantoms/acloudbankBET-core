@@ -37,6 +37,13 @@
 #include <graphene/chain/withdraw_permission_object.hpp>
 #include <graphene/chain/witness_object.hpp>
 #include <graphene/chain/worker_object.hpp>
+#include <graphene/chain/sport_object.hpp>
+#include <graphene/chain/event_group_object.hpp>
+#include <graphene/chain/event_object.hpp>
+#include <graphene/chain/betting_market_object.hpp>
+#include <graphene/chain/tournament_object.hpp>
+#include <graphene/chain/match_object.hpp>
+#include <graphene/chain/game_object.hpp>
 #include <graphene/custom_operations/custom_operations_plugin.hpp>
 #include <graphene/chain/custom_permission_object.hpp>
 #include <graphene/chain/custom_account_authority_object.hpp>

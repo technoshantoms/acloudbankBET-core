@@ -130,6 +130,75 @@ struct proposal_operation_hardfork_visitor
        FC_ASSERT( block_time >= HARDFORK_BSIP_72_TIME, "custom_permission_create_operation not allowed yet!" );
    }
 
+     void operator()(const sport_update_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "sport_update_operation not allowed yet!" );
+   }
+
+   void operator()(const event_group_create_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "event_group_create_operation not allowed yet!" );
+   }
+
+   void operator()(const event_group_update_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "event_group_update_operation not allowed yet!" );
+   }
+
+   void operator()(const event_create_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "event_create_operation not allowed yet!" );
+   }
+
+   void operator()(const event_update_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "event_update_operation not allowed yet!" );
+   }
+
+   void operator()(const betting_market_rules_create_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_rules_create_operation not allowed yet!" );
+   }
+
+   void operator()(const betting_market_rules_update_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_rules_update_operation not allowed yet!" );
+   }
+
+   void operator()(const betting_market_group_create_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_group_create_operation not allowed yet!" );
+   }
+
+   void operator()(const betting_market_create_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_create_operation not allowed yet!" );
+   }
+
+   void operator()(const bet_place_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "bet_place_operation not allowed yet!" );
+   }
+
+   void operator()(const betting_market_group_resolve_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_group_resolve_operation not allowed yet!" );
+   }
+
+   void operator()(const betting_market_group_cancel_unmatched_bets_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_group_cancel_unmatched_bets_operation not allowed yet!" );
+   }
+
+   void operator()(const bet_cancel_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_group_resolve_operation not allowed yet!" );
+   }
+
+   void operator()(const betting_market_group_update_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_group_update_operation not allowed yet!" );
+   }
+
+   void operator()(const betting_market_update_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "betting_market_update_operation not allowed yet!" );
+   }
+
+   void operator()(const event_update_status_operation &v) const {
+       FC_ASSERT( block_time >= HARDFORK_1000_TIME, "event_update_status_operation not allowed yet!" );
+   }
+
+   void operator()(const vesting_balance_create_operation &vbco) const {
+      if(block_time < HARDFORK_GPOS_TIME)
+      FC_ASSERT( vbco.balance_type == vesting_balance_type::normal, "balance_type in vesting create not allowed yet!" );
+   }
+
    void operator()(const custom_permission_create_operation &v) const {
        FC_ASSERT( block_time >= HARDFORK_NFT_TIME, "custom_permission_create_operation not allowed yet!" );
    }
@@ -193,7 +262,6 @@ struct proposal_operation_hardfork_visitor
    void operator()(const nft_set_approval_for_all_operation &v) const {
        FC_ASSERT( block_time >= HARDFORK_NFT_TIME, "nft_set_approval_for_all_operation not allowed yet!" );
    }
-
    void operator()(const account_role_create_operation &v) const {
        FC_ASSERT( block_time >= HARDFORK_NFT_TIME, "account_role_create_operation not allowed yet!" );
    }

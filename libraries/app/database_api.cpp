@@ -1016,6 +1016,20 @@ vector<optional<extended_asset_object>> database_api_impl::lookup_asset_symbols(
 {
    return get_assets( symbols_or_ids, false );
 }
+// Sidechain addresses
+   vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
+   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
+   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
+   fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const;
+   uint64_t get_sidechain_addresses_count() const;
+ // Peerplays
+   vector<sport_object> list_sports() const;
+   vector<event_group_object> list_event_groups(sport_id_type sport_id) const;
+   vector<event_object> list_events_in_group(event_group_id_type event_group_id) const;
+   vector<betting_market_group_object> list_betting_market_groups(event_id_type) const;
+   vector<betting_market_object> list_betting_markets(betting_market_group_id_type) const;
+   vector<bet_object> get_unmatched_bets_for_bettor(betting_market_id_type, account_id_type) const;
+   vector<bet_object> get_all_unmatched_bets_for_bettor(account_id_type) const;
 
 // Lottery Assets
    vector<asset_object> get_lotteries(asset_id_type stop = asset_id_type(),
@@ -1114,8 +1128,246 @@ asset database_api_impl::get_sweeps_vesting_balance_available_for_claim(account_
    FC_ASSERT(account_balance != vesting_idx.end(), "NO SWEEPS VESTING BALANCE");
    return account_balance->available_for_claim();
 }
+//////////////////////////////////////////////////////////////////////
+// Peerplays                                                        //
+//////////////////////////////////////////////////////////////////////
+vector<sport_object> database_api::list_sports() const {
+   return my->list_sports();
+}
 
+vector<sport_object> database_api_impl::list_sports() const {
+   const auto &sport_object_idx = _db.get_index_type<sport_object_index>().indices().get<by_id>();
+   return boost::copy_range<vector<sport_object>>(sport_object_idx);
+}
 
+vector<event_group_object> database_api::list_event_groups(sport_id_type sport_id) const {
+   return my->list_event_groups(sport_id);
+}
+
+vector<event_group_object> database_api_impl::list_event_groups(sport_id_type sport_id) const {
+   const auto &event_group_idx = _db.get_index_type<event_group_object_index>().indices().get<by_sport_id>();
+   return boost::copy_range<vector<event_group_object>>(event_group_idx.equal_range(sport_id));
+}
+
+vector<event_object> database_api::list_events_in_group(event_group_id_type event_group_id) const {
+   return my->list_events_in_group(event_group_id);
+}
+
+vector<event_object> database_api_impl::list_events_in_group(event_group_id_type event_group_id) const {
+   const auto &event_idx = _db.get_index_type<event_object_index>().indices().get<by_event_group_id>();
+   return boost::copy_range<vector<event_object>>(event_idx.equal_range(event_group_id));
+}
+
+vector<betting_market_group_object> database_api::list_betting_market_groups(event_id_type event_id) const {
+   return my->list_betting_market_groups(event_id);
+}
+
+vector<betting_market_group_object> database_api_impl::list_betting_market_groups(event_id_type event_id) const {
+   const auto &betting_market_group_idx = _db.get_index_type<betting_market_group_object_index>().indices().get<by_event_id>();
+   return boost::copy_range<vector<betting_market_group_object>>(betting_market_group_idx.equal_range(event_id));
+}
+
+vector<betting_market_object> database_api::list_betting_markets(betting_market_group_id_type betting_market_group_id) const {
+   return my->list_betting_markets(betting_market_group_id);
+}
+
+vector<betting_market_object> database_api_impl::list_betting_markets(betting_market_group_id_type betting_market_group_id) const {
+   const auto &betting_market_idx = _db.get_index_type<betting_market_object_index>().indices().get<by_betting_market_group_id>();
+   return boost::copy_range<vector<betting_market_object>>(betting_market_idx.equal_range(betting_market_group_id));
+}
+
+vector<bet_object> database_api::get_unmatched_bets_for_bettor(betting_market_id_type betting_market_id, account_id_type bettor_id) const {
+   return my->get_unmatched_bets_for_bettor(betting_market_id, bettor_id);
+}
+
+vector<bet_object> database_api_impl::get_unmatched_bets_for_bettor(betting_market_id_type betting_market_id, account_id_type bettor_id) const {
+   const auto &bet_idx = _db.get_index_type<bet_object_index>().indices().get<by_bettor_and_odds>();
+   return boost::copy_range<vector<bet_object>>(bet_idx.equal_range(std::make_tuple(bettor_id, betting_market_id)));
+}
+
+vector<bet_object> database_api::get_all_unmatched_bets_for_bettor(account_id_type bettor_id) const {
+   return my->get_all_unmatched_bets_for_bettor(bettor_id);
+}
+
+vector<bet_object> database_api_impl::get_all_unmatched_bets_for_bettor(account_id_type bettor_id) const {
+   const auto &bet_idx = _db.get_index_type<bet_object_index>().indices().get<by_bettor_and_odds>();
+   return boost::copy_range<vector<bet_object>>(bet_idx.equal_range(std::make_tuple(bettor_id)));
+}
+
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+// Sidechain Accounts                                               //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
+vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const {
+   return my->get_sidechain_addresses(sidechain_address_ids);
+}
+
+vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const {
+   vector<optional<sidechain_address_object>> result;
+   result.reserve(sidechain_address_ids.size());
+   std::transform(sidechain_address_ids.begin(), sidechain_address_ids.end(), std::back_inserter(result),
+                  [this](sidechain_address_id_type id) -> optional<sidechain_address_object> {
+                     if (auto o = _db.find(id))
+                        return *o;
+                     return {};
+                  });
+   return result;
+}
+
+vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses_by_account(account_id_type account) const {
+   return my->get_sidechain_addresses_by_account(account);
+}
+
+vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses_by_account(account_id_type account) const {
+   vector<optional<sidechain_address_object>> result;
+   const auto &sidechain_addresses_range = _db.get_index_type<sidechain_address_index>().indices().get<by_account>().equal_range(account);
+   std::for_each(sidechain_addresses_range.first, sidechain_addresses_range.second,
+                 [&result](const sidechain_address_object &sao) {
+                    if (sao.expires == time_point_sec::maximum())
+                       result.push_back(sao);
+                 });
+   return result;
+}
+
+vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const {
+   return my->get_sidechain_addresses_by_sidechain(sidechain);
+}
+
+vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const {
+   vector<optional<sidechain_address_object>> result;
+   const auto &sidechain_addresses_range = _db.get_index_type<sidechain_address_index>().indices().get<by_sidechain>().equal_range(sidechain);
+   std::for_each(sidechain_addresses_range.first, sidechain_addresses_range.second,
+                 [&result](const sidechain_address_object &sao) {
+                    if (sao.expires == time_point_sec::maximum())
+                       result.push_back(sao);
+                 });
+   return result;
+}
+
+fc::optional<sidechain_address_object> database_api::get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const {
+   return my->get_sidechain_address_by_account_and_sidechain(account, sidechain);
+}
+
+fc::optional<sidechain_address_object> database_api_impl::get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const {
+   const auto &idx = _db.get_index_type<sidechain_address_index>().indices().get<by_account_and_sidechain_and_expires>();
+   auto itr = idx.find(boost::make_tuple(account, sidechain, time_point_sec::maximum()));
+   if (itr != idx.end())
+      return *itr;
+   return {};
+}
+
+uint64_t database_api::get_sidechain_addresses_count() const {
+   return my->get_sidechain_addresses_count();
+}
+
+uint64_t database_api_impl::get_sidechain_addresses_count() const {
+   return _db.get_index_type<sidechain_address_index>().indices().size();
+}
+
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+// Tournament methods                                               //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+vector<tournament_object> database_api::get_tournaments_in_state(tournament_state state, uint32_t limit) const {
+   return my->get_tournaments_in_state(state, limit);
+}
+
+vector<tournament_object> database_api_impl::get_tournaments_in_state(tournament_state state, uint32_t limit) const {
+   vector<tournament_object> result;
+   const auto &registration_deadline_index = _db.get_index_type<tournament_index>().indices().get<by_registration_deadline>();
+   const auto range = registration_deadline_index.equal_range(boost::make_tuple(state));
+   for (const tournament_object &tournament_obj : boost::make_iterator_range(range.first, range.second)) {
+      result.emplace_back(tournament_obj);
+      subscribe_to_item(tournament_obj.id);
+
+      if (result.size() >= limit)
+         break;
+   }
+   return result;
+}
+
+vector<tournament_object> database_api::get_tournaments(tournament_id_type stop,
+                                                        unsigned limit,
+                                                        tournament_id_type start) {
+   return my->get_tournaments(stop, limit, start);
+}
+
+vector<tournament_object> database_api_impl::get_tournaments(tournament_id_type stop,
+                                                             unsigned limit,
+                                                             tournament_id_type start) {
+   vector<tournament_object> result;
+   const auto &tournament_idx = _db.get_index_type<tournament_index>().indices().get<by_id>();
+   for (auto elem : tournament_idx) {
+      if (result.size() >= limit)
+         break;
+      if (((elem.get_id().instance.value <= start.instance.value) || start == tournament_id_type()) &&
+          ((elem.get_id().instance.value >= stop.instance.value) || stop == tournament_id_type()))
+         result.push_back(elem);
+   }
+
+   return result;
+}
+
+vector<tournament_object> database_api::get_tournaments_by_state(tournament_id_type stop,
+                                                                 unsigned limit,
+                                                                 tournament_id_type start,
+                                                                 tournament_state state) {
+   return my->get_tournaments_by_state(stop, limit, start, state);
+}
+
+vector<tournament_object> database_api_impl::get_tournaments_by_state(tournament_id_type stop,
+                                                                      unsigned limit,
+                                                                      tournament_id_type start,
+                                                                      tournament_state state) {
+   vector<tournament_object> result;
+   const auto &tournament_idx = _db.get_index_type<tournament_index>().indices().get<by_id>();
+   for (auto elem : tournament_idx) {
+      if (result.size() >= limit)
+         break;
+      if (((elem.get_id().instance.value <= start.instance.value) || start == tournament_id_type()) &&
+          ((elem.get_id().instance.value >= stop.instance.value) || stop == tournament_id_type()) &&
+          elem.get_state() == state)
+         result.push_back(elem);
+   }
+
+   return result;
+}
+
+const account_object *database_api_impl::get_account_from_string(const std::string &name_or_id,
+                                                                 bool throw_if_not_found) const {
+   // TODO cache the result to avoid repeatly fetching from db
+   FC_ASSERT(name_or_id.size() > 0);
+   const account_object *account = nullptr;
+   if (std::isdigit(name_or_id[0]))
+      account = _db.find(fc::variant(name_or_id, 1).as<account_id_type>(1));
+   else {
+      const auto &idx = _db.get_index_type<account_index>().indices().get<by_name>();
+      auto itr = idx.find(name_or_id);
+      if (itr != idx.end())
+         account = &*itr;
+   }
+   if (throw_if_not_found)
+      FC_ASSERT(account, "no such account");
+   return account;
+}
+
+vector<tournament_id_type> database_api::get_registered_tournaments(account_id_type account_filter, uint32_t limit) const {
+   return my->get_registered_tournaments(account_filter, limit);
+}
+
+vector<tournament_id_type> database_api_impl::get_registered_tournaments(account_id_type account_filter, uint32_t limit) const {
+   const auto &tournament_details_idx = _db.get_index_type<tournament_details_index>();
+   const auto &tournament_details_primary_idx = dynamic_cast<const primary_index<tournament_details_index> &>(tournament_details_idx);
+   const auto &players_idx = tournament_details_primary_idx.get_secondary_index<graphene::chain::tournament_players_index>();
+
+   vector<tournament_id_type> tournament_ids = players_idx.get_registered_tournaments_for_account(account_filter);
+   if (tournament_ids.size() >= limit)
+      tournament_ids.resize(limit);
+   return tournament_ids;
+}
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
 // Markets / feeds                                                  //

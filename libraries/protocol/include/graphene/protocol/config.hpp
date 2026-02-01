@@ -147,6 +147,46 @@ constexpr size_t MAX_FEE_STABILIZATION_ITERATION  = 4;
 #define NFT_URI_MAX_LENGTH                                  GRAPHENE_MAX_URL_LENGTH
 #define GRAPHENE_FBA_STEALTH_DESIGNATED_ASSET (asset_id_type(743))
 
+#define GRAPHENE_DEFAULT_RAKE_FEE_PERCENTAGE  (3*GRAPHENE_1_PERCENT)
+
+///@{
+/// betting odds (multipliers) are stored as fixed-precision, divide by this to get the actual multiplier
+#define GRAPHENE_BETTING_ODDS_PRECISION 10000
+/// the smallest bet multiplier we will accept
+#define GRAPHENE_BETTING_MIN_MULTIPLIER 10001
+/// the largest bet multiplier we will accept
+#define GRAPHENE_BETTING_MAX_MULTIPLIER 100010000
+///@}
+#define GRAPHENE_DEFAULT_MIN_BET_MULTIPLIER 10100
+#define GRAPHENE_DEFAULT_MAX_BET_MULTIPLIER 10000000
+#define GRAPHENE_DEFAULT_PERMITTED_BETTING_ODDS_INCREMENTS { {    20000,    100},  /* <=    2:  0.01 */ \
+                                                             {    30000,    200},  /* <=    3:  0.02 */ \
+                                                             {    40000,    500},  /* <=    4:  0.05 */ \
+                                                             {    60000,   1000},  /* <=    6:  0.10 */ \
+                                                             {   100000,   2000},  /* <=   10:  0.20 */ \
+                                                             {   200000,   5000},  /* <=   20:  0.50 */ \
+                                                             {   300000,  10000},  /* <=   30:  1.00 */ \
+                                                             {   500000,  20000},  /* <=   50:  2.00 */ \
+                                                             {  1000000,  50000},  /* <=  100:  5.00 */ \
+                                                             { 10000000, 100000} } /* <= 1000: 10.00 */ 
+#define GRAPHENE_DEFAULT_BETTING_PERCENT_FEE (2 * GRAPHENE_1_PERCENT)
+#define GRAPHENE_DEFAULT_LIVE_BETTING_DELAY_TIME            5 // seconds
+#define TOURNAMENT_MIN_ROUND_DELAY                          0
+#define TOURNAMENT_MAX_ROUND_DELAY                          600
+#define TOURNAMENT_MIN_TIME_PER_COMMIT_MOVE                 0
+#define TOURNAMENT_MAN_TIME_PER_COMMIT_MOVE                 600
+#define TOURNAMENT_MIN_TIME_PER_REVEAL_MOVE                 0
+#define TOURNAMENT_MAX_TIME_PER_REVEAL_MOVE                 600
+#define TOURNAMENT_DEFAULT_RAKE_FEE_PERCENTAGE              (3*GRAPHENE_1_PERCENT)
+#define TOURNAMENT_MINIMAL_RAKE_FEE_PERCENTAGE              (1*GRAPHENE_1_PERCENT)
+#define TOURNAMENT_MAXIMAL_RAKE_FEE_PERCENTAGE              (20*GRAPHENE_1_PERCENT)
+#define TOURNAMENT_MAXIMAL_REGISTRATION_DEADLINE            (60*60*24*30) // seconds, 30 days
+#define TOURNAMENT_MAX_NUMBER_OF_WINS                       100
+#define TOURNAMENT_MAX_PLAYERS_NUMBER                       256
+#define TOURNAMENT_MAX_WHITELIST_LENGTH                     1000
+#define TOURNAMENT_MAX_START_TIME_IN_FUTURE                 (60*60*24*7*4) // 1 month
+#define TOURNAMENT_MAX_START_DELAY                          (60*60*24*7) // 1 week
+
 /// Maximum duration before a custom authority can expire (1 month)
 #define GRAPHENE_DEFAULT_MAX_CUSTOM_AUTHORITY_LIFETIME_SECONDS (60*60*24*30)
 /// Maximum number of custom authorities a particular account can set

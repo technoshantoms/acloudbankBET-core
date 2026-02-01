@@ -1587,6 +1587,245 @@ class wallet_api
        */
       order_book get_order_book( const string& base, const string& quote, unsigned limit = 50);
 
+      asset get_total_matched_bet_amount_for_betting_market_group(betting_market_group_id_type group_id);
+      std::vector<event_object> get_events_containing_sub_string(const std::string& sub_string, const std::string& language);
+
+      /** Get an order book for a betting market, with orders aggregated into bins with similar
+       * odds
+       *
+       * @param betting_market_id the betting market
+       * @param precision the number of digits of precision for binning
+       */
+      binned_order_book get_binned_order_book(graphene::chain::betting_market_id_type betting_market_id, int32_t precision);
+
+      std::vector<matched_bet_object> get_matched_bets_for_bettor(account_id_type bettor_id) const;
+
+      std::vector<matched_bet_object> get_all_matched_bets_for_bettor(account_id_type bettor_id, bet_id_type start = bet_id_type(), unsigned limit = 1000) const;
+
+      vector<sport_object> list_sports() const;
+      vector<event_group_object> list_event_groups(sport_id_type sport_id) const;
+      vector<betting_market_group_object> list_betting_market_groups(event_id_type event_id) const;
+      vector<betting_market_object> list_betting_markets(betting_market_group_id_type betting_market_group_id) const;
+      global_betting_statistics_object get_global_betting_statistics() const;
+      vector<event_object> list_events_in_group(event_group_id_type event_group_id) const;
+      vector<bet_object> get_unmatched_bets_for_bettor(betting_market_id_type betting_market_id, account_id_type account_id) const;
+      vector<bet_object> get_all_unmatched_bets_for_bettor(account_id_type account_id) const;
+
+      signed_transaction propose_create_sport(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              internationalized_string_type name,
+              bool broadcast = false);
+
+      signed_transaction propose_update_sport(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              sport_id_type sport_id,
+              fc::optional<internationalized_string_type> name,
+              bool broadcast = false);
+
+      signed_transaction propose_delete_sport(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              sport_id_type sport_id,
+              bool broadcast = false);
+
+      signed_transaction propose_create_event_group(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              internationalized_string_type name,
+              sport_id_type sport_id,
+              bool broadcast = false);
+
+      signed_transaction propose_update_event_group(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              event_group_id_type event_group,
+              fc::optional<object_id_type> sport_id,
+              fc::optional<internationalized_string_type> name,
+              bool broadcast = false);
+
+      signed_transaction propose_delete_event_group(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              event_group_id_type event_group,
+              bool broadcast = false);
+
+      signed_transaction propose_create_event(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              internationalized_string_type name,
+              internationalized_string_type season,
+              fc::optional<time_point_sec> start_time,
+              event_group_id_type event_group_id,
+              bool broadcast = false);
+
+      signed_transaction propose_update_event(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              event_id_type event_id,
+              fc::optional<object_id_type> event_group_id,
+              fc::optional<internationalized_string_type> name,
+              fc::optional<internationalized_string_type> season,
+              fc::optional<event_status> status,
+              fc::optional<time_point_sec> start_time,
+              bool broadcast = false);
+
+      signed_transaction propose_create_betting_market_rules(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              internationalized_string_type name,
+              internationalized_string_type description,
+              bool broadcast = false);
+
+      signed_transaction propose_update_betting_market_rules(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              betting_market_rules_id_type rules_id,
+              fc::optional<internationalized_string_type> name,
+              fc::optional<internationalized_string_type> description,
+              bool broadcast = false);
+
+      signed_transaction propose_create_betting_market_group(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              internationalized_string_type description,
+              event_id_type event_id,
+              betting_market_rules_id_type rules_id,
+              asset_id_type asset_id,
+              bool broadcast = false);
+
+      signed_transaction propose_update_betting_market_group(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              betting_market_group_id_type betting_market_group_id,
+              fc::optional<internationalized_string_type> description,
+              fc::optional<object_id_type> rules_id,
+              fc::optional<betting_market_group_status> status,
+              bool broadcast = false);
+
+      signed_transaction propose_create_betting_market(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              betting_market_group_id_type group_id,
+              internationalized_string_type description,
+              internationalized_string_type payout_condition,
+              bool broadcast = false);
+
+      signed_transaction propose_update_betting_market(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              betting_market_id_type market_id,
+              fc::optional<object_id_type> group_id,
+              fc::optional<internationalized_string_type> description,
+              fc::optional<internationalized_string_type> payout_condition,
+              bool broadcast = false);
+
+      /** Place a bet
+       * @param bettor the account placing the bet
+       * @param betting_market_id the market on which to bet
+       * @param back_or_lay back or lay
+       * @param amount the amount to bet
+       * @param asset_symbol the asset to bet with (must be the same as required by the betting market group)
+       * @param backer_multiplier the odds (use 2.0 for a 1:1 bet)
+       * @param broadcast true to broadcast the transaction
+       */
+      signed_transaction place_bet(string bettor,
+                                   betting_market_id_type betting_market_id,
+                                   bet_type back_or_lay,
+                                   string amount,
+                                   string asset_symbol,
+                                   double backer_multiplier,
+                                   bool broadcast = false);
+
+      signed_transaction cancel_bet(string betting_account,
+                                                bet_id_type bet_id,
+                                                bool broadcast = false);
+
+      signed_transaction propose_resolve_betting_market_group(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              betting_market_group_id_type betting_market_group_id,
+              const std::map<betting_market_id_type, betting_market_resolution_type>& resolutions,
+              bool broadcast = false);
+
+      signed_transaction propose_cancel_betting_market_group(
+              const string& proposing_account,
+              fc::time_point_sec expiration_time,
+              betting_market_group_id_type betting_market_group_id,
+              bool broadcast = false);
+
+      /** Creates a new tournament
+       * @param creator the accout that is paying the fee to create the tournament
+       * @param options the options detailing the specifics of the tournament
+       * @return the signed version of the transaction
+       */
+      signed_transaction tournament_create( string creator, tournament_options options, bool broadcast = false );
+
+      /** Join an existing tournament
+       * @param payer_account the account that is paying the buy-in and the fee to join the tournament
+       * @param player_account the account that will be playing in the tournament
+       * @param buy_in_amount buy_in to pay
+       * @param buy_in_asset_symbol buy_in asset
+       * @param tournament_id the tournament the user wishes to join
+       * @param broadcast true if you wish to broadcast the transaction
+       * @return the signed version of the transaction
+       */
+      signed_transaction tournament_join( string payer_account, string player_account, tournament_id_type tournament_id, string buy_in_amount, string buy_in_asset_symbol, bool broadcast = false );
+
+      /** Leave an existing tournament
+       * @param payer_account the account that is paying the fee
+       * @param player_account the account that would be playing in the tournament
+       * @param tournament_id the tournament the user wishes to leave
+       * @param broadcast true if you wish to broadcast the transaction
+       * @return the signed version of the transaction
+       */
+      signed_transaction tournament_leave(string payer_account, string player_account, tournament_id_type tournament_id, bool broadcast = false);
+
+      /** Get a list of upcoming tournaments
+       * @param limit the number of tournaments to return
+       */
+      vector<tournament_object> get_upcoming_tournaments(uint32_t limit);
+
+      vector<tournament_object> get_tournaments(tournament_id_type stop,
+                                                unsigned limit,
+                                                tournament_id_type start);
+
+      vector<tournament_object> get_tournaments_by_state(tournament_id_type stop,
+                                                         unsigned limit,
+                                                         tournament_id_type start,
+                                                         tournament_state state);
+
+      /** Get specific information about a tournament
+       * @param tournament_id the ID of the tournament
+       */
+      tournament_object get_tournament(tournament_id_type id);
+
+      /** Play a move in the rock-paper-scissors game
+       * @param game_id the id of the game
+       * @param player_account the name of the player
+       * @param gesture rock, paper, or scissors
+       * @return the signed version of the transaction
+       */
+      signed_transaction rps_throw(game_id_type game_id,
+                                   string player_account,
+                                   rock_paper_scissors_gesture gesture,
+                                   bool broadcast);
+
+      /** Create a vesting balance including gpos vesting balance after HARDFORK_GPOS_TIME
+       * @param owner vesting balance owner and creator
+       * @param amount amount to vest
+       * @param asset_symbol the symbol of the asset to vest
+       * @param is_gpos True if the balance is of gpos type
+       * @param broadcast true if you wish to broadcast the transaction
+       * @return the signed version of the transaction
+       */
+      signed_transaction create_vesting_balance(string owner,
+                                                string amount,
+                                                string asset_symbol,
+                                                bool is_gpos,
+                                                bool broadcast);
+
       /** Signs a transaction.
        *
        * Given a fully-formed transaction with or without signatures, signs

@@ -261,6 +261,55 @@ struct get_impacted_account_visitor
    {
       _impacted.insert( op.fee_payer() ); // account_id
    }
+    void operator()(const sport_create_operation&){}
+   void operator()(const sport_update_operation&){}
+   void operator()(const sport_delete_operation&){}
+   void operator()(const event_group_create_operation&){}
+   void operator()(const event_group_update_operation& op ) {}
+   void operator()(const event_group_delete_operation& op ) {}
+   void operator()(const event_create_operation&){}
+   void operator()(const event_update_operation& op ) {}
+   void operator()(const event_update_status_operation& op ) {}
+   void operator()(const betting_market_rules_create_operation&){}
+   void operator()(const betting_market_rules_update_operation& op ) {}
+   void operator()(const betting_market_group_create_operation&){}
+   void operator()(const betting_market_group_update_operation& op ) {}
+   void operator()(const betting_market_create_operation&){}
+   void operator()(const betting_market_update_operation&){}
+   void operator()(const bet_place_operation&){}
+   void operator()(const betting_market_group_resolve_operation&){}
+   void operator()(const betting_market_group_resolved_operation &){}
+   void operator()(const betting_market_group_cancel_unmatched_bets_operation&){}
+   void operator()(const bet_matched_operation &){}
+   void operator()(const bet_cancel_operation&){}
+   void operator()(const bet_canceled_operation &){}
+   void operator()(const bet_adjusted_operation &){}
+
+   void operator()( const tournament_create_operation& op )
+   {
+      _impacted.insert( op.creator );
+      _impacted.insert( op.options.whitelist.begin(), op.options.whitelist.end() );
+   }
+   void operator()( const tournament_join_operation& op )
+   {
+      _impacted.insert( op.payer_account_id );
+      _impacted.insert( op.player_account_id );
+   }
+   void operator()( const tournament_leave_operation& op )
+   {
+      //if account canceling registration is not the player, it must be the payer
+      if (op.canceling_account_id != op.player_account_id)
+        _impacted.erase( op.canceling_account_id );
+      _impacted.erase( op.player_account_id );
+   }
+   void operator()( const game_move_operation& op )
+   {
+      _impacted.insert( op.player_account_id );
+   }
+   void operator()( const tournament_payout_operation& op )
+   {
+      _impacted.insert( op.payout_account_id );
+   }
    void operator()( const htlc_create_operation& op )
    {
       _impacted.insert( op.fee_payer() );
@@ -597,7 +646,60 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
            FC_ASSERT( aobj != nullptr );
            accounts.insert( aobj->owner );
            break;
-        } case worker_object_type:{
+        } 
+
+        case tournament_object_type:{
+           auto aobj = dynamic_cast<const tournament_object*>(obj);
+           FC_ASSERT(aobj != nullptr);
+           accounts.insert(aobj->creator);
+           accounts.insert(aobj->options.whitelist.begin(), aobj->options.whitelist.end());
+           break;
+        } case tournament_details_object_type:{
+           auto aobj = dynamic_cast<const tournament_details_object*>(obj);
+           FC_ASSERT(aobj != nullptr);
+           accounts.insert(aobj->registered_players.begin(), aobj->registered_players.end());
+           std::transform(aobj->payers.begin(), aobj->payers.end(), std::inserter(accounts, accounts.end()),
+                          [](const auto& pair) { return pair.first; });
+           std::for_each(aobj->players_payers.begin(), aobj->players_payers.end(),
+                         [&accounts](const auto& pair) {
+               accounts.insert(pair.first);
+               accounts.insert(pair.second);
+           });
+           break;
+        } case match_object_type:{
+           auto aobj = dynamic_cast<const match_object*>(obj);
+           FC_ASSERT(aobj != nullptr);
+           accounts.insert(aobj->players.begin(), aobj->players.end());
+           std::for_each(aobj->game_winners.begin(), aobj->game_winners.end(),
+                         [&accounts](const auto& set) { accounts.insert(set.begin(), set.end()); });
+           accounts.insert(aobj->match_winners.begin(), aobj->match_winners.end());
+           break;
+        } case game_object_type:{
+           auto aobj = dynamic_cast<const game_object*>(obj);
+           FC_ASSERT(aobj != nullptr);
+           accounts.insert(aobj->players.begin(), aobj->players.end());
+           accounts.insert(aobj->winners.begin(), aobj->winners.end());
+           break;
+        } case sport_object_type:
+           break;
+          case event_group_object_type:
+           break;
+          case event_object_type:
+           break;
+          case betting_market_rules_object_type:
+           break;
+          case betting_market_group_object_type:
+           break;
+          case betting_market_object_type:
+           break;
+          case bet_object_type:{
+           auto aobj = dynamic_cast<const bet_object*>(obj);
+           FC_ASSERT(aobj != nullptr);
+           accounts.insert(aobj->bettor_id);
+           break;
+        } 
+
+     case worker_object_type:{
            const auto& aobj = dynamic_cast<const worker_object*>(obj);
            FC_ASSERT( aobj != nullptr );
            accounts.insert( aobj->worker_account );
@@ -703,7 +805,7 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
        /* 
        case sidechain_address_object_type:{
            const auto& aobj = dynamic_cast<const sidechain_address_object*>(obj);
-           assert( aobj != nullptr );
+           FC_ASSERT( aobj != nullptr );
            accounts.insert( aobj->sidechain_address_account );
            break;
         } case sidechain_transaction_object_type:{
@@ -781,13 +883,32 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
               break;
             case impl_nft_lottery_balance_object_type:
               break;
+          case impl_asset_dividend_data_object_type:{
+              const auto& aobj = dynamic_cast<const asset_dividend_data_object*>(obj);
+              FC_ASSERT( aobj != nullptr );
+              accounts.insert(aobj->dividend_distribution_account);
+              break;
+           } case impl_pending_dividend_payout_balance_for_holder_object_type:{
+              const auto& aobj = dynamic_cast<const pending_dividend_payout_balance_for_holder_object*>(obj);
+              FC_ASSERT( aobj != nullptr );
+              accounts.insert(aobj->owner);
+              break;
+           } case impl_total_distributed_dividend_balance_object_type:
+              break;
+             case impl_betting_market_position_object_type:{
+              const auto& aobj = dynamic_cast<const betting_market_position_object*>(obj);
+              FC_ASSERT( aobj != nullptr );
+              accounts.insert(aobj->bettor_id);
+              break;
+           } case impl_global_betting_statistics_object_type:
+              break;
       }
    }else if( obj->id.space() == api_ids ) {
       switch( (api_object_type)obj->id.type() )
       {
         case graphene::chain::api_operation_history_object_type: {
            const auto& aobj = dynamic_cast<const operation_history_object*>(obj);
-           assert( aobj != nullptr );
+           FC_ASSERT( aobj != nullptr );
            operation_get_impacted_accounts( aobj->op, accounts,
                                             ignore_custom_operation_required_auths);
            break;

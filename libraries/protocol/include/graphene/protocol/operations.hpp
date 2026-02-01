@@ -26,6 +26,13 @@
 #include <graphene/protocol/commit_reveal.hpp>
 #include <graphene/protocol/account_role.hpp>
 
+//bet
+#include <graphene/chain/protocol/sport.hpp>
+#include <graphene/chain/protocol/event_group.hpp>
+#include <graphene/chain/protocol/event.hpp>
+#include <graphene/chain/protocol/betting_market.hpp>
+#include <graphene/chain/protocol/tournament.hpp>
+
 #include <graphene/protocol/nft_lottery.hpp>
 #include <graphene/protocol/lottery_ops.hpp>
 //refferal payout
@@ -38,9 +45,6 @@
 
 /*
 #include <graphene/protocol/sidechain_address.hpp>
-#include <graphene/protocol/son_wallet.hpp>
-#include <graphene/protocol/son_wallet_deposit.hpp>
-#include <graphene/protocol/son_wallet_withdraw.hpp>
 #include <graphene/protocol/sidechain_transaction.hpp>
 */
 
@@ -164,7 +168,6 @@ namespace graphene { namespace protocol {
             sidechain_transaction_sign_operation,
             sidechain_transaction_send_operation,
             sidechain_transaction_settle_operation,
-            fba_distribute_operation,        // VIRTUAL
             tournament_create_operation,
             tournament_join_operation,
             game_move_operation,

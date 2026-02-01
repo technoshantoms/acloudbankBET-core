@@ -28,6 +28,11 @@ namespace graphene { namespace protocol {
 
 struct parameter_extension
    {
+      optional< bet_multiplier_type > min_bet_multiplier;
+      optional< bet_multiplier_type > max_bet_multiplier;
+      optional< uint16_t >            betting_rake_fee_percentage;
+      optional< flat_map<bet_multiplier_type, bet_multiplier_type> > permitted_betting_odds_increments;
+      optional< uint16_t >            live_betting_delay_time;
 
       optional< uint16_t >            sweeps_distribution_percentage    = SWEEPS_DEFAULT_DISTRIBUTION_PERCENTAGE;
       optional< asset_id_type >       sweeps_distribution_asset         = SWEEPS_DEFAULT_DISTRIBUTION_ASSET;
@@ -39,6 +44,10 @@ struct parameter_extension
       /* Account Roles - Permissions Parameters */
       optional < uint16_t >           account_roles_max_per_account    = ACCOUNT_ROLES_MAX_PER_ACCOUNT;
       optional < uint32_t >           account_roles_max_lifetime       = ACCOUNT_ROLES_MAX_LIFETIME;
+
+      optional < asset_id_type >      btc_asset                         = asset_id_type();
+      optional < asset_id_type >      hbd_asset                         = asset_id_type();
+      optional < asset_id_type >      hive_asset                        = asset_id_type();
    };
    struct chain_parameters
    {
@@ -75,6 +84,21 @@ struct parameter_extension
       uint8_t                 max_authority_depth                 = GRAPHENE_MAX_SIG_CHECK_DEPTH;
       uint8_t                 rsquared_witnesses_top_max            = RSQUARED_WITNESSES_TOP_MAX; ///< limit witnesses top list to max 63 (consensus algorithm)
       uint8_t                 rsquared_witnesses_active_max         = RSQUARED_WITNESSES_ACTIVE_MAX; ///< randomly choose max 21 active witnesses (consensus algorithm)
+
+      /* rps tournament parameters constraints */
+      uint32_t                min_round_delay                     = TOURNAMENT_MIN_ROUND_DELAY; ///< miniaml delay between games
+      uint32_t                max_round_delay                     = TOURNAMENT_MAX_ROUND_DELAY; ///< maximal delay between games
+      uint32_t                min_time_per_commit_move            = TOURNAMENT_MIN_TIME_PER_COMMIT_MOVE; ///< minimal time to commit the next move
+      uint32_t                max_time_per_commit_move            = TOURNAMENT_MAN_TIME_PER_COMMIT_MOVE; ///< maximal time to commit the next move
+      uint32_t                min_time_per_reveal_move            = TOURNAMENT_MIN_TIME_PER_REVEAL_MOVE; ///< minimal time to reveal move
+      uint32_t                max_time_per_reveal_move            = TOURNAMENT_MAX_TIME_PER_REVEAL_MOVE; ///< maximal time to reveal move
+      uint16_t                rake_fee_percentage                 = TOURNAMENT_DEFAULT_RAKE_FEE_PERCENTAGE; ///< part of prize paid into the dividend account for the core token holders
+      uint32_t                maximum_registration_deadline       = TOURNAMENT_MAXIMAL_REGISTRATION_DEADLINE; ///< value registration deadline must be before
+      uint16_t                maximum_players_in_tournament       = TOURNAMENT_MAX_PLAYERS_NUMBER; ///< maximal count of players in tournament
+      uint16_t                maximum_tournament_whitelist_length = TOURNAMENT_MAX_WHITELIST_LENGTH; ///< maximal tournament whitelist length
+      uint32_t                maximum_tournament_start_time_in_future = TOURNAMENT_MAX_START_TIME_IN_FUTURE;
+      uint32_t                maximum_tournament_start_delay      = TOURNAMENT_MAX_START_DELAY;
+      uint16_t                maximum_tournament_number_of_wins   = TOURNAMENT_MAX_NUMBER_OF_WINS;
 
       struct ext
       {
@@ -130,6 +154,23 @@ struct parameter_extension
       }
       inline uint32_t account_roles_max_lifetime()const {
          return  ACCOUNT_ROLES_MAX_LIFETIME;
+      }
+
+      inline bet_multiplier_type min_bet_multiplier()const {
+         return  GRAPHENE_DEFAULT_MIN_BET_MULTIPLIER;
+      }
+      inline bet_multiplier_type max_bet_multiplier()const {
+         return GRAPHENE_DEFAULT_MAX_BET_MULTIPLIER;
+      }
+      inline uint16_t betting_rake_fee_percentage()const {
+         return  GRAPHENE_DEFAULT_RAKE_FEE_PERCENTAGE;
+      }
+      inline const flat_map<bet_multiplier_type, bet_multiplier_type>& permitted_betting_odds_increments()const {
+         static const flat_map<bet_multiplier_type, bet_multiplier_type> _default = GRAPHENE_DEFAULT_PERMITTED_BETTING_ODDS_INCREMENTS;
+         return  _default;
+      }
+      inline uint16_t live_betting_delay_time()const {
+         return  GRAPHENE_DEFAULT_LIVE_BETTING_DELAY_TIME;
       }
 
       /*inline uint16_t sweeps_distribution_percentage()const {
@@ -223,6 +264,18 @@ FC_REFLECT( graphene::protocol::chain_parameters,
             (accounts_per_fee_scale)
             (account_fee_scale_bitshifts)
             (max_authority_depth)
+            (min_round_delay)
+            (max_round_delay)
+            (min_time_per_commit_move)
+            (max_time_per_commit_move)
+            (min_time_per_reveal_move)
+            (max_time_per_reveal_move)
+            (rake_fee_percentage)
+            (maximum_players_in_tournament)
+            (maximum_tournament_whitelist_length)
+            (maximum_tournament_start_time_in_future)
+            (maximum_tournament_start_delay)
+            (maximum_tournament_number_of_wins)
             (rsquared_witnesses_top_max)
             (rsquared_witnesses_active_max)
             (extensions)

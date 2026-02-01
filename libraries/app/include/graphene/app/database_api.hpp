@@ -22,6 +22,17 @@
 #include <graphene/chain/permission_object.hpp>
 #include <graphene/chain/commit_reveal_object.hpp>
 #include <graphene/chain/witness_schedule_object.hpp>
+//BET
+#include <graphene/chain/betting_market_object.hpp>
+#include <graphene/chain/market_object.hpp>
+#include <graphene/chain/sport_object.hpp>
+#include <graphene/chain/tournament_object.hpp>
+#include <graphene/chain/event_group_object.hpp>
+#include <graphene/chain/event_object.hpp>
+#include <graphene/chain/global_betting_statistics_object.hpp>
+
+#include <graphene/chain/sidechain_address_object.hpp>
+
 
 //NFT
 #include <graphene/chain/account_role_object.hpp>
@@ -456,6 +467,50 @@ class database_api
                                                          asset_id_type start, uint32_t limit)const;
 
       /////////////////////
+   // Peerplays    //
+   /////////////////////
+
+   /**
+    * @brief Get global betting statistics
+    */
+   global_betting_statistics_object get_global_betting_statistics() const;
+
+   /**
+    * @brief Get a list of all sports
+    */
+   vector<sport_object> list_sports() const;
+
+   /**
+    * @brief Return a list of all event groups for a sport (e.g. all soccer leagues in soccer)
+    */
+   vector<event_group_object> list_event_groups(sport_id_type sport_id) const;
+
+   /**
+    * @brief Return a list of all events in an event group
+    */
+   vector<event_object> list_events_in_group(event_group_id_type event_group_id) const;
+
+   /**
+    * @brief Return a list of all betting market groups for an event
+    */
+   vector<betting_market_group_object> list_betting_market_groups(event_id_type) const;
+
+   /**
+    * @brief Return a list of all betting markets for a betting market group
+    */
+   vector<betting_market_object> list_betting_markets(betting_market_group_id_type) const;
+
+   /**
+    * @brief Return a list of all unmatched bets for a given account on a specific betting market
+    */
+   vector<bet_object> get_unmatched_bets_for_bettor(betting_market_id_type, account_id_type) const;
+
+   /**
+    * @brief Return a list of all unmatched bets for a given account (includes bets on all markets)
+    */
+   vector<bet_object> get_all_unmatched_bets_for_bettor(account_id_type) const;
+
+      /////////////////////
       // Markets / feeds //
       /////////////////////
 
@@ -713,7 +768,45 @@ class database_api
        * @brief Get the total number of committee registered with the blockchain
       */
       uint64_t get_committee_count()const;
+       /////////////////////////
+   // Sidechain Addresses //
+   /////////////////////////
 
+   /**
+    * @brief Get a list of sidechain addresses
+    * @param sidechain_address_ids IDs of the sidechain addresses to retrieve
+    * @return The sidechain accounts corresponding to the provided IDs
+    *
+    * This function has semantics identical to @ref get_objects
+    */
+   vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
+
+   /**
+    * @brief Get the sidechain addresses for a given account
+    * @param account The ID of the account whose sidechain addresses should be retrieved
+    * @return The sidechain addresses objects, or null if the account does not have a sidechain addresses
+    */
+   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
+
+   /**
+    * @brief Get the sidechain addresses for a given sidechain
+    * @param sidechain Sidechain for which addresses should be retrieved
+    * @return The sidechain addresses objects, or null if the sidechain does not have any addresses
+    */
+   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
+
+   /**
+    * @brief Get the sidechain addresses for a given account and sidechain
+    * @param account The ID of the account whose sidechain addresses should be retrieved
+    * @param sidechain Sidechain for which address should be retrieved
+    * @return The sidechain addresses objects, or null if the account does not have a sidechain addresses for a given sidechain
+    */
+   fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const;
+
+   /**
+    * @brief Get the total number of sidechain addresses registered with the blockchain
+    */
+   uint64_t get_sidechain_addresses_count() const;
 
       ///////////////////////
       // Worker proposals  //
@@ -1293,6 +1386,23 @@ FC_API(graphene::app::database_api,
    (get_custom_account_authorities_by_permission_id)
    (get_custom_account_authorities_by_permission_name)
    (get_active_custom_account_authorities_by_operation)
+
+    // Peerplays
+   (list_sports)
+   (get_global_betting_statistics)
+   (list_event_groups)
+   (list_events_in_group)
+   (list_betting_market_groups)
+   (list_betting_markets)
+   (get_unmatched_bets_for_bettor)
+   (get_all_unmatched_bets_for_bettor)
+
+    // Sidechain addresses
+   (get_sidechain_addresses)
+   (get_sidechain_addresses_by_account)
+   (get_sidechain_addresses_by_sidechain)
+   (get_sidechain_address_by_account_and_sidechain)
+   (get_sidechain_addresses_count)
 
    // Sweeps
    (get_lotteries)
