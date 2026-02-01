@@ -1,4 +1,3 @@
-
 #include <graphene/chain/database.hpp>
 #include <graphene/chain/game_object.hpp>
 #include <graphene/chain/tournament_object.hpp>

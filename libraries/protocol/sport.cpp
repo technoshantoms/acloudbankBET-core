@@ -1,4 +1,3 @@
-
 #include <graphene/protocol/sport.hpp>
 
 namespace graphene { namespace protocol {

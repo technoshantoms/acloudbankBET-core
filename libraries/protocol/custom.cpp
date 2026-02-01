@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  */
 #include <graphene/protocol/custom.hpp>
-
 #include <fc/io/raw.hpp>
 
 namespace graphene { namespace protocol {

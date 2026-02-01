@@ -16,7 +16,7 @@ void_result create_custom_permission_evaluator::do_evaluate(const custom_permiss
    {
       const database &d = db();
       auto now = d.head_block_time();
-      FC_ASSERT( now >= HARDFORK_NFT_TIME, "Not allowed until NFT HF");
+      FC_ASSERT(now >= HARDFORK_NFT_TIME, "Not allowed until NFT HF");
       op.owner_account(d);
       for (const auto &account_weight_pair : op.auth.account_auths)
       {

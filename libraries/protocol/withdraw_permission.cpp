@@ -77,3 +77,4 @@ GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::withdraw_permissi
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::withdraw_permission_update_operation )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::withdraw_permission_claim_operation )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::withdraw_permission_delete_operation )
+

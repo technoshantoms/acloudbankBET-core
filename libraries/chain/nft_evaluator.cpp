@@ -13,7 +13,7 @@ namespace graphene { namespace chain {
 void_result nft_metadata_create_evaluator::do_evaluate( const nft_metadata_create_operation& op )
 { try {
    auto now = db().head_block_time();
-   FC_ASSERT( now >= HARDFORK_NFT_TIME, "Not allowed until NFT HF");
+   FC_ASSERT(now >= HARDFORK_NFT_TIME, "Not allowed until NFT HF");
    op.owner(db());
    const auto& idx_nft_md_by_name = db().get_index_type<nft_metadata_index>().indices().get<by_name>();
    FC_ASSERT( idx_nft_md_by_name.find(op.name) == idx_nft_md_by_name.end(), "NFT name already in use" );

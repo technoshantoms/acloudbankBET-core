@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2015 Cryptonomex, Inc., and contributors.
- * Copyright (c) 2020-2023 Revolution Populi Limited, and contributors.
  *
  * The MIT License
  *
@@ -23,6 +22,7 @@
  * THE SOFTWARE.
  */
 #include "db_balance.cpp"
+#include "db_bet.cpp"
 #include "db_block.cpp"
 #include "db_debug.cpp"
 #include "db_getter.cpp"

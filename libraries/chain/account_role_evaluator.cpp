@@ -16,7 +16,7 @@ namespace graphene
             {
                 const database &d = db();
                 auto now = d.head_block_time();
-                FC_ASSERT( now >= HARDFORK_NFT_TIME, "Not allowed until NFT HF");
+                FC_ASSERT(now >= HARDFORK_NFT_TIME, "Not allowed until NFT HF");
                 op.owner(d);
 
                 rbac_operation_hardfork_visitor arvtor(now);

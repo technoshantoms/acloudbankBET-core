@@ -1,4 +1,3 @@
-
 #include <graphene/chain/event_evaluator.hpp>
 #include <graphene/chain/event_object.hpp>
 #include <graphene/chain/event_group_object.hpp>

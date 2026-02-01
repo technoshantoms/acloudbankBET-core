@@ -1,3 +1,4 @@
+
 #include <graphene/chain/account_object.hpp>
 #include <graphene/chain/affiliate_payout.hpp>
 #include <graphene/chain/database.hpp>

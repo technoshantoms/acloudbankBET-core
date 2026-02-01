@@ -15,7 +15,7 @@ namespace graphene
             {
                 const database &d = db();
                 auto now = d.head_block_time();
-                FC_ASSERT( now >= HARDFORK_NFT_TIME, "Not allowed until NFT HF");
+                FC_ASSERT(now >= HARDFORK_NFT_TIME, "Not allowed until NFT HF");
                 op.buyer(d);
                 const auto &lottery_md_obj = op.lottery_id(d);
                 FC_ASSERT(lottery_md_obj.is_lottery(), "Not a lottery type");

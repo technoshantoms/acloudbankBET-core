@@ -1,4 +1,6 @@
-
+/*
+ * AcloudBank
+ */
 #define DEFAULT_LOGGER "betting"
 
 #include <graphene/chain/betting_market_evaluator.hpp>

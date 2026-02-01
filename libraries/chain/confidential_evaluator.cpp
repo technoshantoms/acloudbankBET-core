@@ -1,4 +1,3 @@
-
 #include <graphene/chain/exceptions.hpp>
 #include <graphene/protocol/confidential.hpp>
 #include <graphene/chain/confidential_evaluator.hpp>

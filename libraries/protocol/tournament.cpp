@@ -1,4 +1,3 @@
-
 #include <graphene/protocol/tournament.hpp>
 #include <fc/io/raw.hpp>
 

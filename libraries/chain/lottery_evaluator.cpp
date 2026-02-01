@@ -123,8 +123,7 @@ void_result sweeps_vesting_claim_evaluator::do_evaluate( const sweeps_vesting_cl
 
 void_result sweeps_vesting_claim_evaluator::do_apply( const sweeps_vesting_claim_operation& op )
 { try {
-   // Dennis Satia
-   // db().adjust_sweeps_vesting_balance( op.account, -op.amount_to_claim.amount.value * SWEEPS_VESTING_BALANCE_MULTIPLIER );
+   db().adjust_sweeps_vesting_balance( op.account, -op.amount_to_claim.amount.value * SWEEPS_VESTING_BALANCE_MULTIPLIER );
    db().adjust_balance( op.account, op.amount_to_claim );
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }

@@ -241,5 +241,4 @@ template<typename T> struct get_typename< graphene::protocol::extension<T> >
    } 
 };
 
-
 } // fc

@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2015 Cryptonomex, Inc., and contributors.
- * Copyright (c) 2020-2023 Revolution Populi Limited, and contributors.
  *
  * The MIT License
  *
@@ -23,8 +22,8 @@
  * THE SOFTWARE.
  */
 #include <graphene/protocol/worker.hpp>
-
 #include <fc/io/raw.hpp>
+#include <graphene/protocol/worker.hpp>
 
 namespace graphene { namespace protocol {
 

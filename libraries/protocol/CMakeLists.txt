@@ -27,6 +27,11 @@ list(APPEND SOURCES account.cpp
                     ticket.cpp
                     operations.cpp
                     pts_address.cpp
+                    sport.cpp
+                    tournament.cpp
+                    betting_market.cpp
+                    event.cpp
+                    event_group.cpp
                     small_ops.cpp
                     transaction.cpp
                     types.cpp
