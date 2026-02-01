@@ -1,256 +1,408 @@
-Intro for new developers and witnesses
-------------------------
+Acloudbank Core: We are the first Decentralized Database powering Banks, Insurance Companies, Credit Unions & SACCOs.
+==============
 
-This is a quick introduction to get new developers and witnesses up to speed on Peerplays blockchain. It is intended for witnesses plannig to join a live, already deployed blockchain.
+[acloudbank Core](https://github.com/acloudbank/acloudbank-core) is the acloudbank blockchain node software and command-line wallet software.
+For UI reference wallet software (browser-based wallet and desktop wallet) visit [acloudbank UI](https://github.com/acloudbank/acloudbank-ui).
 
+Visit [acloudbank.github.io](https://acloudbank.github.io/) to learn about acloudbank and join the community at [acloudbankTalk.org](https://acloudbanktalk.org/).
 
-# Building and Installation Instructions
+Information for developers can be found in the [Wiki](https://github.com/acloudbank/acloudbank-core/wiki) and the [acloudbank Developer Portal](https://dev.acloudbank.works/). Users interested in how acloudbank works can go to the [acloudbank Documentation](https://how.acloudbank.works/) site.
 
-Officially supported OS is Ubuntu 20.04.
+Visit [Awesome acloudbank](https://github.com/acloudbank/awesome-acloudbank) to find more resources and links E.G. chat groups, client libraries and extended APIs.
 
-Following dependencies are needed for a clean install of Ubuntu 20.04:
-```
-sudo apt-get install \
-    apt-utils autoconf bash build-essential ca-certificates cmake dnsutils \
-    doxygen expect git graphviz libboost1.67-all-dev libbz2-dev libcurl4-openssl-dev \
-    libncurses-dev libreadline-dev libsnappy-dev libssl-dev libtool libzip-dev \
-    libzmq3-dev locales mc nano net-tools ntp openssh-server pkg-config perl \
-    python3 python3-jinja2 sudo wget
-```
+* [Getting Started](#getting-started)
+* [Support](#support)
+* [Using Built-In APIs](#using-built-in-apis)
+* [Accessing restrictable node API sets](#accessing-restrictable-node-api-sets)
+* [FAQ](#faq)
+* [License](#license)
 
-
-## Building Peerplays
-
-```
-mkdir $HOME/src
-cd $HOME/src
-git clone https://gitlab.com/PBSA/peerplays.git
-cd peerplays
-git submodule update --init --recursive
-# If you want to build Mainnet node
-cmake -DCMAKE_BUILD_TYPE=Release
-# If you want to build Testnet node
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PEERPLAYS_TESTNET=1
-make -j$(nproc)
-
-make install # this can install the executable files under /usr/local
-```
+|Branch|Build Status|
+|---|---|
+|`master`|[![](https://github.com/acloudbank/acloudbank-core/workflows/macOS/badge.svg?branch=master)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"macOS"+branch%3Amaster) [![](https://github.com/acloudbank/acloudbank-core/workflows/Ubuntu%20Debug/badge.svg?branch=master)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Ubuntu+Debug"+branch%3Amaster) [![](https://github.com/acloudbank/acloudbank-core/workflows/Ubuntu%20Release/badge.svg?branch=master)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Ubuntu+Release"+branch%3Amaster) [![](https://github.com/acloudbank/acloudbank-core/workflows/Windows%20MinGW64/badge.svg?branch=master)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Windows+MinGW64"+branch%3Amaster) [![](https://github.com/acloudbank/acloudbank-core/workflows/Docker/badge.svg?branch=master)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A%22Docker%22+branch%3Amaster)|
+|`develop`|[![](https://github.com/acloudbank/acloudbank-core/workflows/macOS/badge.svg?branch=develop)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"macOS"+branch%3Adevelop) [![](https://github.com/acloudbank/acloudbank-core/workflows/Ubuntu%20Debug/badge.svg?branch=develop)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Ubuntu+Debug"+branch%3Adevelop) [![](https://github.com/acloudbank/acloudbank-core/workflows/Ubuntu%20Release/badge.svg?branch=develop)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Ubuntu+Release"+branch%3Adevelop) [![](https://github.com/acloudbank/acloudbank-core/workflows/Windows%20MinGW64/badge.svg?branch=develop)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Windows+MinGW64"+branch%3Adevelop) [![](https://github.com/acloudbank/acloudbank-core/workflows/Docker/badge.svg?branch=develop)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A%22Docker%22+branch%3Adevelop)|
+|`hardfork`|[![](https://github.com/acloudbank/acloudbank-core/workflows/macOS/badge.svg?branch=hardfork)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"macOS"+branch%3Ahardfork) [![](https://github.com/acloudbank/acloudbank-core/workflows/Ubuntu%20Debug/badge.svg?branch=hardfork)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Ubuntu+Debug"+branch%3Ahardfork) [![](https://github.com/acloudbank/acloudbank-core/workflows/Ubuntu%20Release/badge.svg?branch=hardfork)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Ubuntu+Release"+branch%3Ahardfork) [![](https://github.com/acloudbank/acloudbank-core/workflows/Windows%20MinGW64/badge.svg?branch=hardfork)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Windows+MinGW64"+branch%3Ahardfork) [![](https://github.com/acloudbank/acloudbank-core/workflows/Docker/badge.svg?branch=hardfork)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A%22Docker%22+branch%3Ahardfork)|
+|`testnet`|[![](https://github.com/acloudbank/acloudbank-core/workflows/macOS/badge.svg?branch=testnet)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"macOS"+branch%3Atestnet) [![](https://github.com/acloudbank/acloudbank-core/workflows/Ubuntu%20Debug/badge.svg?branch=testnet)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Ubuntu+Debug"+branch%3Atestnet) [![](https://github.com/acloudbank/acloudbank-core/workflows/Ubuntu%20Release/badge.svg?branch=testnet)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Ubuntu+Release"+branch%3Atestnet) [![](https://github.com/acloudbank/acloudbank-core/workflows/Windows%20MinGW64/badge.svg?branch=testnet)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A"Windows+MinGW64"+branch%3Atestnet) [![](https://github.com/acloudbank/acloudbank-core/workflows/Docker/badge.svg?branch=testnet)](https://github.com/acloudbank/acloudbank-core/actions?query=workflow%3A%22Docker%22+branch%3Atestnet)|
+|`master` of `acloudbank-fc`|[![](https://github.com/acloudbank/acloudbank-fc/workflows/macOS/badge.svg?branch=master)](https://github.com/acloudbank/acloudbank-fc/actions?query=workflow%3A"macOS"+branch%3Amaster) [![](https://github.com/acloudbank/acloudbank-fc/workflows/Ubuntu%20Debug/badge.svg?branch=master)](https://github.com/acloudbank/acloudbank-fc/actions?query=workflow%3A"Ubuntu+Debug"+branch%3Amaster) [![](https://github.com/acloudbank/acloudbank-fc/workflows/Ubuntu%20Release/badge.svg?branch=master)](https://github.com/acloudbank/acloudbank-fc/actions?query=workflow%3A"Ubuntu+Release"+branch%3Amaster)|
 
 
-## Docker images
+Getting Started
+---------------
 
-Install docker, and add current user to docker group.
-```
-sudo apt install docker.io
-sudo usermod -a -G docker $USER
+Build instructions and additional documentation are available in the
+[Wiki](https://github.com/acloudbank/acloudbank-core/wiki).
 
-# You need to restart your shell session, to apply group membership
-# Type 'groups' to verify that you are a member of a docker group
-```
+Prebuilt binaries can be found in the [releases page](https://github.com/acloudbank/acloudbank-core/releases) for download.
 
-### Official docker image for Peerplas Mainnet
 
-```
-docker pull datasecuritynode/peerplays:latest
-```
+### Installing Node and Command-Line Wallet Software
 
-### Building docker image manually
-```
-# Build docker image (from the project root, must be a docker group member)
-docker build -t peerplays .
-```
+We recommend building on Ubuntu 20.04 LTS (64-bit)
 
-### Start docker image
-```
-docker start peerplays
-```
+**Install Operating System Dependencies:**
 
-Rest of the instructions on starting the chain remains same.
+    sudo apt-get update
+    sudo apt-get install autoconf cmake make automake libtool git libboost-all-dev libssl-dev g++ libcurl4-openssl-dev doxygen
 
-Starting A Peerplays Node
------------------
-Launching the witness creates required directories. Next, **stop the witness** and continue.
+**Build Node And Command-Line Wallet:**
 
-    $ vi witness_node_data_dir/config.ini
-    p2p-endpoint = 0.0.0.0:9777
-    rpc-endpoint = 127.0.0.1:8090
-    seed-node = 213.184.225.234:59500
+    git clone https://github.com/acloudbank/acloudbank-core.git
+    cd acloudbank-core
+    git checkout master # may substitute "master" with current release tag
+    git submodule update --init --recursive
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+    make
 
-Start the witness back up
+**Upgrade Node And Command-Line Wallet:**
+
+    cd acloudbank-core
+    git remote set-url origin https://github.com/acloudbank/acloudbank-core.git
+    git checkout master
+    git remote set-head origin --auto
+    git pull
+    git submodule update --init --recursive # this command may fail
+    git submodule sync --recursive
+    git submodule update --init --recursive
+    mkdir build
+    cd build
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+    make
+
+    --DOCKER -- 
+    
+    docker ps -aqf "name=^acloudbank-core-acloudbank-core-1$" //  container 1
+    docker container ls --all --quiet --no-trunc --filter "name=acloudbank-core-acloudbank-core-1"  // container 2
+    docker exec -it 42a39612f39f /usr/local/bin/cli_wallet       ///start cli wallet
+
+**NOTE:**
+
+* acloudbank requires a 64-bit operating system to build, and will not build on a 32-bit OS. Tested operating systems:
+  * Linux (heavily tested with Ubuntu LTS releases)
+  * macOS (various versions)
+  * Windows (various versions, Visual Studio and MinGW)
+  * OpenBSD (various versions)
+
+* acloudbank requires [Boost](https://www.boost.org/) libraries to build, supports version `1.58` to `1.74`.
+Newer versions may work, but have not been tested.
+If your system came pre-installed with a version of Boost libraries that you do not wish to use, you may
+manually build your preferred version and use it with acloudbank by specifying it on the CMake command line.
+
+  Example: `cmake -DBOOST_ROOT=/path/to/boost ..`
+
+* acloudbank requires [OpenSSL](https://www.openssl.org/) libraries to build, supports version `1.0.2` to `1.1.1`.
+If your system came pre-installed with a version of OpenSSL libraries that you do not wish to use, you may
+manually build your preferred version and use it with acloudbank by specifying it on the CMake command line.
+
+  Example: `cmake -DOPENSSL_ROOT_DIR=/path/to/openssl ..`
+
+
+### Running and Stopping Node Software
+
+**Run Node Software:**
+
+Stay on `acloudbank-core/build` directory before you run the below `witness_node` command
 
     ./programs/witness_node/witness_node
 
-Upgrading A Peerplays Node
------------------
-To minimize downtime of your peerplays node when upgrading, one upgrade
-idea was written in [this steemit
-article](https://steemit.com/peerplays/@joseph/peerplays-update-setting-a-backup-witness-server-switching-servers).
+Under `build` directory the node run will automatically create the directory `witness_node_data_dir` along with config files underneath then start synchronizing the blockchain.
+It may take usually several hours to fully synchronize the blockchain data.
+The blockchain data will be stored under the directory `witness_node_data_dir`.
 
-Wallet Setup
------------------
-Then, in a separate terminal window, start the command-line wallet `cli_wallet`:
+**Stop Node Software:**
+
+For stopping the node run cleanly, you will need to access the node run terminal then press on `Ctrl+C` then wait for the run to stop, please note that it may take usually few minutes to exit the run.
+It's recommended to use linux command [screen](https://help.ubuntu.com/community/Screen) to initiate the node run so you can go back to the node run screen to stop it.
+
+
+**IMPORTANT:** By default the node will start in reduced memory mode by using some of the commands detailed in [Memory reduction for nodes](https://github.com/acloudbank/acloudbank-core/wiki/Memory-reduction-for-nodes).
+In order to run a full node with all the account histories which usually unnecessary, you need to remove `partial-operations` and `max-ops-per-account` from your config file. Please note that currently(2018-10-17) a full node will need more than 160GB of RAM to operate and required memory is growing fast. Consider the following table as **minimal requirements** before running a node:
+
+| Default | Full | Minimal  | ElasticSearch
+| --- | --- | --- | ---
+| 150G HDD, 16G RAM | 640G SSD, 64G RAM * | 120G HDD, 4G RAM | 1TB SSD, 32G RAM
+
+\* For this setup, allocate at least 500GB of SSD as swap.
+
+To use the command-line wallet or other wallets / clients with the node, the node need to be started with RPC connection enabled, which can be done by starting the node with the `--rpc-endpoint` parameter, E.G.
+
+    ./programs/witness_node/witness_node --rpc-endpoint=127.0.0.1:8090
+
+or configure it in the config file by editing `witness_node_data_dir/config.ini` as follows:
+
+    rpc-endpoint = 127.0.0.1:8090
+
+You can run the program with `--help` parameter to see more info:
+
+    ./programs/witness_node/witness_node --help
+
+
+### Using Command-Line Wallet
+
+Stay on `acloudbank-core/build` directory before you run the below `cli_wallet` command
 
     ./programs/cli_wallet/cli_wallet
 
-To set your initial password to 'password' use:
+**IMPORTANT:** The `cli_wallet` or API interfaces to the node wouldn't be fully functional unless the node is fully synchronized with the blockchain. The `cli_wallet` command `info` will show result `head_block_age` which will tell you how far you are from the live current block of the blockchain.
 
-    >>> set_password password
-    >>> unlock password
+To check your current block:
 
-A list of CLI wallet commands is available
-[here](https://github.com/PBSA/peerplays/blob/master/libraries/wallet/include/graphene/wallet/wallet.hpp).
+    new >>> info
+
+To query the blockchain, E.G. get info about an account:
+
+    new >>> get_account <account_name_or_id>
+
+If you need to transact with your account but not only query, firstly set your initial password and unlock the wallet:
+
+* For non-Windows operating systems, you can type the commands and press `[ENTER]`, then input the password and press `[ENTER]`, in this case the password won't show:
+
+      new >>> set_password [ENTER]
+      Enter password:
+      locked >>> unlock [ENTER]
+      Enter password:
+      unlocked >>>
+
+* For Windows, or you'd like to show the password, type the commands with the password:
+
+      new >>> set_password <PASSWORD>
+      locked >>> unlock <PASSWORD>
+      unlocked >>>
+
+To be able to transact with your account, import the corresponding private keys:
+
+    unlocked >>> import_key <ACCOUNT_NAME> <WIF_KEY>
+
+The private keys will be encrypted and stored in the wallet file, the file name is `wallet.json` by default.
+The private keys are accessible when the wallet is unlocked.
+
+    unlocked >>> dump_private_keys
+
+Use `lock` command to make the private keys inaccessible. There is no auto-lock feature so far.
+
+    unlocked >>> lock
+
+To import your initial (genesis) balances, import the private keys corresponding to the balances:
+
+    unlocked >>> import_balance <ACCOUNT_NAME> [<WIF_KEY> ...] true
+
+Use `help` to see all available wallet commands.
+
+    >>> help
+
+Use `gethelp <COMMAND>` to see more info about individual commands. E.G.
+
+    >>> gethelp get_order_book
+
+The definition of all commands is available in the
+[wallet.hpp](https://github.com/acloudbank/acloudbank-core/blob/master/libraries/wallet/include/graphene/wallet/wallet.hpp) source code file.
+Corresponding documentation can be found in the [Doxygen documentation](https://acloudbank.github.io/doxygen/classgraphene_1_1wallet_1_1wallet__api.html).
+
+You can run the program with `--help` parameter to see more info:
+
+    ./programs/cli_wallet/cli_wallet --help
+
+There is also some info in the [Wiki](https://github.com/acloudbank/acloudbank-core/wiki/CLI-Wallet-Cookbook).
 
 
-Testnet - "Beatrice"
-----------------------
-- chain-id - T.B.D.
+Support
+-------
 
-Use the `get_private_key_from_password` command
----------------------------------
-You will to generate owner and active keys
+Technical support is available in the [acloudbankTalk technical support subforum](https://acloudbanktalk.org/index.php?board=45.0).
 
-```
-get_private_key_from_password your_witness_username active the_key_you_received_from_the_faucet
-```
-This will reveal an array for your active key `["PPYxxx", "xxxx"]`
+acloudbank Core bugs can be reported directly to the [issue tracker](https://github.com/acloudbank/acloudbank-core/issues).
 
-import_keys into your cli_wallet
--------------------------------
-- use the second value in the array returned from the previous step for the private key
-- be sure to wrap your username in quotes
-- import the key with this command
-```
-import_key "your_witness_username" xxxx
-```
+Questions can be posted in [Github Discussions](https://github.com/acloudbank/acloudbank-core/discussions).
 
-Upgrade your account to lifetime membership
---------------------------------
-```
-upgrade_account your_witness_username true
-```
+acloudbank UI bugs should be reported to the [UI issue tracker](https://github.com/acloudbank/acloudbank-ui/issues).
 
-Create your witness (substitute the url for your witness information)
--------------------------------
-- place quotes around url
-```
-create_witness your_witness_username "url" true
-```
-**Be sure to take note of the block_signing_key**
+Up to date online Doxygen documentation can be found at [https://acloudbank.github.io/doxygen](https://acloudbank.github.io/doxygen/hierarchy.html).
 
-IMPORTANT (issue below command using block_signing_key just obtained)
-```
-get_private_key block_signing_key
-```
-Compare this result to
 
-```
-dump_private_keys
-```
-You should see 3 pairs of keys. One of the pairs should match your block_signing_key and this is the one you will use in the next step!
+Using Built-In APIs
+-------------
 
-Get your witness id
------------------
-```
-get_witness username (note the "id" for your config)
-```
+### Node API
 
-Modify your witness_node config.ini to include **your** witness id and private key pair.
--------------------------
-Comment out the existing private-key before adding yours
-```
-vim witness_node_data_dir/config.ini
+The `witness_node` software provides several different API sets, known as *node API*.
 
-witness-id = "1.6.x"
-private-key = ["block_signing_key","private_key_for_your_block_signing_key"]
-```
+Each API set has its own ID and a name.
+When running `witness_node` with RPC connection enabled, initially two API sets are available:
+* API set with ID `0` has name *"database"*, it provides read-only access to the database,
+* API set with ID `1` has name *"login"*, it is used to login and gain access to additional, restrictable API sets.
 
-start your witness back up
-------------------
-```
-./programs/witness_node/witness_node
-```
+Here is an example using `wscat` package from `npm` for websockets:
 
-If it fails to start, try with these flags (not for permanent use)
+    $ npm install -g wscat
+    $ wscat -c ws://127.0.0.1:8090
+    > {"id":1, "method":"call", "params":[0,"get_accounts",[["1.2.0"]]]}
+    < {"id":1,"result":[{"id":"1.2.0","annotations":[],"membership_expiration_date":"1969-12-31T23:59:59","registrar":"1.2.0","referrer":"1.2.0","lifetime_referrer":"1.2.0","network_fee_percentage":2000,"lifetime_referrer_fee_percentage":8000,"referrer_rewards_percentage":0,"name":"committee-account","owner":{"weight_threshold":1,"account_auths":[],"key_auths":[],"address_auths":[]},"active":{"weight_threshold":6,"account_auths":[["1.2.5",1],["1.2.6",1],["1.2.7",1],["1.2.8",1],["1.2.9",1],["1.2.10",1],["1.2.11",1],["1.2.12",1],["1.2.13",1],["1.2.14",1]],"key_auths":[],"address_auths":[]},"options":{"memo_key":"GPH1111111111111111111111111111111114T1Anm","voting_account":"1.2.0","num_witness":0,"num_committee":0,"votes":[],"extensions":[]},"statistics":"2.7.0","whitelisting_accounts":[],"blacklisting_accounts":[]}]}
 
-```
-./programs/witness_node/witness_node --resync --replay
-```
+We can do the same thing using an HTTP client such as `curl` for APIs which do not require login or other session state:
 
-Vote for yourself
---------------
-```
-vote_for_witness your_witness_account your_witness_account true true
-```
+    $ curl --data '{"jsonrpc": "2.0", "method": "call", "params": [0, "get_accounts", [["1.2.0"]]], "id": 1}' http://127.0.0.1:8090/
+    {"id":1,"result":[{"id":"1.2.0","annotations":[],"membership_expiration_date":"1969-12-31T23:59:59","registrar":"1.2.0","referrer":"1.2.0","lifetime_referrer":"1.2.0","network_fee_percentage":2000,"lifetime_referrer_fee_percentage":8000,"referrer_rewards_percentage":0,"name":"committee-account","owner":{"weight_threshold":1,"account_auths":[],"key_auths":[],"address_auths":[]},"active":{"weight_threshold":6,"account_auths":[["1.2.5",1],["1.2.6",1],["1.2.7",1],["1.2.8",1],["1.2.9",1],["1.2.10",1],["1.2.11",1],["1.2.12",1],["1.2.13",1],["1.2.14",1]],"key_auths":[],"address_auths":[]},"options":{"memo_key":"GPH1111111111111111111111111111111114T1Anm","voting_account":"1.2.0","num_witness":0,"num_committee":0,"votes":[],"extensions":[]},"statistics":"2.7.0","whitelisting_accounts":[],"blacklisting_accounts":[]}]}
 
-Ask to be voted in!
---------------
+When using an HTTP client, the API set ID can be replaced by the API set name, E.G.
 
-Join @Peerplays Telegram group to find information about the witness group.
-http://t.me/@peerplayswitness
+    $ curl --data '{"jsonrpc": "2.0", "method": "call", "params": ["database", "get_accounts", [["1.2.0"]]], "id": 1}' http://127.0.0.1:8090/
 
-You will get logs that look like this:
+The definition of all node APIs is available in the source code files including
+[database_api.hpp](https://github.com/acloudbank/acloudbank-core/blob/master/libraries/app/include/graphene/app/database_api.hpp)
+and [api.hpp](https://github.com/acloudbank/acloudbank-core/blob/master/libraries/app/include/graphene/app/api.hpp).
+Corresponding documentation can be found in Doxygen:
+* [database API](https://acloudbank.github.io/doxygen/classgraphene_1_1app_1_1database__api.html)
+* [other APIs](https://acloudbank.github.io/doxygen/namespacegraphene_1_1app.html)
 
-```
-2070264ms th_a       application.cpp:506           handle_block         ] Got block: #87913 time: 2017-05-27T16:34:30 latency: 264 ms from: bhuz-witness  irreversible: 87903 (-10)
-```
 
-Assuming you've received votes, you will start producing as a witness at the next maintenance interval (once per hour). You can check your votes with.
+### Wallet API
 
-```
-get_witness your_witness_account
-```
+The `cli_wallet` program can also be configured to serve **all of its commands** as APIs, known as *wallet API*.
 
-systemd
-----------------
-It's important for your witness to start when your system boots up. The filepaths here assume that you installed your witness into `/home/ubuntu/peerplays`
+Start `cli_wallet` with RPC connection enabled:
 
-Create a logfile to hold your stdout/err logging
-```bash
-sudo touch /var/log/peerplays.log
-```
+    $ ./programs/cli_wallet/cli_wallet --rpc-http-endpoint=127.0.0.1:8093
 
-Save this file in your peerplays directory. `vi /home/ubuntu/peerplays/start.sh`
-```bash
-#!/bin/bash
+Access the wallet API using an HTTP client:
 
-cd /home/ubuntu/peerplays
-./programs/witness_node/witness_node &> /var/log/peerplays.log
-```
-Make it executable
-```bash
-chmod 744 /home/ubuntu/peerplays/start.sh
-```
-Create this file: `sudo vi /etc/systemd/system/peerplays.service`
-Note the path for start.sh. Change it to match where your start.sh file is if necessary.
-```
-[Unit]
-Description=Peerplays Witness
-After=network.target
+    $ curl --data '{"jsonrpc": "2.0", "method": "info", "params": [], "id": 1}' http://127.0.0.1:8093/
+    $ curl --data '{"jsonrpc": "2.0", "method": "get_account", "params": ["1.2.0"], "id": 1}' http://127.0.0.1:8093/
 
-[Service]
-ExecStart=/home/ubuntu/peerplays/start.sh
+Note: The syntax to access wallet API is a bit different than accessing node API.
 
-[Install]
-WantedBy = multi-user.target
-```
-Enable the service
-```bash
-sudo systemctl enable peerplays.service
-```
-Make sure you don't get any errors
-```bash
-sudo systemctl status peerplays.service
-```
-Stop your witness if it is currently running from previous steps, then start it with the service.
-```bash
-sudo systemctl start peerplays.service
-```
-Check your logfile for entries
-```bash
-tail -f /var/log/peerplays.log
-```
+**Important:**
+* When RPC connection is enabled for `cli_wallet`, sensitive data E.G. private keys which is accessible via commands will be accessible via RPC too. It is recommended that only open network connection to localhost or trusted addresses E.G. configure a firewall.
+* When using wallet API, sensitive data E.G. the wallet password and private keys is transmitted as plain text, thus may be vulnerable to network sniffing. It is recommended that only use wallet API with localhost, or in a clean network, and / or use `--rpc-tls-endpoint` parameter to only serve wallet API via secure connections.
 
-Running specific tests
-----------------------
 
-- `tests/chain_tests -t block_tests/name_of_test`
+Accessing restrictable node API sets
+------------------------------------
+
+You can restrict node API sets to particular users by specifying an `api-access` file in `config.ini`
+or by using the `--api-access /full/path/to/api-access.json` command-line option on node startup. Here is an example `api-access` file which allows
+user `bytemaster` with password `supersecret` to access four different API sets, while allowing any other user to access the three public API sets
+necessary to use the node:
+
+    {
+       "permission_map" :
+       [
+          [
+             "bytemaster",
+             {
+                "password_hash_b64" : "9e9GF7ooXVb9k4BoSfNIPTelXeGOZ5DrgOYMj94elaY=",
+                "password_salt_b64" : "INDdM6iCi/8=",
+                "allowed_apis" : ["database_api", "network_broadcast_api", "history_api", "network_node_api"]
+             }
+          ],
+          [
+             "*",
+             {
+                "password_hash_b64" : "*",
+                "password_salt_b64" : "*",
+                "allowed_apis" : ["database_api", "network_broadcast_api", "history_api"]
+             }
+          ]
+       ]
+    }
+
+Note: the `login` API set is always accessible.
+
+Passwords are stored in `base64` as salted `sha256` hashes.  A simple Python script,
+[`saltpass.py`](https://github.com/acloudbank/acloudbank-core/blob/master/programs/witness_node/saltpass.py)
+is available to obtain hash and salt values from a password.
+A single asterisk `"*"` may be specified as username or password hash to accept any value.
+
+With the above configuration, here is an example of how to call the `add_node` API from the `network_node` API set:
+
+    {"id":1, "method":"call", "params":[1,"login",["bytemaster", "supersecret"]]}
+    {"id":2, "method":"call", "params":[1,"network_node",[]]}
+    {"id":3, "method":"call", "params":[2,"add_node",["127.0.0.1:9090"]]}
+
+Note, the call to `network_node` is necessary to obtain the correct API set ID for the `network_node` API set.  It is not guaranteed that the API set ID for the `network_node` API set will always be `2`.
+
+The restricted API sets are accessible via HTTP too using *basic access authentication*. E.G.
+
+    $ curl --data '{"jsonrpc": "2.0", "method": "call", "params": ["network_node", "add_node", ["127.0.0.1:9090"]], "id": 1}' http://bytemaster:supersecret@127.0.0.1:8090/
+
+Our `doxygen` documentation contains the most up-to-date information
+about APIs for the [node](https://acloudbank.github.io/doxygen/namespacegraphene_1_1app.html) and the
+[wallet](https://acloudbank.github.io/doxygen/classgraphene_1_1wallet_1_1wallet__api.html).
+
+
+FAQ
+---
+
+- Is there a way to generate help with parameter names and method descriptions?
+
+    Yes. Documentation of the code base, including APIs, can be generated using Doxygen. Simply run `doxygen` in this directory.
+
+    If both Doxygen and perl are available in your build environment, the command-line wallet's `help` and `gethelp`
+    commands will display help generated from the doxygen documentation.
+
+    If your command-line wallet's `help` command displays descriptions without parameter names like
+        `signed_transaction transfer(string, string, string, string, string, bool)`
+    it means CMake was unable to find Doxygen or perl during configuration.  If found, the
+    output should look like this:
+        `signed_transaction transfer(string from, string to, string amount, string asset_symbol, string memo, bool broadcast)`
+
+- Is there a way to allow external program to drive `cli_wallet` via websocket, JSONRPC, or HTTP?
+
+    Yes. External programs may connect to the command-line wallet and make its calls over a websockets API. To do this, run the wallet in
+    server mode, i.e. `cli_wallet -H "127.0.0.1:9999"` and then have the external program connect to it over the specified port
+    (in this example, port 9999). Please check the ["Using Built-In APIs"](#using-built-in-apis) section for more info.
+
+- Is there a way to access methods which require login over HTTP?
+
+    Yes. Most of the methods can be accessed by specifying the API name instead of an API ID. If an API is protected by a username and a password, it can be accessed by using *basic access authentication*. Please check the ["Accessing restrictable node API sets"](#accessing-restrictable-node-api-sets) section for more info.
+
+    However, HTTP is not really designed for "server push" notifications, and we would have to figure out a way to queue notifications for a polling client. Websockets solves this problem. If you need to access the stateful methods, use Websockets.
+
+- What is the meaning of `a.b.c` numbers?
+
+    The first number specifies the *space*.  Space `1` is for protocol objects, `2` is for implementation objects.
+    Protocol space objects can appear on the wire, for example in the binary form of transactions.
+    Implementation space objects cannot appear on the wire and solely exist for implementation
+    purposes, such as optimization or internal bookkeeping.
+
+    The second number specifies the *type*.  The type of the object determines what fields it has.  For a
+    complete list of type IDs, see `GRAPHENE_DEFINE_IDS(protocol, protocol_ids ...)` in
+    [protocol/types.hpp](https://github.com/acloudbank/acloudbank-core/blob/master/libraries/protocol/include/graphene/protocol/types.hpp)
+    and `GRAPHENE_DEFINE_IDS(chain, implementation_ids ...)` in [chain/types.hpp](https://github.com/acloudbank/acloudbank-core/blob/master/libraries/chain/include/graphene/chain/types.hpp).
+
+    The third number specifies the *instance*.  The instance of the object is different for each individual
+    object.
+
+- The answer to the previous question was really confusing.  Can you make it clearer?
+
+    All account IDs are of the form `1.2.x`.  If you were the 9735th account to be registered,
+    your account's ID will be `1.2.9735`.  Account `0` is special (it's the "committee account",
+    which is controlled by the committee members and has a few abilities and restrictions other accounts
+    do not).
+
+    All asset IDs are of the form `1.3.x`.  If you were the 29th asset to be registered,
+    your asset's ID will be `1.3.29`.  Asset `0` is special (it's CREDIT, which is considered the "core asset").
+
+    The first and second number together identify the kind of thing you're talking about (`1.2` for accounts,
+    `1.3` for assets).  The third number identifies the particular thing.
+
+- How do I get the `network_add_nodes` command to work?  Why is it so complicated?
+
+    You need to follow the instructions in the ["Accessing restrictable node API sets"](#accessing-restrictable-node-api-sets) section to
+    allow a username/password access to the `network_node` API set.  Then you need
+    to pass the username/password to the `cli_wallet` on the command line.
+
+    It's set up this way so that the default configuration is secure even if the RPC port is
+    publicly accessible.  It's fine if your `witness_node` allows the general public to query
+    the database or broadcast transactions (in fact, this is how the hosted web UI works).  It's
+    less fine if your `witness_node` allows the general public to control which p2p nodes it's
+    connecting to.  Therefore the API to add p2p connections needs to be set up with proper access
+    controls.
+
+
+License
+------- 
+-> Acloudbank Database: We are the first Decentralized Database powering Banks, Insurance Companies, Credit Unions & SACCOs.
+
+acloudbank Core is under the MIT license. See [LICENSE](https://github.com/acloudbank/acloudbank-core/blob/master/LICENSE.txt)
+for more information.
