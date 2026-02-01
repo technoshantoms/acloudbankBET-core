@@ -1,0 +1,918 @@
+{
+  "initial_timestamp": "2023-02-14T20:32:55",
+  "max_core_supply": "9900000000000000",
+  "initial_parameters": {
+    "current_fees": {
+               "parameters": [
+        [
+          0,
+          {
+            "name": "transfer",
+            "fee": 386869,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          1,
+          {
+            "name": "account_create",
+            "basic_fee": 482609,
+            "premium_fee": 24130471,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          2,
+          {
+            "name": "account_update",
+            "fee": 241304,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          3,
+          {
+            "name": "account_whitelist",
+            "fee": 482609
+          }
+        ],
+        [
+          4,
+          {
+            "name": "account_upgrade",
+            "membership_annual_fee": 579131307,
+            "membership_lifetime_fee": 579131307
+          }
+        ],
+        [
+          5,
+          {
+            "name": "account_transfer",
+            "fee": 96521884
+          }
+        ],
+        [
+          6,
+          {
+            "name": "asset_create",
+            "symbol3": "120652355825",
+            "symbol4": "24130471165",
+            "long_symbol": 2413047116,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          7,
+          {
+            "name": "asset_update",
+            "fee": 5,
+            "price_per_kbyte": 4
+          }
+        ],
+        [
+          8,
+          {
+            "name": "asset_update_bitasset",
+            "fee": 482609
+          }
+        ],
+        [
+          9,
+          {
+            "name": "asset_update_feed_producers",
+            "fee": 482609
+          }
+        ],
+        [
+          10,
+          {
+            "name": "asset_issue",
+            "fee": 86869,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          11,
+          {
+            "name": "asset_reserve",
+            "fee": 4826
+          }
+        ],
+        [
+          12,
+          {
+            "name": "asset_fund_fee_pool",
+            "fee": 482609
+          }
+        ],
+        [
+          13,
+          {
+            "name": "asset_settle",
+            "fee": 96521
+          }
+        ],
+        [
+          14,
+          {
+            "name": "asset_global_settle",
+            "fee": 24130471
+          }
+        ],
+        [
+          15,
+          {
+            "name": "asset_publish_feed",
+            "fee": 482
+          }
+        ],
+        [
+          16,
+          {
+            "name": "witness_create",
+            "fee": 241304711
+          }
+        ],
+        [
+          17,
+          {
+            "name": "witness_update",
+            "fee": 48260
+          }
+        ],
+        [
+          18,
+          {
+            "name": "proposal_create",
+            "fee": 965218,
+            "price_per_kbyte": 241304
+          }
+        ],
+        [
+          19,
+          {
+            "name": "proposal_update",
+            "fee": 48260,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          20,
+          {
+            "name": "proposal_delete",
+            "fee": 0
+          }
+        ],
+        [
+          21,
+          {
+            "name": "withdraw_permission_create",
+            "fee": 723914
+          }
+        ],
+        [
+          22,
+          {
+            "name": "withdraw_permission_update",
+            "fee": 48260
+          }
+        ],
+        [
+          23,
+          {
+            "name": "withdraw_permission_claim",
+            "fee": 69495,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          24,
+          {
+            "name": "withdraw_permission_delete",
+            "fee": 0
+          }
+        ],
+        [
+          25,
+          {
+            "name": "committee_member_create",
+            "fee": 24130471
+          }
+        ],
+        [
+          26,
+          {
+            "name": "committee_member_update",
+            "fee": 48260942
+          }
+        ],
+        [
+          27,
+          {
+            "name": "committee_member_update_global_parameters",
+            "fee": 0
+          }
+        ],
+        [
+          28,
+          {
+            "name": "vesting_balance_create",
+            "fee": 482609
+          }
+        ],
+        [
+          29,
+          {
+            "name": "vesting_balance_withdraw",
+            "fee": 482609
+          }
+        ],
+        [
+          30,
+          {
+            "name": "custom",
+            "fee": 48260,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          31,
+          {
+            "name": "assert",
+            "fee": 48260
+          }
+        ],
+        [
+          32,
+          {
+            "name": "balance_claim",
+            "fee": 0
+          }
+        ],
+        [
+          33,
+          {
+            "name": "override_transfer",
+            "fee": 4826094,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          34,
+          {
+            "name": "asset_settle_cancel",
+            "fee": 0
+          }
+        ],
+        [
+          35,
+          {
+            "name": "asset_claim_fees",
+            "fee": 4826094
+          }
+        ],
+        [
+          36,
+          {
+            "name": "fba_distribute",
+            "fee": 0
+          }
+        ],
+        [
+          37,
+          {
+            "name": "asset_claim_pool",
+            "fee": 482609
+          }
+        ],
+        [
+          38,
+          {
+            "name": "asset_update_issuer",
+            "fee": 48260942
+          }
+        ],
+        [
+          39,
+          {
+            "name": "personal_data_create",
+            "fee": 86869,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          40,
+          {
+            "name": "personal_data_remove",
+            "fee": 0
+          }
+        ],
+        [
+          41,
+          {
+            "name": "content_card_create",
+            "fee": 48260,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          42,
+          {
+            "name": "content_card_update",
+            "fee": 48260,
+            "price_per_kbyte": 48260
+          }
+        ],
+        [
+          43,
+          {
+            "name": "content_card_remove",
+            "fee": 0
+          }
+        ],
+        [
+          44,
+          {
+            "name": "permission_create",
+            "fee": 482
+          }
+        ],
+        [
+          45,
+          {
+            "name": "permission_remove",
+            "fee": 0
+          }
+        ],
+        [
+          46,
+          {
+            "name": "commit_create",
+            "fee": 0
+          }
+        ],
+        [
+          47,
+          {
+            "name": "reveal_create",
+            "fee": 0
+          }
+        ],
+        [
+          48,
+          {
+            "name": "worker_create",
+            "fee": 241304711
+          }
+        ],
+        [
+          49,
+          {
+            "name": "htlc_create",
+            "fee": 4826,
+            "fee_per_day": 159261
+          }
+        ],
+        [
+          50,
+          {
+            "name": "htlc_redeem",
+            "fee": 0,
+            "fee_per_kb": 0
+          }
+        ],
+        [
+          51,
+          {
+            "name": "htlc_redeemed",
+            "fee": 0
+          }
+        ],
+        [
+          52,
+          {
+            "name": "htlc_extend",
+            "fee": 4826,
+            "fee_per_day": 159261
+          }
+        ],
+        [
+          53,
+          {
+            "name": "htlc_refund",
+            "fee": 0
+          }
+        ],
+        [
+          54,
+          {
+            "name": "limit_order_create",
+            "fee": 48260
+          }
+        ],
+        [
+          55,
+          {
+            "name": "limit_order_cancel",
+            "fee": 482
+          }
+        ],
+        [
+          56,
+          {
+            "name": "call_order_update",
+            "fee": 48260
+          }
+        ],
+        [
+          57,
+          {
+            "name": "fill_order",
+            "fee": 0
+          }
+        ],
+        [
+          58,
+          {
+            "name": "custom_authority_create",
+            "fee": 0
+          }
+        ],
+        [
+          59,
+          {
+            "name": "custom_authority_update",
+            "fee": 0
+          }
+        ],
+        [
+          60,
+          {
+            "name": "custom_authority_delete",
+            "fee": 0
+          }
+        ],
+        [
+          61,
+          {
+            "name": "ticket_create",
+            "fee": 0
+          }
+        ],
+        [
+          62,
+          {
+            "name": "ticket_update",
+            "fee": 0
+          }
+        ],
+        [
+          63,
+          {
+            "name": "ico_balance_claim",
+            "fee": 0
+          }
+        ],
+        [
+          64,
+          {
+            "name": "tank_create_operation",
+            "fee": 0
+          }
+        ],
+        [
+          65,
+          {
+            "name": "tank_update_operation",
+            "fee": 0
+          }
+        ],
+        [
+          66,
+          {
+            "name": "tank_delete_operation",
+            "fee": 0
+          }
+        ],
+        [
+          67,
+          {
+            "name": "tank_query_operation",
+            "fee": 0
+          }
+        ],
+        [
+          68,
+          {
+            "name": "tap_open_operation",
+            "fee": 0
+          }
+        ],
+        [
+          69,
+          {
+            "name": "tap_connect_operation",
+            "fee": 0
+          }
+        ],
+        [
+          70,
+          {
+            "name": "account_fund_connection_operation",
+            "fee": 0
+          }
+        ],
+        [
+          71,
+          {
+            "name": "connection_fund_account_operation",
+            "fee": 0
+          }
+        ],[
+          72,
+          {
+            "name": "htlc_redeem",
+            "fee": 0,
+            "fee_per_kb": 0
+          }
+        ],
+        [
+          73,
+          {
+            "name": "htlc_redeemed",
+            "fee": 0
+          }
+        ],
+        [
+          74,
+          {
+            "name": "htlc_extend",
+            "fee": 4826,
+            "fee_per_day": 159261
+          }
+        ],
+        [
+          75,
+          {
+            "name": "htlc_refund",
+            "fee": 0
+          }
+        ],
+        [
+          76,
+          {
+            "name": "limit_order_create",
+            "fee": 48260
+          }
+        ],
+        [
+          77,
+          {
+            "name": "limit_order_cancel",
+            "fee": 482
+          }
+        ],
+        [
+          78,
+          {
+            "name": "call_order_update",
+            "fee": 48260
+          }
+        ],
+        [
+          79,
+          {
+            "name": "fill_order",
+            "fee": 0
+          }
+        ],
+        [
+          80,
+          {
+            "name": "custom_authority_create",
+            "fee": 0
+          }
+        ],
+        [
+          59,
+          {
+            "name": "custom_authority_update",
+            "fee": 0
+          }
+        ],
+        [
+          81,
+          {
+            "name": "custom_authority_delete",
+            "fee": 0
+          }
+        ],
+        [
+          82,
+          {
+            "name": "ticket_create",
+            "fee": 0
+          }
+        ],
+        [
+          83,
+          {
+            "name": "ticket_update",
+            "fee": 0
+          }
+        ],
+        [
+          84,
+          {
+            "name": "ico_balance_claim",
+            "fee": 0
+          }
+        ],
+        [
+          85,
+          {
+            "name": "tank_create_operation",
+            "fee": 0
+          }
+        ],
+        [
+          86,
+          {
+            "name": "tank_update_operation",
+            "fee": 0
+          }
+        ],
+        [
+          87,
+          {
+            "name": "tank_delete_operation",
+            "fee": 0
+          }
+        ],
+        [
+          88,
+          {
+            "name": "tank_query_operation",
+            "fee": 0
+          }
+        ],
+        [
+          89,
+          {
+            "name": "tap_open_operation",
+            "fee": 0
+          }
+        ],
+        [
+          90,
+          {
+            "name": "tap_connect_operation",
+            "fee": 0
+          }
+        ],
+        [
+          91,
+          {
+            "name": "account_fund_connection_operation",
+            "fee": 0
+          }
+        ],
+        [
+          92,
+          {
+            "name": "connection_fund_account_operation",
+            "fee": 0
+          }
+        ],
+        [
+          93,
+          {
+            "name": "tap_connect_operation",
+            "fee": 0
+          }
+        ],
+        [
+          94,
+          {
+            "name": "account_fund_connection_operation",
+            "fee": 0
+          }
+        ],
+        [
+          95,
+          {
+            "name": "connection_fund_account_operation",
+            "fee": 0
+          }
+        ],
+        [
+          96,
+          {
+            "name": "tap_connect_operation",
+            "fee": 0
+          }
+        ],
+        [
+          97,
+          {
+            "name": "account_fund_connection_operation",
+            "fee": 0
+          }
+        ],
+        [
+          98,
+          {
+            "name": "connection_fund_account_operation",
+            "fee": 0
+          }
+        ],
+        [
+          100,
+          {
+            "name": "account_fund_connection_operation",
+            "fee": 0
+          }
+        ]
+      ],
+        "scale": 10000
+     },
+    "block_interval": 5,
+    "maintenance_interval": 3600,
+    "maintenance_skip_slots": 3,
+    "committee_proposal_review_period": 0,
+    "maximum_transaction_size": 409600,
+    "maximum_block_size": 2000000,
+    "maximum_time_until_expiration": 86400,
+    "maximum_proposal_lifetime": 2419200,
+    "maximum_asset_whitelist_authorities": 10,
+    "maximum_asset_feed_publishers": 25,
+    "maximum_witness_count": 1001,
+    "maximum_committee_count": 1001,
+    "maximum_authority_membership": 10,
+    "network_percent_of_fee": 2000,
+    "lifetime_referrer_percent_of_fee": 3000,
+    "cashback_vesting_period_seconds": 7776000,
+    "cashback_vesting_threshold": 10000000,
+    "count_non_member_votes": true,
+    "allow_non_member_whitelists": false,
+    "witness_pay_per_block": 10000,
+    "worker_budget": true,
+    "max_predicate_opcode": 1,
+    "accounts_per_fee_scale": 1000,
+    "account_fee_scale_bitshifts": 0,
+    "max_authority_depth": 2,
+    "rsquared_witnesses_top_max": 63,
+    "rsquared_witnesses_active_max": 21,
+    "extensions": {
+      "electoral_threshold": 4,
+      "updatable_htlc_options": {
+        "max_timeout_secs": 2592000,
+        "max_preimage_size": 10240
+      }
+    }
+  },
+  "initial_accounts": [{
+      "name": "dennis",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true,
+      "is_system_account": true
+    },{
+      "name": "acloudbank",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true,
+      "is_system_account": true
+    },{
+      "name": "osanya",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "pbsa",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "purity",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "nderu",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "simon",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "imoo",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "zakaria",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "njoroge",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "witness",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    },{
+      "name": "nathan",
+      "owner_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "active_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+      "is_lifetime_member": true
+    }
+  ],
+  "initial_assets": [],
+  "initial_balances": [{
+      "owner": "KESFAbAx7yuxt725qSZvfwWqkdCwp9ZnUama",
+      "asset_symbol": "KES",
+      "amount": "9900000000000000"
+    }
+  ],
+  "initial_vesting_balances": [],
+  "initial_active_witnesses": 11,
+  "initial_witness_candidates": [{
+      "owner_name": "dennis",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "osanya",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "pbsa",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "purity",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "nderu",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "simon",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "imoo",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "zakaria",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "njoroge",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "witness",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    },{
+      "owner_name": "nathan",
+      "block_signing_key": "KES6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+    }
+  ],
+  "initial_committee_candidates": [{
+      "owner_name": "dennis"
+    },{
+      "owner_name": "osanya"
+    },{
+      "owner_name": "pbsa"
+    },{
+      "owner_name": "purity"
+    },{
+      "owner_name": "nderu"
+    },{
+        "owner_name": "simon"
+      },
+      {
+        "owner_name": "imoo"
+      },
+      {
+        "owner_name": "zakaria"
+      },
+      {
+        "owner_name": "njoroge"
+      },
+      {
+        "owner_name": "witness"
+      },
+      {
+        "owner_name": "nathan"
+      }
+  ],
+  "initial_worker_candidates": [],
+  "immutable_parameters": {
+    "min_committee_member_count": 11,
+    "min_witness_count": 11,
+    "num_special_accounts": 0,
+    "num_special_assets": 0
+  }
+}
