@@ -27,11 +27,6 @@ list(APPEND SOURCES account.cpp
                     ticket.cpp
                     operations.cpp
                     pts_address.cpp
-                    sport.cpp
-                    tournament.cpp
-                    betting_market.cpp
-                    event.cpp
-                    event_group.cpp
                     small_ops.cpp
                     transaction.cpp
                     types.cpp
@@ -53,6 +48,14 @@ list(APPEND SOURCES account.cpp
                     nft.cpp
                     nft_lottery.cpp
                     account_role.cpp
+
+                    betting_market.cpp
+
+                    tournament.cpp
+                    event.cpp
+                    event_group.cpp
+                    tournament.cpp
+                    sport.cpp
                     )
 
 
