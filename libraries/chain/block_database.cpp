@@ -81,6 +81,9 @@ void block_database::flush()
 
 void block_database::store( const block_id_type& _id, const signed_block& b )
 {
+   if (true == replay_mode){
+       return;
+   }
    block_id_type id = _id;
    if( id == block_id_type() )
    {
@@ -284,6 +287,11 @@ size_t block_database::total_block_size()const
 {
    _blocks.seekg( 0, _blocks.end );
    return (size_t)_blocks.tellg();
+}
+
+void block_database::set_replay_mode(bool mode)
+{
+   replay_mode = mode;
 }
 
 } }
