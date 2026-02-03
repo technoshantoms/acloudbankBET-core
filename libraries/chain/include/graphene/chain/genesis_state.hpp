@@ -54,7 +54,7 @@ struct genesis_state_type {
       public_key_type active_key;
       bool is_lifetime_member = false;
    };
-    struct initial_bts_account_type {
+    /*struct initial_bts_account_type {
       struct initial_authority {
          uint32_t                               weight_threshold;
          flat_map<string, weight_type>          account_auths; // uses account name instead of account id
@@ -92,7 +92,7 @@ struct genesis_state_type {
       initial_authority owner_authority;
       initial_authority active_authority;
       share_type core_balance;
-      fc::optional<std::vector<initial_vesting_balance> > vesting_balances;
+      fc::optional<std::vector<initial_vesting_balance> > vesting_balances;*/
    };
    struct initial_asset_type {
       struct initial_collateral_position {

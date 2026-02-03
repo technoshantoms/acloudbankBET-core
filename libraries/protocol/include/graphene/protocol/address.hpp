@@ -27,7 +27,7 @@
 
 #include <fc/crypto/elliptic.hpp>
 #include <fc/crypto/ripemd160.hpp>
-#include <fc/reflect/typename.hpp>
+//#include <fc/reflect/typename.hpp>
 
 namespace graphene { namespace protocol {
    struct pts_address;
@@ -56,12 +56,12 @@ namespace graphene { namespace protocol {
 
        explicit operator std::string()const; ///< converts to base58 + checksum
 
-       friend size_t hash_value( const address& v ) { 
+       /*friend size_t hash_value( const address& v ) { 
           const void* tmp = static_cast<const void*>(v.addr._hash+2);
 
           const size_t* tmp2 = reinterpret_cast<const size_t*>(tmp);
           return *tmp2;
-       }
+       }*/
        fc::ripemd160 addr;
    };
    inline bool operator == ( const address& a, const address& b ) { return a.addr == b.addr; }
