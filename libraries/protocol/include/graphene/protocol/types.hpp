@@ -253,6 +253,8 @@ using digest_type = fc::sha256;
 using signature_type = fc::ecc::compact_signature;
 using share_type = safe<int64_t>;
 using weight_type = uint16_t;
+using bet_multiplier_type = uint32_t;
+using internationalized_string_type = flat_map<std::string, std::string>;
 
 struct public_key_type {
     struct binary_key {
@@ -329,6 +331,17 @@ GRAPHENE_DEFINE_IDS(protocol, protocol_ids, /*protocol objects are not prefixed*
                     /* 1.22.x */ (commit_reveal)
                     /* 1.23.x */ (ico_balance)
                     /* 1.24.x */ (tank)
+                    (tournament)
+                    (tournament_details)
+                    (match)
+                    (game)
+                    (sport)
+                    (event_group)
+                    (event)
+                    (betting_market_rules)
+                    (betting_market_group)
+                    (betting_market)
+                    (bet)
                     /* 1.25.x */ (custom_permission)
                     /* 1.26.x */ (custom_account_authority)
                     /* 1.27.x */ (offer)

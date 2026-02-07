@@ -10,6 +10,7 @@
 #include <fc/reflect/reflect.hpp>
 #include <graphene/protocol/rock_paper_scissors.hpp>
 #include <graphene/protocol/base.hpp>
+#include <graphene/protocol/asset.hpp>
 
 namespace graphene { namespace protocol {
 

@@ -7,7 +7,7 @@
 
 namespace graphene { namespace chain {
 
-   class betting_market_rules_create_evaluator : public fee_handling_evaluator<betting_market_rules_create_evaluator>
+   class betting_market_rules_create_evaluator : public evaluator<betting_market_rules_create_evaluator>
    {
       public:
          typedef betting_market_rules_create_operation operation_type;
@@ -16,7 +16,7 @@ namespace graphene { namespace chain {
          object_id_type do_apply( const betting_market_rules_create_operation& o );
    };
 
-   class betting_market_rules_update_evaluator : public fee_handling_evaluator<betting_market_rules_update_evaluator>
+   class betting_market_rules_update_evaluator : public evaluator<betting_market_rules_update_evaluator>
    {
       public:
          typedef betting_market_rules_update_operation operation_type;
@@ -27,7 +27,7 @@ namespace graphene { namespace chain {
          const betting_market_rules_object* _rules;
    };
 
-   class betting_market_group_create_evaluator : public fee_handling_evaluator<betting_market_group_create_evaluator>
+   class betting_market_group_create_evaluator : public evaluator<betting_market_group_create_evaluator>
    {
       public:
          typedef betting_market_group_create_operation operation_type;
@@ -39,7 +39,7 @@ namespace graphene { namespace chain {
          betting_market_rules_id_type _rules_id;
    };
 
-   class betting_market_group_update_evaluator : public fee_handling_evaluator<betting_market_group_update_evaluator>
+   class betting_market_group_update_evaluator : public evaluator<betting_market_group_update_evaluator>
    {
       public:
          typedef betting_market_group_update_operation operation_type;
@@ -51,7 +51,7 @@ namespace graphene { namespace chain {
          const betting_market_group_object* _betting_market_group;
    };
 
-   class betting_market_create_evaluator : public fee_handling_evaluator<betting_market_create_evaluator>
+   class betting_market_create_evaluator : public evaluator<betting_market_create_evaluator>
    {
       public:
          typedef betting_market_create_operation operation_type;
@@ -62,7 +62,7 @@ namespace graphene { namespace chain {
          betting_market_group_id_type _group_id;
    };
 
-   class betting_market_update_evaluator : public fee_handling_evaluator<betting_market_update_evaluator>
+   class betting_market_update_evaluator : public evaluator<betting_market_update_evaluator>
    {
       public:
          typedef betting_market_update_operation operation_type;
@@ -74,7 +74,7 @@ namespace graphene { namespace chain {
          betting_market_group_id_type _group_id;
    };
 
-   class bet_place_evaluator : public fee_handling_evaluator<bet_place_evaluator>
+   class bet_place_evaluator : public evaluator<bet_place_evaluator>
    {
       public:
          typedef bet_place_operation operation_type;
@@ -89,7 +89,7 @@ namespace graphene { namespace chain {
          share_type _stake_plus_fees;
    };
 
-   class bet_cancel_evaluator : public fee_handling_evaluator<bet_cancel_evaluator>
+   class bet_cancel_evaluator : public evaluator<bet_cancel_evaluator>
    {
       public:
          typedef bet_cancel_operation operation_type;
@@ -100,7 +100,7 @@ namespace graphene { namespace chain {
          const bet_object* _bet_to_cancel;
    };
 
-   class betting_market_group_resolve_evaluator : public fee_handling_evaluator<betting_market_group_resolve_evaluator>
+   class betting_market_group_resolve_evaluator : public evaluator<betting_market_group_resolve_evaluator>
    {
       public:
          typedef betting_market_group_resolve_operation operation_type;
@@ -111,7 +111,7 @@ namespace graphene { namespace chain {
          const betting_market_group_object* _betting_market_group;
    };
 
-   class betting_market_group_cancel_unmatched_bets_evaluator : public fee_handling_evaluator<betting_market_group_cancel_unmatched_bets_evaluator>
+   class betting_market_group_cancel_unmatched_bets_evaluator : public evaluator<betting_market_group_cancel_unmatched_bets_evaluator>
    {
       public:
          typedef betting_market_group_cancel_unmatched_bets_operation operation_type;

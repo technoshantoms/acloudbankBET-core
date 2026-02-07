@@ -27,11 +27,11 @@
 #include <graphene/protocol/account_role.hpp>
 
 //bet
-#include <graphene/chain/protocol/sport.hpp>
-#include <graphene/chain/protocol/event_group.hpp>
-#include <graphene/chain/protocol/event.hpp>
-#include <graphene/chain/protocol/betting_market.hpp>
-#include <graphene/chain/protocol/tournament.hpp>
+#include <graphene/protocol/sport.hpp>
+#include <graphene/protocol/event_group.hpp>
+#include <graphene/protocol/event.hpp>
+#include <graphene/protocol/betting_market.hpp>
+#include <graphene/protocol/tournament.hpp>
 
 #include <graphene/protocol/nft_lottery.hpp>
 #include <graphene/protocol/lottery_ops.hpp>
@@ -158,21 +158,19 @@ namespace graphene { namespace protocol {
             /* 96 */ nft_lottery_token_purchase_operation,
             /* 97 */ nft_lottery_reward_operation,
             /* 98 */ nft_lottery_end_operation,
-            /* 99 */random_number_store_operation
-           // /* 100 */ affiliate_referral_payout_operation // VIRTUAL
-            /*
-            sidechain_address_add_operation,
-            sidechain_address_update_operation,
-            sidechain_address_delete_operation,
-            sidechain_transaction_create_operation,
-            sidechain_transaction_sign_operation,
-            sidechain_transaction_send_operation,
-            sidechain_transaction_settle_operation,
+                  /* 99 */random_number_store_operation,
+            //sidechain_address_add_operation,
+            //sidechain_address_update_operation,
+            //sidechain_address_delete_operation,
+            //sidechain_transaction_create_operation,
+            //sidechain_transaction_sign_operation,
+            //sidechain_transaction_send_operation,
+            //sidechain_transaction_settle_operation,
             tournament_create_operation,
             tournament_join_operation,
             game_move_operation,
-            asset_update_dividend_operation,
-            asset_dividend_distribution_operation, // VIRTUAL
+            //asset_update_dividend_operation,
+            //asset_dividend_distribution_operation, // VIRTUAL
             tournament_payout_operation, // VIRTUAL
             tournament_leave_operation,
             sport_create_operation,
@@ -197,10 +195,10 @@ namespace graphene { namespace protocol {
             betting_market_update_operation,
             event_update_status_operation,
             sport_delete_operation,
-            event_group_delete_operation,
-            affiliate_payout_operation, // VIRTUAL
-            affiliate_referral_payout_operation, // VIRTUAL
-            */
+            event_group_delete_operation
+            //affiliate_payout_operation, // VIRTUAL
+            //affiliate_referral_payout_operation // VIRTUAL
+          // /* 100 */ affiliate_referral_payout_operation // VIRTUAL
          > operation;
 
    /// @} // operations group

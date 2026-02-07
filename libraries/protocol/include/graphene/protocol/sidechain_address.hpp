@@ -1,6 +1,6 @@
 #pragma once
 #include <graphene/protocol/base.hpp>
-
+#include <graphene/protocol/asset.hpp>
 #include <graphene/protocol/sidechain_defs.hpp>
 
 namespace graphene { namespace protocol {

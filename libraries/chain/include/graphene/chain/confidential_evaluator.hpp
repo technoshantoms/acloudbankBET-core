@@ -5,7 +5,7 @@
 
 namespace graphene { namespace chain {
 
-class transfer_to_blind_evaluator : public fee_handling_evaluator<transfer_to_blind_evaluator>
+class transfer_to_blind_evaluator : public evaluator<transfer_to_blind_evaluator>
 {
    public:
       typedef transfer_to_blind_operation operation_type;
@@ -16,7 +16,7 @@ class transfer_to_blind_evaluator : public fee_handling_evaluator<transfer_to_bl
       virtual void pay_fee() override;
 };
 
-class transfer_from_blind_evaluator : public fee_handling_evaluator<transfer_from_blind_evaluator>
+class transfer_from_blind_evaluator : public evaluator<transfer_from_blind_evaluator>
 {
    public:
       typedef transfer_from_blind_operation operation_type;
@@ -27,7 +27,7 @@ class transfer_from_blind_evaluator : public fee_handling_evaluator<transfer_fro
       virtual void pay_fee() override;
 };
 
-class blind_transfer_evaluator : public fee_handling_evaluator<blind_transfer_evaluator>
+class blind_transfer_evaluator : public evaluator<blind_transfer_evaluator>
 {
    public:
       typedef blind_transfer_operation operation_type;

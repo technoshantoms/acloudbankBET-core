@@ -2,6 +2,7 @@
 #pragma once
 
 #include <graphene/protocol/types.hpp>
+#include <graphene/protocol/asset.hpp>
 #include <graphene/protocol/base.hpp>
 
 namespace graphene { namespace protocol {

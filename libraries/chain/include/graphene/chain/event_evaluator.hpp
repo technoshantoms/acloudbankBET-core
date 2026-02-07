@@ -9,7 +9,7 @@
 
 namespace graphene { namespace chain {
 
-   class event_create_evaluator : public fee_handling_evaluator<event_create_evaluator>
+   class event_create_evaluator : public evaluator<event_create_evaluator>
    {
       public:
          typedef event_create_operation operation_type;
@@ -20,7 +20,7 @@ namespace graphene { namespace chain {
          event_group_id_type event_group_id;
    };
 
-   class event_update_evaluator : public fee_handling_evaluator<event_update_evaluator>
+   class event_update_evaluator : public evaluator<event_update_evaluator>
    {
       public:
          typedef event_update_operation operation_type;
@@ -31,7 +31,7 @@ namespace graphene { namespace chain {
          event_group_id_type event_group_id;
    };
 
-   class event_update_status_evaluator : public fee_handling_evaluator<event_update_status_evaluator>
+   class event_update_status_evaluator : public evaluator<event_update_status_evaluator>
    {
       public:
          typedef event_update_status_operation operation_type;

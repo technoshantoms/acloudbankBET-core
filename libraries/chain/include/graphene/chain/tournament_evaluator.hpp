@@ -5,7 +5,7 @@
 
 namespace graphene { namespace chain {
 
-   class tournament_create_evaluator : public fee_handling_evaluator<tournament_create_evaluator>
+   class tournament_create_evaluator : public evaluator<tournament_create_evaluator>
    {
       public:
          typedef tournament_create_operation operation_type;
@@ -14,7 +14,7 @@ namespace graphene { namespace chain {
          object_id_type do_apply( const tournament_create_operation& o );
    };
 
-   class tournament_join_evaluator : public fee_handling_evaluator<tournament_join_evaluator>
+   class tournament_join_evaluator : public evaluator<tournament_join_evaluator>
    {
       private:
          const tournament_object* _tournament_obj = nullptr;
@@ -28,7 +28,7 @@ namespace graphene { namespace chain {
          void_result do_apply( const tournament_join_operation& o );
    };
 
-   class tournament_leave_evaluator : public fee_handling_evaluator<tournament_leave_evaluator>
+   class tournament_leave_evaluator : public evaluator<tournament_leave_evaluator>
    {
       private:
          const tournament_object* _tournament_obj = nullptr;
@@ -40,7 +40,7 @@ namespace graphene { namespace chain {
          void_result do_apply( const tournament_leave_operation& o );
    };
 
-   class game_move_evaluator : public fee_handling_evaluator<game_move_evaluator>
+   class game_move_evaluator : public evaluator<game_move_evaluator>
    {
       private:
          const game_object* _game_obj = nullptr;

@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <graphene/protocol/base.hpp>
+#include <graphene/protocol/types.hpp>
 #include <graphene/protocol/tnt/parameters.hpp>
 #include <graphene/protocol/config.hpp>
 
@@ -217,6 +218,10 @@ FC_REFLECT( graphene::protocol::custom_authority_options_type,
 )
 
 FC_REFLECT( graphene::protocol::parameter_extension,
+   (min_bet_multiplier)
+   (max_bet_multiplier)
+   (betting_rake_fee_percentage)
+   (live_betting_delay_time)
    (rbac_max_permissions_per_account)
    (rbac_max_account_authority_lifetime)
    (rbac_max_authorities_per_permission)

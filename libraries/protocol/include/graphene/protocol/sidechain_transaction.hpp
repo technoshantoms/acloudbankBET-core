@@ -1,5 +1,6 @@
 #pragma once
 #include <graphene/protocol/base.hpp>
+#include <graphene/protocol/asset.hpp>
 #include <graphene/protocol/types.hpp>
 #include <graphene/protocol/sidechain_defs.hpp>
 #include <graphene/protocol/son_info.hpp>

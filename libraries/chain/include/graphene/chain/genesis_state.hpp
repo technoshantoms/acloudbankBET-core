@@ -92,8 +92,9 @@ struct genesis_state_type {
       initial_authority owner_authority;
       initial_authority active_authority;
       share_type core_balance;
-      fc::optional<std::vector<initial_vesting_balance> > vesting_balances;*/
+      fc::optional<std::vector<initial_vesting_balance> > vesting_balances;
    };
+   */
    struct initial_asset_type {
       struct initial_collateral_position {
          address owner;

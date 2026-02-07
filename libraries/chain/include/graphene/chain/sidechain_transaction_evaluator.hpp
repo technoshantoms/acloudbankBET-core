@@ -5,7 +5,7 @@
 
 namespace graphene { namespace chain {
 
-class sidechain_transaction_create_evaluator : public fee_handling_evaluator<sidechain_transaction_create_evaluator>
+class sidechain_transaction_create_evaluator : public evaluator<sidechain_transaction_create_evaluator>
 {
 public:
     typedef sidechain_transaction_create_operation operation_type;
@@ -14,7 +14,7 @@ public:
     object_id_type do_apply(const sidechain_transaction_create_operation& o);
 };
 
-class sidechain_transaction_sign_evaluator : public fee_handling_evaluator<sidechain_transaction_sign_evaluator>
+class sidechain_transaction_sign_evaluator : public evaluator<sidechain_transaction_sign_evaluator>
 {
 public:
     typedef sidechain_transaction_sign_operation operation_type;
@@ -23,7 +23,7 @@ public:
     object_id_type do_apply(const sidechain_transaction_sign_operation& o);
 };
 
-class sidechain_transaction_send_evaluator : public fee_handling_evaluator<sidechain_transaction_send_evaluator>
+class sidechain_transaction_send_evaluator : public evaluator<sidechain_transaction_send_evaluator>
 {
 public:
     typedef sidechain_transaction_send_operation operation_type;
@@ -32,7 +32,7 @@ public:
     object_id_type do_apply(const sidechain_transaction_send_operation& o);
 };
 
-class sidechain_transaction_settle_evaluator : public fee_handling_evaluator<sidechain_transaction_settle_evaluator>
+class sidechain_transaction_settle_evaluator : public evaluator<sidechain_transaction_settle_evaluator>
 {
 public:
     typedef sidechain_transaction_settle_operation operation_type;

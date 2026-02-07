@@ -9,7 +9,7 @@ namespace graphene { namespace chain {
     
    class event_group_object;
 
-   class event_group_create_evaluator : public fee_handling_evaluator<event_group_create_evaluator>
+   class event_group_create_evaluator : public evaluator<event_group_create_evaluator>
    {
       public:
          typedef event_group_create_operation operation_type;
@@ -21,7 +21,7 @@ namespace graphene { namespace chain {
          sport_id_type sport_id;
    };
 
-   class event_group_update_evaluator : public fee_handling_evaluator<event_group_update_evaluator>
+   class event_group_update_evaluator : public evaluator<event_group_update_evaluator>
    {
       public:
          typedef event_group_update_operation operation_type;
@@ -33,7 +33,7 @@ namespace graphene { namespace chain {
          sport_id_type sport_id;
    };
     
-   class event_group_delete_evaluator : public fee_handling_evaluator<event_group_delete_evaluator>
+   class event_group_delete_evaluator : public evaluator<event_group_delete_evaluator>
    {
    public:
        typedef event_group_delete_operation operation_type;

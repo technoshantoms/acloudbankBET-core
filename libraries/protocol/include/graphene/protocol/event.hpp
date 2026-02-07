@@ -3,7 +3,7 @@
 
 #include <graphene/protocol/types.hpp>
 #include <graphene/protocol/base.hpp>
-
+#include <graphene/protocol/asset.hpp>
 namespace graphene { namespace protocol {
 
 struct event_create_operation : public base_operation
