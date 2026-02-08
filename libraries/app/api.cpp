@@ -367,6 +367,18 @@ namespace graphene { namespace app {
           if(start == operation_history_id_type() || start.instance.value > node.operation_id.instance.value)
              start = node.operation_id;
        } catch(...) { return result; }
+       
+       if(_app.is_plugin_enabled("postgres_indexer")) {
+          auto pg = _app.get_plugin<postgres_indexer::postgres_indexer_plugin>("postgres_indexer");
+          if(pg.get()->get_running_mode() != postgres_indexer::mode::only_save) {
+             if(!_app.elasticsearch_thread)
+                _app.elasticsearch_thread = std::make_shared<fc::thread>("postgres_indexer");
+
+             return _app.elasticsearch_thread->async([&pg, &account, &stop, &limit, &start]() {
+                return pg->get_account_history(account, stop, limit, start);
+             }, "thread invoke for postgres_indexer").wait();
+          }
+       }
 
        if(_app.is_plugin_enabled("elasticsearch")) {
           auto es = _app.get_plugin<elasticsearch::elasticsearch_plugin>("elasticsearch");
