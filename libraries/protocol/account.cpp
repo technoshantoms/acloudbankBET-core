@@ -26,6 +26,8 @@
 
 #include <fc/io/raw.hpp>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 namespace graphene { namespace protocol {
 
 /**

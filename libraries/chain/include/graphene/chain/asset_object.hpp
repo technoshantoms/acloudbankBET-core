@@ -471,8 +471,8 @@ namespace graphene { namespace chain {
    class asset_dividend_data_object : public abstract_object<asset_dividend_data_object>
    {
       public:
-         static const uint8_t space_id = implementation_ids;
-         static const uint8_t type_id  = impl_asset_dividend_data_object_type;
+         static constexpr uint8_t space_id = implementation_ids;
+         static constexpr uint8_t type_id  = impl_asset_dividend_data_object_type;
 
          /// The tunable options for Dividend-paying assets are stored in this field.
          dividend_asset_options options;
@@ -515,8 +515,8 @@ namespace graphene { namespace chain {
    class total_distributed_dividend_balance_object : public abstract_object<total_distributed_dividend_balance_object>
    {
       public:
-         static const uint8_t space_id = implementation_ids;
-         static const uint8_t type_id  = impl_total_distributed_dividend_balance_object_type;
+         static constexpr uint8_t space_id = implementation_ids;
+         static constexpr uint8_t type_id  = impl_total_distributed_dividend_balance_object_type;
 
          asset_id_type dividend_holder_asset_type;
          asset_id_type dividend_payout_asset_type;
@@ -545,8 +545,8 @@ namespace graphene { namespace chain {
    class lottery_balance_object : public abstract_object<lottery_balance_object>
    {
       public:
-         static const uint8_t space_id = implementation_ids;
-         static const uint8_t type_id  = impl_lottery_balance_object_type;
+         static constexpr uint8_t space_id = implementation_ids;
+         static constexpr uint8_t type_id  = impl_lottery_balance_object_type;
 
          asset_id_type  lottery_id;
          asset          balance;
@@ -578,8 +578,8 @@ namespace graphene { namespace chain {
 class sweeps_vesting_balance_object : public abstract_object<sweeps_vesting_balance_object>
    {
       public:
-         static const uint8_t space_id = implementation_ids;
-         static const uint8_t type_id  = impl_sweeps_vesting_balance_object_type;
+         static constexpr uint8_t space_id = implementation_ids;
+         static constexpr uint8_t type_id  = impl_sweeps_vesting_balance_object_type;
 
 
          account_id_type   owner;
@@ -619,7 +619,6 @@ MAP_OBJECT_ID_TO_TYPE(graphene::chain::asset_dividend_data_object)
 MAP_OBJECT_ID_TO_TYPE(graphene::chain::total_distributed_dividend_balance_object)
 MAP_OBJECT_ID_TO_TYPE(graphene::chain::lottery_balance_object)
 MAP_OBJECT_ID_TO_TYPE(graphene::chain::sweeps_vesting_balance_object)
-MAP_OBJECT_ID_TO_TYPE(graphene::chain::asset_dividend_data_object)
 
 FC_REFLECT_DERIVED( graphene::chain::price_feed_with_icr, (graphene::protocol::price_feed),
                     (initial_collateral_ratio) )

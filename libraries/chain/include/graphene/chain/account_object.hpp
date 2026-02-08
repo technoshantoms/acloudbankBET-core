@@ -342,8 +342,8 @@ namespace graphene { namespace chain {
    class pending_dividend_payout_balance_for_holder_object : public abstract_object<pending_dividend_payout_balance_for_holder_object>
    {
       public:
-         static const uint8_t space_id = implementation_ids;
-         static const uint8_t type_id  = impl_pending_dividend_payout_balance_for_holder_object_type;
+         static constexpr uint8_t space_id = implementation_ids;
+         static constexpr uint8_t type_id  = impl_pending_dividend_payout_balance_for_holder_object_type;
 
          account_id_type   owner;
          asset_id_type     dividend_holder_asset_type;

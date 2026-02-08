@@ -827,6 +827,13 @@ FC_REFLECT( graphene::protocol::bitasset_options::ext,
             (force_settle_fee_percent)
             (black_swan_response_method)
           )
+FC_REFLECT( graphene::protocol::dividend_asset_options,
+            (next_payout_time)
+            (payout_interval)
+            (minimum_fee_percentage)
+            (minimum_distribution_interval)
+            (extensions)
+          )
 
 FC_REFLECT( graphene::protocol::bitasset_options,
             (feed_lifetime_sec)
