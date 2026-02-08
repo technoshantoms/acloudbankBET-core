@@ -306,6 +306,7 @@ void database::initialize_indexes()
    bal_idx->add_secondary_index<balances_by_account_index>();
 
    add_index< primary_index<asset_bitasset_data_index,                 13 > >(); // 8192
+   add_index< primary_index<asset_dividend_data_object_index              > >();
    add_index< primary_index<simple_index<global_property_object          >> >();
    add_index< primary_index<simple_index<dynamic_global_property_object  >> >();
    add_index< primary_index<account_stats_index,                       20 > >(); // 1 Mi

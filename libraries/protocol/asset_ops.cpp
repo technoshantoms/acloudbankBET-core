@@ -254,6 +254,16 @@ void asset_global_settle_operation::validate()const
    FC_ASSERT( asset_to_settle == settle_price.base.asset_id );
 }
 
+void asset_update_dividend_operation::validate() const
+{
+   FC_ASSERT( fee.amount >= 0 );
+   new_options.validate();
+}
+
+void dividend_asset_options::validate() const
+{
+}
+
 void bitasset_options::validate() const
 {
    FC_ASSERT(minimum_feeds > 0);
@@ -392,7 +402,7 @@ GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::asset_update_feed
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::asset_publish_feed_operation::fee_parameters_type )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::asset_issue_operation::fee_parameters_type )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::asset_reserve_operation::fee_parameters_type )
-
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::asset_dividend_distribution_operation )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::asset_create_operation )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::asset_global_settle_operation )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::asset_settle_operation )

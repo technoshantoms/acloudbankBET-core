@@ -36,8 +36,8 @@ struct by_betting_market_group_id;
 class betting_market_rules_object : public graphene::db::abstract_object< betting_market_rules_object >
 {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id = betting_market_rules_object_type;
+      static constexpr uint8_t space_id = protocol_ids;
+      static constexpr uint8_t type_id = betting_market_rules_object_type;
 
       internationalized_string_type name;
 
@@ -47,8 +47,8 @@ class betting_market_rules_object : public graphene::db::abstract_object< bettin
 class betting_market_group_object : public graphene::db::abstract_object< betting_market_group_object >
 {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id = betting_market_group_object_type;
+      static constexpr uint8_t space_id = protocol_ids;
+      static constexpr uint8_t type_id = betting_market_group_object_type;
 
       betting_market_group_object();
       betting_market_group_object(const betting_market_group_object& rhs);
@@ -115,8 +115,8 @@ class betting_market_group_object : public graphene::db::abstract_object< bettin
 class betting_market_object : public graphene::db::abstract_object< betting_market_object >
 {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id = betting_market_object_type;
+      static constexpr uint8_t space_id = protocol_ids;
+      static constexpr uint8_t type_id = betting_market_object_type;
 
       betting_market_object();
       betting_market_object(const betting_market_object& rhs);
@@ -167,8 +167,8 @@ class betting_market_object : public graphene::db::abstract_object< betting_mark
 class bet_object : public graphene::db::abstract_object< bet_object >
 {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id = bet_object_type;
+      static constexpr uint8_t space_id = protocol_ids;
+      static constexpr uint8_t type_id = bet_object_type;
 
       account_id_type bettor_id;
       
@@ -202,8 +202,8 @@ class bet_object : public graphene::db::abstract_object< bet_object >
 class betting_market_position_object : public graphene::db::abstract_object< betting_market_position_object >
 {
    public:
-      static const uint8_t space_id = implementation_ids;
-      static const uint8_t type_id = impl_betting_market_position_object_type;
+      static constexpr uint8_t space_id = implementation_ids;
+      static constexpr uint8_t type_id = impl_betting_market_position_object_type;
 
       account_id_type bettor_id;
       
