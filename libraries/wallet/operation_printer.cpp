@@ -330,6 +330,21 @@ std::string operation_printer::operator()(const lottery_asset_create_operation& 
    print_result();
    return "";
 }
+std::string operation_printer::operator()(const asset_dividend_distribution_operation& op)const
+{
+   asset_object dividend_paying_asset = wallet.get_asset(op.dividend_asset_id);
+   account_object receiver = wallet.get_account(op.account_id);
+
+   out << receiver.name << " received dividend payments for " << dividend_paying_asset.symbol << ": ";
+   std::vector<std::string> pretty_payout_amounts;
+   for (const asset& payment : op.amounts)
+   {
+      asset_object payout_asset = wallet.get_asset(payment.asset_id);
+      pretty_payout_amounts.push_back(payout_asset.amount_to_pretty_string(payment));
+   }
+   out << boost::algorithm::join(pretty_payout_amounts, ", ");
+   return "";
+}
 
 std::string operation_printer::operator()(const htlc_create_operation& op) const
 {

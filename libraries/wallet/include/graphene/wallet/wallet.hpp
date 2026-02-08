@@ -57,6 +57,57 @@ typedef multi_index_container<
    >
 > key_label_index_type;
 
+struct wallet_data
+{
+   /** Chain ID this wallet is used with */
+   chain_id_type chain_id;
+   account_multi_index_type my_accounts;
+   /// @return IDs of all accounts in @ref my_accounts
+   vector<object_id_type> my_account_ids()const
+   {
+      vector<object_id_type> ids;
+      ids.reserve(my_accounts.size());
+      std::transform(my_accounts.begin(), my_accounts.end(), std::back_inserter(ids),
+                     [](const account_object& ao) { return ao.id; });
+      return ids;
+   }
+   /// Add acct to @ref my_accounts, or update it if it is already in @ref my_accounts
+   /// @return true if the account was newly inserted; false if it was only updated
+   bool update_account(const account_object& acct)
+   {
+      auto& idx = my_accounts.get<by_id>();
+      auto itr = idx.find(acct.get_id());
+      if( itr != idx.end() )
+      {
+         idx.replace(itr, acct);
+         return false;
+      } else {
+         idx.insert(acct);
+         return true;
+      }
+   }
+
+   /** encrypted keys */
+   vector<char>              cipher_keys;
+
+   /** map an account to a set of extra keys that have been imported for that account */
+   map<account_id_type, set<public_key_type> >  extra_keys;
+
+   // map of account_name -> base58_private_key for
+   //    incomplete account regs
+   map<string, vector<string> > pending_account_registrations;
+   map<string, string> pending_witness_registrations;
+
+   key_label_index_type                                              labeled_keys;
+   blind_receipt_index_type                                          blind_receipts;
+
+   std::map<rock_paper_scissors_throw_commit, rock_paper_scissors_throw_reveal> committed_game_moves;
+
+   string                    ws_server = "ws://localhost:8090";
+   string                    ws_user;
+   string                    ws_password;
+};
+
 /**
  * This wallet assumes it is connected to the database server with a high-bandwidth, low-latency connection and
  * performs minimal caching. This API could be provided locally to be used by a web interface.
@@ -955,6 +1006,32 @@ class wallet_api
                                       fc::optional<string> new_issuer,
                                       asset_options new_options,
                                       bool broadcast = false);
+      /** Update the given asset's dividend asset options.
+       *
+       * If the asset is not already a dividend-paying asset, it will be converted into one.
+       *
+       * @param symbol the name or id of the asset to update, which must be a market-issued asset
+       * @param new_options the new dividend_asset_options object, which will entirely replace the existing
+       *                    options.
+       * @param broadcast true to broadcast the transaction on the network
+       * @returns the signed transaction updating the asset
+       */
+      signed_transaction update_dividend_asset(string symbol,
+                                               dividend_asset_options new_options,
+                                               bool broadcast = false);
+      /** Propose a dividend asset update.
+       *
+       * @param proposing_account The account paying the fee to propose the tx
+       * @param expiration_time Timestamp specifying when the proposal will either take effect or expire.
+       * @param changed_values dividend asset parameters to update
+       * @param broadcast true if you wish to broadcast the transaction
+       * @return the signed version of the transaction
+       */
+      signed_transaction propose_dividend_asset_update(
+         const string& proposing_account,
+         fc::time_point_sec expiration_time,
+         const variant_object& changed_values,
+         bool broadcast = false);
 
       /** Update the issuer of an asset
        * Since this call requires the owner authority of the current issuer to sign the transaction,
@@ -2396,6 +2473,7 @@ FC_API( graphene::wallet::wallet_api,
         (update_asset)
         (update_asset_issuer)
         (update_bitasset)
+        (update_dividend_asset)
         (get_htlc)
         (update_asset_feed_producers)
         (publish_asset_feed)
@@ -2488,6 +2566,7 @@ FC_API( graphene::wallet::wallet_api,
         (propose_parameter_extension_change)
         (propose_parameter_change)
         (propose_fee_change)
+        (propose_dividend_asset_update)
         (approve_proposal)
         (get_random_number_ex)
         (get_random_number)

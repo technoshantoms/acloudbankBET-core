@@ -169,8 +169,8 @@ namespace graphene { namespace protocol {
             tournament_create_operation,
             tournament_join_operation,
             game_move_operation,
-            //asset_update_dividend_operation,
-            //asset_dividend_distribution_operation, // VIRTUAL
+            asset_update_dividend_operation,
+            asset_dividend_distribution_operation, // VIRTUAL
             tournament_payout_operation, // VIRTUAL
             tournament_leave_operation,
             sport_create_operation,

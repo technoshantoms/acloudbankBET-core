@@ -128,6 +128,11 @@ bool is_valid_name( const string& name )
          break;
       begin = end+1;
    }
+    // only dividend distribution accounts linked to a dividend asset can end in -dividend-distribution, and
+    // these can only be created as a side-effect of the asset_update_dividend_operation
+    if( boost::algorithm::ends_with(name, "-dividend-distribution") )
+       return false;
+
    return true;
 } FC_CAPTURE_AND_RETHROW( (name) ) }
 

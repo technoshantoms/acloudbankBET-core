@@ -314,3 +314,4 @@ FC_REFLECT_DERIVED_NO_TYPENAME( graphene::chain::account_statistics_object,
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::chain::account_object )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::chain::account_balance_object )
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::chain::account_statistics_object )
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::chain::pending_dividend_payout_balance_for_holder_object )

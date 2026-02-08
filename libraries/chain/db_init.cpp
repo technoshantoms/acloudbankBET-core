@@ -119,6 +119,7 @@ void database::initialize_evaluators()
    register_evaluator<asset_reserve_evaluator>();
    register_evaluator<asset_update_evaluator>();
    register_evaluator<asset_update_bitasset_evaluator>();
+   register_evaluator<asset_update_dividend_evaluator>();
    register_evaluator<asset_update_feed_producers_evaluator>();
    register_evaluator<asset_settle_evaluator>();
    register_evaluator<asset_global_settle_evaluator>();
@@ -318,6 +319,13 @@ void database::initialize_indexes()
    add_index< primary_index< special_authority_index                      > >();
    add_index< primary_index< buyback_index                                > >();
    add_index< primary_index< simple_index< fba_accumulator_object       > > >();
+   
+   add_index< primary_index< betting_market_position_index > >();
+   add_index< primary_index< global_betting_statistics_object_index > >();
+   //add_index< primary_index<pending_dividend_payout_balance_object_index > >();
+   //add_index< primary_index<distributed_dividend_balance_object_index > >();
+   add_index< primary_index<pending_dividend_payout_balance_for_holder_object_index > >();
+   add_index< primary_index<total_distributed_dividend_balance_object_index > >();
 
    add_index< primary_index< personal_data_index,                       20> >();
    add_index< primary_index< content_card_index,                        20> >();
@@ -583,6 +591,9 @@ void database::init_genesis(const genesis_state_type& genesis_state)
       p.chain_id = chain_id;
       p.immutable_parameters = genesis_state.immutable_parameters;
    } );
+   create<global_betting_statistics_object>([&](global_betting_statistics_object& betting_statistics) {
+      betting_statistics.number_of_active_events = 0;
+   });
    for (uint32_t i = 0; i <= 0x10000; i++)
       create<block_summary_object>( [&]( block_summary_object&) {});
 

@@ -126,6 +126,11 @@ struct get_impacted_account_visitor
       _impacted.insert( op.fee_payer() ); // issuer
       _impacted.insert( op.new_issuer );
    }
+   void operator()( const asset_update_dividend_operation& op ) {}
+   void operator()( const asset_dividend_distribution_operation& op )
+   {
+      _impacted.insert( op.account_id );
+   }
    void operator()( const asset_update_bitasset_operation& op )
    {
       _impacted.insert( op.fee_payer() ); // issuer

@@ -642,6 +642,11 @@ std::map<std::string, full_account> database_api_impl::get_full_accounts( const 
          acnt.htlcs_to.emplace_back(*itr);
       }
 
+      auto pending_payouts_range =
+            _db.get_index_type<pending_dividend_payout_balance_for_holder_object_index>().indices().get<by_account_dividend_payout>().equal_range(boost::make_tuple(account->id));
+
+      std::copy(pending_payouts_range.first, pending_payouts_range.second, std::back_inserter(acnt.pending_dividend_payments));
+
       results[account_name_or_id] = acnt;
    }
    return results;
@@ -3046,6 +3051,63 @@ vector<permission_object> database_api_impl::get_permissions( const account_id_t
 
    return result;
 }
+
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+// GPOS methods                                                     //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
+graphene::app::gpos_info database_api::get_gpos_info(const account_id_type account) const {
+   return my->get_gpos_info(account);
+}
+
+graphene::app::gpos_info database_api_impl::get_gpos_info(const account_id_type account) const {
+   FC_ASSERT(_db.head_block_time() > HARDFORK_GPOS_TIME); //Can be deleted after GPOS hardfork time
+   gpos_info result;
+
+   result.vesting_factor = _db.calculate_vesting_factor(account(_db));
+   result.current_subperiod = _db.get_gpos_current_subperiod();
+   result.last_voted_time = account(_db).statistics(_db).last_vote_time;
+
+   const auto &dividend_data = asset_id_type()(_db).dividend_data(_db);
+   const account_object &dividend_distribution_account = dividend_data.dividend_distribution_account(_db);
+   result.award = _db.get_balance(dividend_distribution_account, asset_id_type()(_db));
+
+   share_type total_amount;
+   auto balance_type = vesting_balance_type::gpos;
+
+   // get only once a collection of accounts that hold nonzero vesting balances of the dividend asset
+   const vesting_balance_index &vesting_index = _db.get_index_type<vesting_balance_index>();
+   const auto &vesting_balances = vesting_index.indices().get<by_id>();
+   for (const vesting_balance_object &vesting_balance_obj : vesting_balances) {
+      if (vesting_balance_obj.balance.asset_id == asset_id_type() && vesting_balance_obj.balance_type == balance_type) {
+         total_amount += vesting_balance_obj.balance.amount;
+      }
+   }
+
+   vector<vesting_balance_object> account_vbos;
+   auto vesting_range = _db.get_index_type<vesting_balance_index>().indices().get<by_account>().equal_range(account);
+   std::for_each(vesting_range.first, vesting_range.second,
+                 [&account_vbos](const vesting_balance_object &balance) {
+                    if (balance.balance.amount > 0 && balance.balance_type == vesting_balance_type::gpos && balance.balance.asset_id == asset_id_type())
+                       account_vbos.emplace_back(balance);
+                 });
+
+   share_type allowed_withdraw_amount = 0, account_vested_balance = 0;
+
+   for (const vesting_balance_object &vesting_balance_obj : account_vbos) {
+      account_vested_balance += vesting_balance_obj.balance.amount;
+      if (vesting_balance_obj.is_withdraw_allowed(_db.head_block_time(), vesting_balance_obj.balance.amount))
+         allowed_withdraw_amount += vesting_balance_obj.balance.amount;
+   }
+
+   result.total_amount = total_amount;
+   result.allowed_withdraw_amount = allowed_withdraw_amount;
+   result.account_vested_balance = account_vested_balance;
+   return result;
+}
+
 
 
 //////////////////////////////////////////////////////////////////////
