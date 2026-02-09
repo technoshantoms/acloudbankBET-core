@@ -213,6 +213,7 @@ object_id_type account_create_evaluator::do_apply( const account_create_operatio
             obj.allowed_assets = o.extensions.value.buyback_options->markets;
             obj.allowed_assets->emplace( o.extensions.value.buyback_options->asset_to_buy );
          }
+         obj.affiliate_distributions = o.extensions.value.affiliate_distributions;
    });
 
    const auto& dynamic_properties = d.get_dynamic_global_properties();

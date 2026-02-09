@@ -342,6 +342,8 @@ GRAPHENE_DEFINE_IDS(protocol, protocol_ids, /*protocol objects are not prefixed*
                     (betting_market_group)
                     (betting_market)
                     (bet)
+                     /* 1.24.x */ (room)
+                    /* 1.25.x */ (room_participant)
                     /* 1.25.x */ (custom_permission)
                     /* 1.26.x */ (custom_account_authority)
                     /* 1.27.x */ (offer)

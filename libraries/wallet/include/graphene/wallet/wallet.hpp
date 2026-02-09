@@ -1982,6 +1982,7 @@ class wallet_api
        * @param description a text description of content to convenient full text search.
        * @param content_key a encrypted symmetric key to decrypt content, can be decrypted by subject account.
        * @param storage_data data specific to the cloud storage (content id in the cloud storage).
+       *  @param room optional room id for encrypted threads.
        * @param broadcast true if you wish to broadcast the transaction.
        * @returns the signed version of the transaction.
        */
@@ -1993,6 +1994,7 @@ class wallet_api
             const string& description,
             const string& content_key,
             const string& storage_data,
+            const string& room = "",
             bool broadcast = false ) const;
 
       /**
@@ -2016,6 +2018,7 @@ class wallet_api
             const string& description,
             const string& content_key,
             const string& storage_data,
+            const string& room = "",
             bool broadcast = false ) const;
 
       /**
@@ -2048,6 +2051,18 @@ class wallet_api
             const string& permission_type,
             const string& object_id,
             const string& content_key,
+            bool broadcast = false ) const;
+      /**
+       * Create multiple permission objects in a single transaction.
+       *
+       * @param subject_account an owner of a content.
+       * @param permissions a vector of permission data, each containing: operator_account, permission_type, object_id, content_key.
+       * @param broadcast true if you wish to broadcast the transaction.
+       * @returns the signed version of the transaction
+       */
+      signed_transaction create_permission_many(
+            const string& subject_account,
+            const vector<permission_create_many_operation::permission_data>& permissions,
             bool broadcast = false ) const;
 
 
@@ -2372,7 +2387,111 @@ class wallet_api
                                              account_role_id_type role_id,
                                              bool broadcast);
       vector<account_role_object> get_account_roles_by_owner(string owner_account_id_or_name) const;
+      
+       /**
+       * Create a room (encrypted thread).
+       *
+       * @param owner the account that will own the room.
+       * @param name the name of the room (max 256 characters).
+       * @param room_key the encrypted room key for the owner.
+       * @param broadcast true if you wish to broadcast the transaction.
+       * @returns the signed version of the transaction
+       */
+      signed_transaction create_room(
+            const string& owner,
+            const string& name,
+            const string& room_key,
+            bool broadcast = false ) const;
 
+      /**
+       * Update a room name.
+       *
+       * @param owner the account that owns the room.
+       * @param room_id the id of the room to update.
+       * @param name the new name of the room.
+       * @param broadcast true if you wish to broadcast the transaction.
+       * @returns the signed version of the transaction
+       */
+      signed_transaction update_room(
+            const string& owner,
+            uint64_t room_id,
+            const string& name,
+            bool broadcast = false ) const;
+
+      /**
+       * Add a participant to a room.
+       *
+       * @param owner the account that owns the room.
+       * @param room_id the id of the room.
+       * @param participant the account to add to the room.
+       * @param content_key the room key encrypted for the participant.
+       * @param broadcast true if you wish to broadcast the transaction.
+       * @returns the signed version of the transaction
+       */
+      signed_transaction add_room_participant(
+            const string& owner,
+            uint64_t room_id,
+            const string& participant,
+            const string& content_key,
+            bool broadcast = false ) const;
+
+      /**
+       * Remove a participant from a room.
+       *
+       * @param owner the account that owns the room.
+       * @param participant_id the id of the room_participant object to remove.
+       * @param broadcast true if you wish to broadcast the transaction.
+       * @returns the signed version of the transaction
+       */
+      signed_transaction remove_room_participant(
+            const string& owner,
+            uint64_t participant_id,
+            bool broadcast = false ) const;
+
+      /**
+       * Returns a room object by id.
+       *
+       * @param room_id an id of the room.
+       * @returns the room object.
+       */
+      room_object get_room_by_id( uint64_t room_id ) const;
+
+      /**
+       * Returns a list of rooms owned by an account.
+       *
+       * @param owner the owner account.
+       * @param room_id lower bound of room id to start getting results.
+       * @param limit maximum number of rooms to retrieve.
+       * @returns the list of room objects.
+       */
+      std::vector<room_object> get_rooms_by_owner( const string& owner,
+            uint64_t room_id,
+            unsigned limit = 100 ) const;
+
+      /**
+       * Returns a list of participants in a room.
+       *
+       * @param room_id the id of the room.
+       * @param participant_id lower bound of participant id to start getting results.
+       * @param limit maximum number of participants to retrieve.
+       * @returns the list of room participant objects.
+       */
+      std::vector<room_participant_object> get_room_participants(
+            uint64_t room_id,
+            uint64_t participant_id,
+            unsigned limit = 100 ) const;
+
+      /**
+       * Returns a list of rooms a user is a participant of.
+       *
+       * @param participant the participant account.
+       * @param participant_id lower bound of participant object id to start getting results.
+       * @param limit maximum number of participant objects to retrieve.
+       * @returns the list of room participant objects.
+       */
+      std::vector<room_participant_object> get_rooms_by_participant( const string& participant,
+            uint64_t participant_id,
+            unsigned limit = 100 ) const;
 
       void dbg_make_uia(string creator, string symbol);
       void dbg_make_mia(string creator, string symbol);
@@ -2598,6 +2717,7 @@ FC_API( graphene::wallet::wallet_api,
         (update_content_card)
         (remove_content_card)
         (create_permission)
+        (create_permission_many)
         (remove_permission)
         (get_content_card_by_id)
         (get_content_cards)
@@ -2615,4 +2735,12 @@ FC_API( graphene::wallet::wallet_api,
         (get_custom_account_authorities_by_permission_id)
         (get_custom_account_authorities_by_permission_name)
         (get_active_custom_account_authorities_by_operation)
+        (create_room)
+        (update_room)
+        (add_room_participant)
+        (remove_room_participant)
+        (get_room_by_id)
+        (get_rooms_by_owner)
+        (get_room_participants)
+        (get_rooms_by_participant)
       )

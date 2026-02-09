@@ -391,10 +391,40 @@ struct get_impacted_account_visitor
       _impacted.insert( op.fee_payer() );
       _impacted.insert( op.subject_account );
    }
+   void operator()( const permission_create_many_operation& op )
+   {
+      _impacted.insert( op.fee_payer() );
+      _impacted.insert( op.subject_account );
+      for( const auto& perm : op.permissions )
+      {
+         _impacted.insert( perm.operator_account );
+      }
+   }
    void operator()( const permission_remove_operation& op )
    {
       _impacted.insert( op.fee_payer() );
       _impacted.insert( op.subject_account );
+   }
+   void operator()( const room_create_operation& op )
+   {
+      _impacted.insert( op.fee_payer() );
+      _impacted.insert( op.owner );
+   }
+   void operator()( const room_update_operation& op )
+   {
+      _impacted.insert( op.fee_payer() );
+      _impacted.insert( op.owner );
+   }
+   void operator()( const room_add_participant_operation& op )
+   {
+      _impacted.insert( op.fee_payer() );
+      _impacted.insert( op.owner );
+      _impacted.insert( op.participant );
+   }
+   void operator()( const room_remove_participant_operation& op )
+   {
+      _impacted.insert( op.fee_payer() );
+      _impacted.insert( op.owner );
    }
    void operator()( const commit_create_operation& op )
    {
@@ -452,7 +482,11 @@ struct get_impacted_account_visitor
          _impacted.insert(op.asset_path.front().get<account_id_type>());
    }
    //satia refferal
-   //void operator()( const affiliate_referral_payout_operation& op ) { }
+   void operator()( const affiliate_payout_operation& op )
+   {
+      _impacted.insert( op.affiliate );
+   }
+   void operator()( const affiliate_referral_payout_operation& op ) { }
    //lottery_asset_create_operation
    // satia
    void operator()( const lottery_asset_create_operation& op ) {}
@@ -862,7 +896,7 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
            */
         case impl_lottery_balance_object_type:
               break;
-             case impl_sweeps_vesting_balance_object_type:{
+         case impl_sweeps_vesting_balance_object_type:{
               const auto& aobj = dynamic_cast<const sweeps_vesting_balance_object*>(obj);
               FC_ASSERT( aobj != nullptr );
               accounts.insert(aobj->owner);
@@ -886,8 +920,6 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
               break;
              case impl_fba_accumulator_object_type:
               break;
-            case impl_nft_lottery_balance_object_type:
-              break;
           case impl_asset_dividend_data_object_type:{
               const auto& aobj = dynamic_cast<const asset_dividend_data_object*>(obj);
               FC_ASSERT( aobj != nullptr );
@@ -898,14 +930,17 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
               FC_ASSERT( aobj != nullptr );
               accounts.insert(aobj->owner);
               break;
-           } case impl_total_distributed_dividend_balance_object_type:
+           } 
+           case impl_total_distributed_dividend_balance_object_type:
               break;
-             case impl_betting_market_position_object_type:{
+           case impl_betting_market_position_object_type:{
               const auto& aobj = dynamic_cast<const betting_market_position_object*>(obj);
               FC_ASSERT( aobj != nullptr );
               accounts.insert(aobj->bettor_id);
               break;
            } case impl_global_betting_statistics_object_type:
+              break;
+            case impl_nft_lottery_balance_object_type:
               break;
       }
    }else if( obj->id.space() == api_ids ) {

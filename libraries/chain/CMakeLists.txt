@@ -110,6 +110,9 @@ add_library( graphene_chain
              commit_reveal_object.cpp
              commit_reveal_evaluator.cpp
 
+             #room_object.cpp
+             #room_evaluator.cpp
+
              random_number_evaluator.cpp
              
              ${HEADERS}

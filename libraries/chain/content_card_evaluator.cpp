@@ -2,6 +2,7 @@
 
 #include <graphene/chain/content_card_evaluator.hpp>
 #include <graphene/chain/permission_object.hpp>
+#include <graphene/chain/room_object.hpp>
 #include <graphene/chain/buyback.hpp>
 #include <graphene/chain/database.hpp>
 #include <graphene/chain/exceptions.hpp>

@@ -25,6 +25,7 @@
 #include <graphene/protocol/permission.hpp>
 #include <graphene/protocol/commit_reveal.hpp>
 #include <graphene/protocol/account_role.hpp>
+#include <graphene/protocol/room.hpp> 
 
 //bet
 #include <graphene/protocol/sport.hpp>
@@ -195,7 +196,12 @@ namespace graphene { namespace protocol {
             betting_market_update_operation,
             event_update_status_operation,
             sport_delete_operation,
-            event_group_delete_operation
+            event_group_delete_operation,
+            /* 64 */ permission_create_many_operation,
+            /* 65 */ room_create_operation,
+            /* 66 */ room_update_operation,
+            /* 67 */ room_add_participant_operation,
+            /* 68 */ room_remove_participant_operation
             //affiliate_payout_operation, // VIRTUAL
             //affiliate_referral_payout_operation // VIRTUAL
           // /* 100 */ affiliate_referral_payout_operation // VIRTUAL

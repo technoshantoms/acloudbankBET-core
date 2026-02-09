@@ -274,6 +274,9 @@ void application_impl::initialize(const fc::path& data_dir, shared_ptr<boost::pr
       wild_access.allowed_apis.push_back( "history_api" );
       wild_access.allowed_apis.push_back( "orders_api" );
       wild_access.allowed_apis.push_back( "custom_operations_api" );
+      wild_access.allowed_apis.push_back("crypto_api");
+      wild_access.allowed_apis.push_back("bookie_api");
+      wild_access.allowed_apis.push_back("affiliate_stats_api");
       _apiaccess.permission_map["*"] = wild_access;
    }
 
@@ -1151,6 +1154,15 @@ void application::set_program_options(boost::program_options::options_descriptio
          ("api-limit-get-key-references",
           bpo::value<uint64_t>()->default_value(default_opts.api_limit_get_key_references),
           "For database_api_impl::get_key_references to set max limit value")
+
+         ("plugins", 
+            bpo::value<uint64_t>()->default_value(account_history accounts_list affiliate_stats bookie market_history witness),
+                     "Space-separated list of plugins to activate")
+
+         ("plugins", 
+            bpo::value<uint64_t>()->default_value(account_history accounts_list affiliate_stats bookie market_history witness),
+                     "Space-separated list of plugins to activate")
+
          ("api-limit-get-htlc-by",
           bpo::value<uint64_t>()->default_value(default_opts.api_limit_get_htlc_by),
           "For database_api_impl::get_htlc_by_from and get_htlc_by_to to set max limit value")

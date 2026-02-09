@@ -371,12 +371,14 @@ public:
          const string hash, const string url,
          const string type, const string description,
          const string content_key, const string& storage_data,
+         const string& room = "",
          bool broadcast = false );
 
    signed_transaction update_content_card( const string subject_account,
          const string hash, const string url,
          const string type, const string description,
          const string content_key, const string& storage_data,
+         const string& room = "",
          bool broadcast = false );
 
    signed_transaction remove_content_card( const string subject_account,
@@ -388,6 +390,10 @@ public:
          const string permission_type,
          const string object_id,
          const string content_key,
+         bool broadcast = false );
+
+   signed_transaction create_permission_many( const string subject_account,
+         const vector<permission_create_many_operation::permission_data>& permissions,
          bool broadcast = false );
 
    signed_transaction remove_permission( const string subject_account,
@@ -404,6 +410,40 @@ public:
 
    std::vector<permission_object> get_permissions( const string& operator_account,
          uint64_t permission_id,
+         unsigned limit = 100 ) const;
+   
+   signed_transaction create_room( const string& owner,
+         const string& name,
+         const string& room_key,
+         bool broadcast = false );
+
+   signed_transaction update_room( const string& owner,
+         uint64_t room_id,
+         const string& name,
+         bool broadcast = false );
+
+   signed_transaction add_room_participant( const string& owner,
+         uint64_t room_id,
+         const string& participant,
+         const string& content_key,
+         bool broadcast = false );
+
+   signed_transaction remove_room_participant( const string& owner,
+         uint64_t participant_id,
+         bool broadcast = false );
+
+   room_object get_room_by_id( uint64_t room_id ) const;
+
+   std::vector<room_object> get_rooms_by_owner( const string& owner,
+         uint64_t room_id,
+         unsigned limit = 100 ) const;
+
+   std::vector<room_participant_object> get_room_participants( uint64_t room_id,
+         uint64_t participant_id,
+         unsigned limit = 100 ) const;
+
+   std::vector<room_participant_object> get_rooms_by_participant( const string& participant,
+         uint64_t participant_id,
          unsigned limit = 100 ) const;
 
    void dbg_make_uia(string creator, string symbol);

@@ -109,6 +109,15 @@ namespace graphene { namespace app {
        else if (api_name == "crypto_api") {
         _crypto_api = std::make_shared<crypto_api>();
        }
+      else if (api_name == "bookie_api") {
+         // can only enable this API if the plugin was loaded
+        if (_app.get_plugin("bookie"))
+         _bookie_api = std::make_shared<graphene::bookie::bookie_api>(std::ref(_app));
+        } else if (api_name == "affiliate_stats_api") {
+        // can only enable this API if the plugin was loaded
+          if (_app.get_plugin("affiliate_stats"))
+         _affiliate_stats_api = std::make_shared<graphene::affiliate_stats::affiliate_stats_api>(std::ref(_app));
+        }
        else if( api_name == "network_node_api" )
        {
           _network_node_api = std::make_shared< network_node_api >( std::ref(_app) );
@@ -290,6 +299,16 @@ namespace graphene { namespace app {
     fc::api<crypto_api> login_api::crypto() const {
    FC_ASSERT(_crypto_api);
    return *_crypto_api;
+   }
+
+   fc::api<graphene::bookie::bookie_api> login_api::bookie() const {
+   FC_ASSERT(_bookie_api);
+   return *_bookie_api;
+   }
+
+   fc::api<graphene::affiliate_stats::affiliate_stats_api> login_api::affiliate_stats() const {
+   FC_ASSERT(_affiliate_stats_api);
+      return *_affiliate_stats_api;
    }
 
     fc::api<asset_api> login_api::asset() const

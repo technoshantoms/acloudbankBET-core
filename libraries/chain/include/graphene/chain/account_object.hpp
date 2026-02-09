@@ -274,6 +274,7 @@ namespace graphene { namespace chain {
           * In the future we may expand this to allow accounts to e.g. voluntarily restrict incoming transfers.
           */
          optional< flat_set<asset_id_type> > allowed_assets;
+         optional< affiliate_reward_distributions > affiliate_distributions;
 
          bool has_special_authority()const
          {
@@ -537,7 +538,16 @@ FC_REFLECT_TYPENAME( graphene::chain::account_statistics_object )
 
 FC_REFLECT_DERIVED( graphene::chain::pending_dividend_payout_balance_for_holder_object,
                     (graphene::db::object),
-                    (owner)(dividend_holder_asset_type)(dividend_payout_asset_type)(pending_balance) )
+                    (owner)(dividend_holder_asset_type)(dividend_payout_asset_type)(pending_balance) 
+                    (membership_expiration_date)(registrar)(referrer)(lifetime_referrer)
+                    (network_fee_percentage)(lifetime_referrer_fee_percentage)(referrer_rewards_percentage)
+                    (name)(owner)(active)(options)(statistics)(whitelisting_accounts)(blacklisting_accounts)
+                    (whitelisted_accounts)(blacklisted_accounts)
+                    (cashback_vb)
+                    (owner_special_authority)(active_special_authority)
+                    (top_n_control_flags)
+                    (allowed_assets)(affiliate_distributions)
+                    )
 
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::account_object )
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::account_balance_object )

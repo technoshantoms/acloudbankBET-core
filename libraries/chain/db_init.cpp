@@ -57,6 +57,7 @@
 #include <graphene/chain/content_card_object.hpp>
 #include <graphene/chain/permission_object.hpp>
 #include <graphene/chain/commit_reveal_object.hpp>
+#include <graphene/chain/room_object.hpp>
 
 //bet
 #include <graphene/chain/sport_object.hpp>
@@ -94,6 +95,7 @@
 #include <graphene/chain/content_card_evaluator.hpp>
 #include <graphene/chain/permission_evaluator.hpp>
 #include <graphene/chain/commit_reveal_evaluator.hpp>
+#include <graphene/chain/room_evaluator.hpp>
 
 #include <graphene/protocol/fee_schedule.hpp>
 
@@ -139,6 +141,7 @@ void database::initialize_evaluators()
    register_evaluator<witness_create_evaluator>();
    register_evaluator<witness_update_evaluator>();
    register_evaluator<withdraw_permission_create_evaluator>();
+   register_evaluator<permission_create_many_evaluator>();
    register_evaluator<withdraw_permission_claim_evaluator>();
    register_evaluator<withdraw_permission_update_evaluator>();
    register_evaluator<withdraw_permission_delete_evaluator>();
@@ -172,6 +175,10 @@ void database::initialize_evaluators()
    register_evaluator<permission_remove_evaluator>();
    register_evaluator<commit_create_evaluator>();
    register_evaluator<reveal_create_evaluator>();
+   register_evaluator<room_create_evaluator>();
+   register_evaluator<room_update_evaluator>();
+   register_evaluator<room_add_participant_evaluator>();
+   register_evaluator<room_remove_participant_evaluator>();
    // For NFT
    register_evaluator<create_custom_permission_evaluator>();
    register_evaluator<update_custom_permission_evaluator>();
@@ -331,6 +338,8 @@ void database::initialize_indexes()
    add_index< primary_index< content_card_index,                        20> >();
    add_index< primary_index< permission_index,                          20> >();
    add_index< primary_index< commit_reveal_index,                       20> >();
+   add_index< primary_index< room_index,                                20> >();
+   add_index< primary_index< room_participant_index,                    20> >();
 
   // _check_policy_1->lock();
   // _check_policy_2->lock();

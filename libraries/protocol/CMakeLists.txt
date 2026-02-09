@@ -38,6 +38,7 @@ list(APPEND SOURCES account.cpp
                     permission.cpp
                     commit_reveal.cpp
                     htlc.cpp
+                    room.cpp
                     tnt/types.cpp
                     tnt/lookups.cpp
                     tnt/validation.cpp
