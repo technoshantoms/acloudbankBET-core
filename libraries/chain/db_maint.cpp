@@ -9,6 +9,7 @@
 #include <graphene/chain/database.hpp>
 #include <graphene/chain/fba_accumulator_id.hpp>
 #include <graphene/chain/hardfork.hpp>
+#include <graphene/chain/is_authorized_asset.hpp>
 
 #include <graphene/chain/account_object.hpp>
 #include <graphene/chain/asset_object.hpp>
@@ -895,6 +896,42 @@ void update_median_feeds(database& db)
       db.modify( d, update_bitasset );
    }
 }
+
+share_type credit_account(database& db, const account_id_type owner_id, const std::string owner_name,
+                          share_type remaining_amount_to_distribute,
+                          const share_type shares_to_credit, const asset_id_type payout_asset_type,
+                          const pending_dividend_payout_balance_for_holder_object_index& pending_payout_balance_index,
+                          const asset_id_type dividend_id) {
+
+   //wdump((delta_balance.value)(holder_balance)(total_balance_of_dividend_asset));
+   if (shares_to_credit.value) {
+
+      remaining_amount_to_distribute -= shares_to_credit;
+
+      dlog("Crediting account ${account} with ${amount}",
+           ("account", owner_name)
+                 ("amount", asset(shares_to_credit, payout_asset_type)));
+      auto pending_payout_iter =
+            pending_payout_balance_index.indices().get<by_dividend_payout_account>().find(
+                  boost::make_tuple(dividend_id, payout_asset_type,
+                                    owner_id));
+      if (pending_payout_iter ==
+          pending_payout_balance_index.indices().get<by_dividend_payout_account>().end())
+         db.create<pending_dividend_payout_balance_for_holder_object>(
+               [&](pending_dividend_payout_balance_for_holder_object &obj) {
+                  obj.owner = owner_id;
+                  obj.dividend_holder_asset_type = dividend_id;
+                  obj.dividend_payout_asset_type = payout_asset_type;
+                  obj.pending_balance = shares_to_credit;
+               });
+      else
+         db.modify(*pending_payout_iter,
+                   [&](pending_dividend_payout_balance_for_holder_object &pending_balance) {
+                      pending_balance.pending_balance += shares_to_credit;
+                   });
+   }
+   return remaining_amount_to_distribute;
+}
 void clear_expired_custom_account_authorities(database& db)
 {
    const auto& cindex = db.get_index_type<custom_account_authority_index>().indices().get<by_expiration>();
@@ -1151,6 +1188,7 @@ void schedule_pending_dividend_balances(database& db,
                         db.adjust_balance(account_id_type(0), asset(full_shares_to_credit - shares_to_credit, payout_asset_type));
                      }
 
+                  
                      remaining_amount_to_distribute = credit_account(db,
                                                                      holder_balance_object.owner,
                                                                      holder_balance_object.owner(db).name,
@@ -1159,6 +1197,7 @@ void schedule_pending_dividend_balances(database& db,
                                                                      payout_asset_type,
                                                                      pending_payout_balance_index,
                                                                      dividend_holder_asset_obj.id);
+                  
                   }
                }
                else {
@@ -1523,7 +1562,64 @@ namespace detail {
       return o;
    }
 }
+double database::calculate_vesting_factor(const account_object& stake_account)
+{
+   fc::time_point_sec last_date_voted;
+   // get last time voted form account stats
+   // check last_vote_time of proxy voting account if proxy is set
+   if (stake_account.options.voting_account == GRAPHENE_PROXY_TO_SELF_ACCOUNT)
+      last_date_voted = stake_account.statistics(*this).last_vote_time;
+   else
+      last_date_voted = stake_account.options.voting_account(*this).statistics(*this).last_vote_time;
 
+   // get global data related to gpos
+   const auto &gpo = this->get_global_properties();
+   const auto vesting_period = gpo.parameters.gpos_period();
+   const auto vesting_subperiod = gpo.parameters.gpos_subperiod();
+   const auto period_start = fc::time_point_sec(gpo.parameters.gpos_period_start());
+
+   //  variables needed
+   const auto number_of_subperiods = vesting_period / vesting_subperiod;
+   double vesting_factor;
+
+    // get in what sub period we are
+   uint32_t current_subperiod = get_gpos_current_subperiod();
+
+   if(current_subperiod == 0 || current_subperiod > number_of_subperiods) return 0;
+
+   // On starting new vesting period, all votes become zero until someone votes, To avoid a situation of zero votes,
+   // changes were done to roll in GPOS rules, the vesting factor will be 1 for whoever votes in 6th sub-period of last vesting period
+   // BLOCKBACK-174 fix
+   if(current_subperiod == 1 && this->head_block_time() >= HARDFORK_GPOS_TIME + vesting_period)   //Applicable only from 2nd vesting period
+   {
+      if(last_date_voted > period_start - vesting_subperiod)
+         return 1;
+   }
+   if(last_date_voted < period_start) return 0;
+
+   double numerator = number_of_subperiods;
+
+   if(current_subperiod > 1) {
+      std::list<uint32_t> subperiod_list(current_subperiod - 1);
+      std::iota(subperiod_list.begin(), subperiod_list.end(), 2);
+      subperiod_list.reverse();
+
+      for(auto subperiod: subperiod_list)
+      {
+         numerator--;
+
+         auto last_period_start = period_start + fc::seconds(vesting_subperiod * (subperiod - 1));
+         auto last_period_end = period_start + fc::seconds(vesting_subperiod * (subperiod));
+
+         if (last_date_voted > last_period_start && last_date_voted <= last_period_end) {
+            numerator++;
+            break;
+         }
+      }
+   }
+   vesting_factor = numerator / number_of_subperiods;
+   return vesting_factor;
+}
 void database::perform_chain_maintenance(const signed_block& next_block, const global_property_object& global_props)
 { try {
    const auto& gpo = get_global_properties();

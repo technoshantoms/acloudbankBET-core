@@ -185,6 +185,10 @@ namespace graphene { namespace chain {
             return db.get( *bitasset_data_id );
          }
 
+          template<class DB>
+         const asset_dividend_data_object& dividend_data(const DB& db)const
+         { assert(dividend_data_id); return db.get(*dividend_data_id); }
+
          template<class DB>
          const asset_dynamic_data_object& dynamic_data(const DB& db)const
          { assert(dividend_data_id); return db.get(dynamic_asset_data_id); }

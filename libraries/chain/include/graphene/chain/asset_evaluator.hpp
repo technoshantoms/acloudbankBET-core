@@ -118,7 +118,7 @@ namespace graphene { namespace chain {
          const asset_bitasset_data_object* bitasset_to_update = nullptr;
          const asset_object* asset_to_update = nullptr;
    };
-   class asset_update_dividend_evaluator : public fee_handling_evaluator<asset_update_dividend_evaluator>
+   class asset_update_dividend_evaluator : public evaluator<asset_update_dividend_evaluator>
    {
       public:
          typedef asset_update_dividend_operation operation_type;

@@ -684,6 +684,8 @@ namespace graphene { namespace chain {
          void process_bids( const asset_bitasset_data_object& bad );
          void process_bitassets();
 
+
+
          template<class Type>
          void perform_account_maintenance( Type tally_helper );
          ///@}
@@ -783,6 +785,8 @@ namespace graphene { namespace chain {
          maintenance_prng _maintenance_prng;
       public:
          uint64_t get_maintenance_seed() const;
+         double calculate_vesting_factor(const account_object& stake_account);
+         uint32_t get_gpos_current_subperiod();
          ///@}
    };
 
