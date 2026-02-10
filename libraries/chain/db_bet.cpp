@@ -611,8 +611,8 @@ bool database::place_bet(const bet_object& new_bet_object)
       // we continue if the maker bet was completely consumed AND the taker bet was not
       finished = orders_matched_flags != 2;
    }
-   if (!(orders_matched_flags & 1))
-      fc_ddump(fc::logger::get("betting"), (new_bet_object));
+   //if (!(orders_matched_flags & 1))
+   //fc_ddump(fc::logger::get("betting"), (new_bet_object));
 
 
    // return true if the taker bet was completely consumed

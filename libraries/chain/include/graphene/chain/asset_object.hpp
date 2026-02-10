@@ -161,6 +161,9 @@ namespace graphene { namespace chain {
 
          optional<account_id_type> buyback_account;
 
+         /// Extra data associated with dividend-paying assets.
+         optional<asset_dividend_data_id_type> dividend_data_id;
+
          asset_id_type get_id()const { return id; }
 
          void validate()const
@@ -184,7 +187,7 @@ namespace graphene { namespace chain {
 
          template<class DB>
          const asset_dynamic_data_object& dynamic_data(const DB& db)const
-         { return db.get(dynamic_asset_data_id); }
+         { assert(dividend_data_id); return db.get(dynamic_asset_data_id); }
 
          /**
           *  The total amount of an asset that is reserved for future issuance. 
@@ -639,6 +642,7 @@ FC_REFLECT_DERIVED( graphene::chain::asset_object, (graphene::db::object),
                     (dynamic_asset_data_id)
                     (bitasset_data_id)
                     (buyback_account)
+                    (dividend_data_id)
                   )
 FC_REFLECT_DERIVED( graphene::chain::asset_dividend_data_object, (graphene::db::object),
                     (options)
