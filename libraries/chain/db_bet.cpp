@@ -454,7 +454,7 @@ int match_bet(database& db, const bet_object& taker_bet, const bet_object& maker
    share_type maximum_factor = std::min(maximum_taker_factor, maximum_maker_factor);
    share_type maker_amount_to_match = maximum_factor * maker_odds_ratio;
    share_type taker_amount_to_match = maximum_factor * taker_odds_ratio;
-   fc_idump(fc::logger::get("betting"), (maker_amount_to_match)(taker_amount_to_match));
+   //fc_idump(fc::logger::get("betting"), (maker_amount_to_match)(taker_amount_to_match));
 
    // TODO: analyze whether maximum_maker_amount_to_match can ever be zero here 
    assert(maker_amount_to_match != 0);
@@ -530,7 +530,7 @@ int match_bet(database& db, const bet_object& taker_bet, const bet_object& maker
                  ("taker_refund_amount", taker_refund_amount)
                  ("maker_odds", maker_bet.backer_multiplier)
                  ("taker_odds", taker_bet.backer_multiplier));
-         fc_ddump(fc::logger::get("betting"), (taker_bet));
+        // fc_ddump(fc::logger::get("betting"), (taker_bet));
 
          db.adjust_balance(taker_bet.bettor_id, asset(taker_refund_amount, taker_bet.amount_to_bet.asset_id));
          // TODO: update global statistics

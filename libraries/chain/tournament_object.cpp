@@ -637,19 +637,11 @@ namespace graphene { namespace chain {
       return vector<tournament_id_type>();
    }
 
-   void tournament_players_index::object_loaded(const object& obj)
+   void tournament_players_index::object_inserted(const object& obj)
    {
        object_created(obj);
    }
 
-   void tournament_players_index::object_created(const object& obj)
-   {
-       assert( dynamic_cast<const tournament_details_object*>(&obj) ); // for debug only
-       const tournament_details_object& details = static_cast<const tournament_details_object&>(obj);
-
-       for (const account_id_type& account_id : details.registered_players)
-          account_to_joined_tournaments[account_id].insert(details.tournament_id);
-   }
 
    void tournament_players_index::object_removed(const object& obj)
    {

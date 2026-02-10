@@ -32,7 +32,6 @@
 #include <graphene/chain/htlc_object.hpp>
 #include <graphene/chain/custom_authority_object.hpp>
 #include <graphene/chain/random_number_object.hpp>
-
 //NFT MINT
 
 #include <graphene/chain/custom_permission_object.hpp>
@@ -60,6 +59,9 @@
 #include <graphene/chain/room_object.hpp>
 
 //bet
+#include <graphene/chain/tournament_object.hpp>
+#include <graphene/chain/match_object.hpp>
+#include <graphene/chain/game_object.hpp>
 #include <graphene/chain/sport_object.hpp>
 #include <graphene/chain/event_group_object.hpp>
 #include <graphene/chain/event_object.hpp>
