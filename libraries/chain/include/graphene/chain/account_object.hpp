@@ -43,7 +43,7 @@ namespace graphene { namespace chain {
     * separating the account data that changes frequently from the account data that is mostly static, which will
     * minimize the amount of data that must be backed up as part of the undo history everytime a transfer is made.
     */
-   class account_statistics_object : public graphene::db::abstract_object<account_statistics_object>
+    class account_statistics_object : public graphene::db::abstract_object<account_statistics_object>
    {
       public:
          static constexpr uint8_t space_id = implementation_ids;
@@ -212,14 +212,15 @@ namespace graphene { namespace chain {
          /// operations the account may perform.
          authority active;
 
+         typedef account_options  options_type;
          account_options options;
-
-         /// Pre-calculated for better performance on chain maintenance
-         uint16_t num_committee_voted;
 
          /// The reference implementation records the account's statistics in a separate object. This field contains the
          /// ID of that object.
          account_statistics_id_type statistics;
+
+            /// Pre-calculated for better performance on chain maintenance
+         uint16_t num_committee_voted;
 
          /**
           * This is a set of all accounts which have 'whitelisted' this account. Whitelisting is only used in core
@@ -265,8 +266,8 @@ namespace graphene { namespace chain {
           * and gets reset when authority or special_authority is set.
           */
          uint8_t top_n_control_flags = 0;
-         static const uint8_t top_n_control_owner  = 1;
-         static const uint8_t top_n_control_active = 2;
+         static constexpr uint8_t top_n_control_owner  = 1;
+         static constexpr uint8_t top_n_control_active = 2;
 
          /**
           * This is a set of assets which the account is allowed to have.
@@ -274,12 +275,13 @@ namespace graphene { namespace chain {
           * In the future we may expand this to allow accounts to e.g. voluntarily restrict incoming transfers.
           */
          optional< flat_set<asset_id_type> > allowed_assets;
+
          optional< affiliate_reward_distributions > affiliate_distributions;
 
          bool has_special_authority()const
          {
-            return (!owner_special_authority.is_type< no_special_authority >())
-                || (!active_special_authority.is_type< no_special_authority >());
+            return (owner_special_authority.which() != special_authority::tag< no_special_authority >::value)
+                || (active_special_authority.which() != special_authority::tag< no_special_authority >::value);
          }
 
          template<typename DB>
@@ -315,48 +317,6 @@ namespace graphene { namespace chain {
    };
 
    /**
-    *  @brief This secondary index will allow a reverse lookup of all accounts that have been referred by
-    *  a particular account.
-    */
-   class account_referrer_index : public secondary_index
-   {
-      public:
-         virtual void object_inserted( const object& obj ) override;
-         //virtual void object_created( const object& obj ) override;
-         virtual void object_removed( const object& obj ) override;
-         virtual void about_to_modify( const object& before ) override;
-         virtual void object_modified( const object& after  ) override;
-
-         /** maps the referrer to the set of accounts that they have referred */
-         map< account_id_type, set<account_id_type> > referred_by;
-   };
-
-   /**
-    * @brief Tracks a pending payout of a single dividend payout asset 
-    * from a single dividend holder asset to a holder's account.
-    * 
-    * Each maintenance interval, this will be adjusted to account for
-    * any new transfers to the dividend distribution account.
-    * @ingroup object
-    *
-    */
-   class pending_dividend_payout_balance_for_holder_object : public abstract_object<pending_dividend_payout_balance_for_holder_object>
-   {
-      public:
-         static constexpr uint8_t space_id = implementation_ids;
-         static constexpr uint8_t type_id  = impl_pending_dividend_payout_balance_for_holder_object_type;
-
-         account_id_type   owner;
-         asset_id_type     dividend_holder_asset_type;
-         asset_id_type     dividend_payout_asset_type;
-         share_type        pending_balance;
-
-         asset get_pending_balance()const { return asset(pending_balance, dividend_payout_asset_type); }
-         void  adjust_balance(const asset& delta);
-   };
-
-
-   /**
     *  @brief This secondary index will allow a reverse lookup of all accounts that a particular key or account
     *  is an potential signing authority.
     */
@@ -388,6 +348,47 @@ namespace graphene { namespace chain {
 
 
    /**
+    *  @brief This secondary index will allow a reverse lookup of all accounts that have been referred by
+    *  a particular account.
+    */
+   class account_referrer_index : public secondary_index
+   {
+      public:
+         virtual void object_inserted( const object& obj ) override;
+         //virtual void object_created( const object& obj ) override;
+         virtual void object_removed( const object& obj ) override;
+         virtual void about_to_modify( const object& before ) override;
+         virtual void object_modified( const object& after  ) override;
+
+         /** maps the referrer to the set of accounts that they have referred */
+         map< account_id_type, set<account_id_type> > referred_by;
+   };
+   /**
+    * @brief Tracks a pending payout of a single dividend payout asset 
+    * from a single dividend holder asset to a holder's account.
+    * 
+    * Each maintenance interval, this will be adjusted to account for
+    * any new transfers to the dividend distribution account.
+    * @ingroup object
+    *
+    */
+   class pending_dividend_payout_balance_for_holder_object : public abstract_object<pending_dividend_payout_balance_for_holder_object>
+   {
+      public:
+         static constexpr uint8_t space_id = implementation_ids;
+         static constexpr uint8_t type_id  = impl_pending_dividend_payout_balance_for_holder_object_type;
+
+         account_id_type   owner;
+         asset_id_type     dividend_holder_asset_type;
+         asset_id_type     dividend_payout_asset_type;
+         share_type        pending_balance;
+
+         asset get_pending_balance()const { return asset(pending_balance, dividend_payout_asset_type); }
+         void  adjust_balance(const asset& delta);
+   };
+
+
+   /**
     *  @brief This secondary index will allow fast access to the balance objects
     *         that belonging to an account.
     */
@@ -410,9 +411,11 @@ namespace graphene { namespace chain {
          vector< vector< map< asset_id_type, const account_balance_object* > > > balances;
          std::stack< object_id_type > ids_being_modified;
    };
-
+   
    struct by_asset_balance;
    struct by_maintenance_flag;
+   struct by_account_asset;
+
    /**
     * @ingroup object_index
     */
@@ -422,6 +425,13 @@ namespace graphene { namespace chain {
          ordered_unique< tag<by_id>, member< object, object_id_type, &object::id > >,
          ordered_non_unique< tag<by_maintenance_flag>,
                              member< account_balance_object, bool, &account_balance_object::maintenance_flag > >,
+         ordered_unique< tag<by_account_asset>,
+            composite_key<
+               account_balance_object,
+               member<account_balance_object, account_id_type, &account_balance_object::owner>,
+               member<account_balance_object, asset_id_type, &account_balance_object::asset_type>
+            >
+         >,
          ordered_unique< tag<by_asset_balance>,
             composite_key<
                account_balance_object,
@@ -443,7 +453,7 @@ namespace graphene { namespace chain {
     */
    typedef generic_index<account_balance_object, account_balance_object_multi_index_type> account_balance_index;
 
-   struct by_name;
+   struct by_name{};
 
    /**
     * @ingroup object_index
@@ -499,6 +509,11 @@ namespace graphene { namespace chain {
       >
    > pending_dividend_payout_balance_for_holder_object_multi_index_type;
 
+   /**
+    * @ingroup object_index
+    */
+   typedef generic_index<pending_dividend_payout_balance_for_holder_object, pending_dividend_payout_balance_for_holder_object_multi_index_type> pending_dividend_payout_balance_for_holder_object_index;
+
    struct by_owner;
    struct by_maintenance_seq;
 
@@ -532,13 +547,8 @@ MAP_OBJECT_ID_TO_TYPE(graphene::chain::account_object)
 MAP_OBJECT_ID_TO_TYPE(graphene::chain::account_balance_object)
 MAP_OBJECT_ID_TO_TYPE(graphene::chain::account_statistics_object)
 
-FC_REFLECT_TYPENAME( graphene::chain::account_object )
-FC_REFLECT_TYPENAME( graphene::chain::account_balance_object )
-FC_REFLECT_TYPENAME( graphene::chain::account_statistics_object )
-
-FC_REFLECT_DERIVED( graphene::chain::pending_dividend_payout_balance_for_holder_object,
+FC_REFLECT_DERIVED( graphene::chain::account_object,
                     (graphene::db::object),
-                    (owner)(dividend_holder_asset_type)(dividend_payout_asset_type)(pending_balance) 
                     (membership_expiration_date)(registrar)(referrer)(lifetime_referrer)
                     (network_fee_percentage)(lifetime_referrer_fee_percentage)(referrer_rewards_percentage)
                     (name)(owner)(active)(options)(statistics)(whitelisting_accounts)(blacklisting_accounts)
@@ -548,6 +558,28 @@ FC_REFLECT_DERIVED( graphene::chain::pending_dividend_payout_balance_for_holder_
                     (top_n_control_flags)
                     (allowed_assets)(affiliate_distributions)
                     )
+
+FC_REFLECT_DERIVED( graphene::chain::account_balance_object,
+                    (graphene::db::object),
+                    (owner)(asset_type)(balance)(maintenance_flag) )
+
+FC_REFLECT_DERIVED( graphene::chain::account_statistics_object,
+                    (graphene::chain::object),
+                    (owner)(name)
+                    (most_recent_op)
+                    (total_ops)(removed_ops)
+                    (total_core_in_orders)
+                    (core_in_balance)
+                    (has_cashback_vb)
+                    (is_voting)
+                    (lifetime_fees_paid)
+                    (pending_fees)(pending_vested_fees)
+                    (last_vote_time)
+                  )
+
+FC_REFLECT_DERIVED( graphene::chain::pending_dividend_payout_balance_for_holder_object,
+                    (graphene::db::object),
+                    (owner)(dividend_holder_asset_type)(dividend_payout_asset_type)(pending_balance) )
 
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::account_object )
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::account_balance_object )
