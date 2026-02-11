@@ -1627,6 +1627,8 @@ void database::perform_chain_maintenance(const signed_block& next_block, const g
 
    distribute_fba_balances(*this);
    create_buyback_orders(*this);
+   process_dividend_assets(*this);
+   rolling_period_start(*this);
 
    struct vote_tally_helper {
       database& d;
@@ -1654,6 +1656,11 @@ void database::perform_chain_maintenance(const signed_block& next_block, const g
          d._committee_count_histogram_buffer.resize( props.parameters.maximum_committee_count / 2 + 1, 0 );
          d._total_voting_stake[0] = 0;
          d._total_voting_stake[1] = 0;
+
+         auto balance_type = vesting_balance_type::normal;
+         if(d.head_block_time() >= HARDFORK_GPOS_TIME)
+            balance_type = vesting_balance_type::gpos;
+
          witness_recalc_times   = detail::vote_recalc_options::witness().get_vote_recalc_times( now );
          committee_recalc_times = detail::vote_recalc_options::committee().get_vote_recalc_times( now );
          worker_recalc_times    = detail::vote_recalc_options::worker().get_vote_recalc_times( now );

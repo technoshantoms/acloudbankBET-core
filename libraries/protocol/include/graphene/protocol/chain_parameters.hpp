@@ -38,7 +38,12 @@ struct parameter_extension
       optional< uint16_t >            sweeps_distribution_percentage    = SWEEPS_DEFAULT_DISTRIBUTION_PERCENTAGE;
       optional< asset_id_type >       sweeps_distribution_asset         = SWEEPS_DEFAULT_DISTRIBUTION_ASSET;
       optional< account_id_type >     sweeps_vesting_accumulator_account= SWEEPS_ACCUMULATOR_ACCOUNT;
-   /* rbac parameters */
+      /* gpos parameters */
+      optional < uint32_t >           gpos_period                       = GPOS_PERIOD;
+      optional < uint32_t >           gpos_subperiod                    = GPOS_SUBPERIOD;
+      optional < uint32_t >           gpos_period_start                 = GPOS_PERIOD_START.sec_since_epoch();
+      optional < uint32_t >           gpos_vesting_lockin_period        = GPOS_VESTING_LOCKIN_PERIOD;
+     /* rbac parameters */
       optional < uint16_t >           rbac_max_permissions_per_account    = RBAC_MAX_PERMISSIONS_PER_ACCOUNT;
       optional < uint32_t >           rbac_max_account_authority_lifetime = RBAC_MAX_ACCOUNT_AUTHORITY_LIFETIME;
       optional < uint16_t >           rbac_max_authorities_per_permission = RBAC_MAX_AUTHS_PER_PERMISSION;
@@ -173,8 +178,35 @@ struct parameter_extension
       inline uint16_t live_betting_delay_time()const {
          return  GRAPHENE_DEFAULT_LIVE_BETTING_DELAY_TIME;
       }
+       inline uint32_t gpos_period()const {
+         return  GPOS_PERIOD; /// total seconds of current gpos period
+      }
+      inline uint32_t gpos_subperiod()const {
+         return  GPOS_SUBPERIOD; /// gpos_period % gpos_subperiod = 0
+      }
+      inline uint32_t gpos_period_start()const {
+         return  GPOS_PERIOD_START.sec_since_epoch(); /// current period start date
+      }
+      inline uint32_t gpos_vesting_lockin_period()const {
+         return  GPOS_VESTING_LOCKIN_PERIOD; /// GPOS vesting lockin period
+      }
 
-      /*inline uint16_t sweeps_distribution_percentage()const {
+      /*
+
+       inline uint32_t gpos_period()const {
+         return extensions.value.gpos_period.valid() ? *extensions.value.gpos_period : GPOS_PERIOD; /// total seconds of current gpos period
+      }
+      inline uint32_t gpos_subperiod()const {
+         return extensions.value.gpos_subperiod.valid() ? *extensions.value.gpos_subperiod : GPOS_SUBPERIOD; /// gpos_period % gpos_subperiod = 0
+      }
+      inline uint32_t gpos_period_start()const {
+         return extensions.value.gpos_period_start.valid() ? *extensions.value.gpos_period_start : GPOS_PERIOD_START.sec_since_epoch(); /// current period start date
+      }
+      inline uint32_t gpos_vesting_lockin_period()const {
+         return extensions.value.gpos_vesting_lockin_period.valid() ? *extensions.value.gpos_vesting_lockin_period : GPOS_VESTING_LOCKIN_PERIOD; /// GPOS vesting lockin period
+      }
+
+      inline uint16_t sweeps_distribution_percentage()const {
          return extensions.value.sweeps_distribution_percentage.valid() ? *extensions.value.sweeps_distribution_percentage : SWEEPS_DEFAULT_DISTRIBUTION_PERCENTAGE;
       }
       inline asset_id_type sweeps_distribution_asset()const {

@@ -208,5 +208,15 @@ constexpr size_t MAX_FEE_STABILIZATION_ITERATION  = 4;
 #define SWEEPS_VESTING_BALANCE_MULTIPLIER                   100000000
 #define SWEEPS_ACCUMULATOR_ACCOUNT                          (graphene::protocol::account_id_type(0))
 
+// // The value should be harmonized with the chain constant named HARDFORK_GPOS_TIME
+#ifdef BUILD_PEERPLAYS_TESTNET
+#define GPOS_PERIOD_START                                   (fc::time_point_sec::from_iso_string("2020-01-06T01:00:00"))
+#else
+#define GPOS_PERIOD_START                                   (fc::time_point_sec::from_iso_string("2020-02-17T22:00:00"))
+#endif
+#define GPOS_PERIOD                                         (60*60*24*30*6) // 6 months
+#define GPOS_SUBPERIOD                                      (60*60*24*30) // 1 month
+#define GPOS_VESTING_LOCKIN_PERIOD                          (60*60*24*30) // 1 month
+
 #define ACCOUNT_ROLES_MAX_PER_ACCOUNT                       20 // Max 20 roles can be created by a resource owner
 #define ACCOUNT_ROLES_MAX_LIFETIME                          365*24*60*60 // 1 Year
