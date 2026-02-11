@@ -194,19 +194,6 @@ namespace graphene { namespace chain {
     * @ingroup object_index
     */
    struct by_account;
-   struct by_asset_balance;
-   struct by_asset_balance_helper_asset_id {
-      typedef asset_id_type result_type;
-      result_type operator()(const vesting_balance_object& vbo) const {
-         return vbo.balance.asset_id;
-      }
-   };
-   struct by_asset_balance_helper_asset_amount {
-      typedef share_type result_type;
-      result_type operator()(const vesting_balance_object& vbo) const {
-         return vbo.balance.amount;
-      }
-   };
    // by_vesting_type index MUST NOT be used for iterating because order is not well-defined.
    struct by_vesting_type;
 
@@ -264,35 +251,22 @@ namespace detail {
    };
 } // detail
 
-typedef multi_index_container<
+   typedef multi_index_container<
       vesting_balance_object,
       indexed_by<
-         ordered_unique< tag<by_id>, member< object, object_id_type, &object::id > >,
+         ordered_unique< tag<by_id>, member< object, object_id_type, &object::id >
+         >,
          ordered_non_unique< tag<by_account>,
             member<vesting_balance_object, account_id_type, &vesting_balance_object::owner>
          >,
-        ordered_non_unique< tag<by_asset_balance>,
-           composite_key<
-              vesting_balance_object,
-              by_asset_balance_helper_asset_id,
-              member<vesting_balance_object, vesting_balance_type, &vesting_balance_object::balance_type>,
-              by_asset_balance_helper_asset_amount
-           >,
-            hashed_unique< tag<by_vesting_type>,
+         hashed_unique< tag<by_vesting_type>,
             identity<vesting_balance_object>,
             detail::vesting_balance_object_hash,
             detail::vesting_balance_object_equal
          >
-        >
       >
    > vesting_balance_multi_index_type;
-
    /**
-    * hashed_unique< tag<by_vesting_type>,
-    *       identity<vesting_balance_object>,
-    *      detail::vesting_balance_object_hash,
-    *     detail::vesting_balance_object_equal
-    *   >
     * @ingroup object_index
     */
    typedef generic_index<vesting_balance_object, vesting_balance_multi_index_type> vesting_balance_index;
