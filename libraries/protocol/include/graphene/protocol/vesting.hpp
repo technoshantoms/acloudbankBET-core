@@ -28,7 +28,7 @@
 
 namespace graphene { namespace protocol { 
 
-   enum class vesting_balance_type { normal, gpos, son };
+  /* enum class vesting_balance_type { normal, gpos, son };
 
    inline std::string get_vesting_balance_type(vesting_balance_type type) {
       switch (type) {
@@ -40,7 +40,7 @@ namespace graphene { namespace protocol {
          default:
             return "GPOS";
       }
-   }
+   }*/
 
    struct linear_vesting_policy_initializer
    {
