@@ -986,9 +986,9 @@ void schedule_pending_dividend_balances(database& db,
 
    std::map<account_id_type, share_type> vesting_amounts;
 
-   auto balance_type = vesting_balance_type::normal;
+  /* auto balance_type = vesting_balance_type::normal;
    if(db.head_block_time() >= HARDFORK_GPOS_TIME)
-      balance_type = vesting_balance_type::gpos;
+      balance_type = vesting_balance_type::gpos;*/
 
    uint32_t holder_account_count = 0;
 
@@ -1657,9 +1657,9 @@ void database::perform_chain_maintenance(const signed_block& next_block, const g
          d._total_voting_stake[0] = 0;
          d._total_voting_stake[1] = 0;
 
-         auto balance_type = vesting_balance_type::normal;
+        /* auto balance_type = vesting_balance_type::normal;
          if(d.head_block_time() >= HARDFORK_GPOS_TIME)
-            balance_type = vesting_balance_type::gpos;
+            balance_type = vesting_balance_type::gpos;*/
 
          witness_recalc_times   = detail::vote_recalc_options::witness().get_vote_recalc_times( now );
          committee_recalc_times = detail::vote_recalc_options::committee().get_vote_recalc_times( now );
