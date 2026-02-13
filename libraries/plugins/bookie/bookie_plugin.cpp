@@ -77,7 +77,7 @@ class persistent_bet_object_helper : public secondary_index
       using watched_index = primary_index<bet_object_index>;
 
       //virtual void object_loaded(const object& obj) override;
-      virtual void object_created(const object& obj) override;
+      virtual void object_insert(const object& obj) override;
       //virtual void object_removed( const object& obj ) override;
       //virtual void about_to_modify( const object& before ) override;
       virtual void object_modified(const object& after) override;

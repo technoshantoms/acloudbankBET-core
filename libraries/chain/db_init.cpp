@@ -321,6 +321,7 @@ void database::initialize_indexes()
    add_index< primary_index<simple_index<dynamic_global_property_object  >> >();
    add_index< primary_index<account_stats_index,                       20 > >(); // 1 Mi
    add_index< primary_index<simple_index<asset_dynamic_data_object       >> >();
+   add_index< primary_index<flat_index<  block_summary_object            >> >();
    add_index< primary_index<simple_index<block_summary_object            >> >();
    add_index< primary_index<simple_index<chain_property_object          > > >();
    add_index< primary_index<simple_index<witness_schedule_object        > > >();
@@ -369,6 +370,8 @@ void database::init_genesis(const genesis_state_type& genesis_state)
    } inhibitor(*this);
 
    transaction_evaluation_state genesis_eval_state(this);
+   flat_index<block_summary_object>& bsi = get_mutable_index_type< flat_index<block_summary_object> >();
+   bsi.resize(0xffff+1);
 
    // Create blockchain accounts
    fc::ecc::private_key null_private_key = fc::ecc::private_key::regenerate(fc::sha256::hash(string("null_key")));
@@ -506,7 +509,7 @@ void database::init_genesis(const genesis_state_type& genesis_state)
            a.dividend_distribution_account = GRAPHENE_RAKE_FEE_ACCOUNT_ID;
       });
    const asset_object& core_asset =
-     create<asset_object>( [&genesis_state,&dyn_asset]( asset_object& a ) {
+     create<asset_object>( [&genesis_state,&div_asset,&dyn_asset]( asset_object& a ) {
          a.symbol = GRAPHENE_SYMBOL;
          a.options.max_supply = genesis_state.max_core_supply;
          a.precision = GRAPHENE_BLOCKCHAIN_PRECISION_DIGITS;
@@ -518,6 +521,7 @@ void database::init_genesis(const genesis_state_type& genesis_state)
          a.options.core_exchange_rate.quote.amount = 1;
          a.options.core_exchange_rate.quote.asset_id = asset_id_type(0);
          a.dynamic_asset_data_id = dyn_asset.id;
+         a.dividend_data_id = div_asset.id;
       });
    FC_ASSERT( dyn_asset.id == asset_dynamic_data_id_type() );
    FC_ASSERT( asset_id_type(core_asset.id) == asset().asset_id );

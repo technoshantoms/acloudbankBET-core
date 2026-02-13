@@ -154,10 +154,10 @@ namespace detail {
                   ( k.account_id == vbo.owner );
       }
 
-      uint64_t operator()(const vbo_mfs_key& k)const
-      {
-         return vbo_mfs_hash(k.account_id, k.asset_id);
-      }
+       uint64_t operator()(const vbo_mfs_key& k)const
+       {
+          return vbo_mfs_hash(k.account_id, k.asset_id);
+       }
    };
 } //detail
 

@@ -159,7 +159,7 @@ namespace graphene { namespace protocol {
             /* 96 */ nft_lottery_token_purchase_operation,
             /* 97 */ nft_lottery_reward_operation,
             /* 98 */ nft_lottery_end_operation,
-                  /* 99 */random_number_store_operation,
+            /* 99 */random_number_store_operation,
             //sidechain_address_add_operation,
             //sidechain_address_update_operation,
             //sidechain_address_delete_operation,
