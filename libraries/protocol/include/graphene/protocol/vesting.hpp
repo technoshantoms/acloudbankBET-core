@@ -94,6 +94,7 @@ namespace graphene { namespace protocol {
       account_id_type             owner; ///< Who is able to withdraw the balance
       asset                       amount;
       vesting_policy_initializer  policy;
+      vesting_balance_type        balance_type;
 
       account_id_type   fee_payer()const { return creator; }
       void              validate()const
@@ -135,7 +136,7 @@ namespace graphene { namespace protocol {
 FC_REFLECT( graphene::protocol::vesting_balance_create_operation::fee_parameters_type, (fee) )
 FC_REFLECT( graphene::protocol::vesting_balance_withdraw_operation::fee_parameters_type, (fee) )
 
-FC_REFLECT( graphene::protocol::vesting_balance_create_operation, (fee)(creator)(owner)(amount)(policy) )
+FC_REFLECT( graphene::chain::vesting_balance_create_operation, (fee)(creator)(owner)(amount)(policy)(balance_type) )
 FC_REFLECT( graphene::protocol::vesting_balance_withdraw_operation, (fee)(vesting_balance)(owner)(amount) )
 
 FC_REFLECT(graphene::protocol::linear_vesting_policy_initializer, (begin_timestamp)(vesting_cliff_seconds)(vesting_duration_seconds) )

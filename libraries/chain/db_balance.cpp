@@ -131,11 +131,9 @@ void database::adjust_sweeps_vesting_balance(account_id_type account, int64_t de
    }
 }
 
-namespace detail {
+/*namespace detail {
 
-   /**
-    * Used as a key to search vesting_balance_object in the index
-   */
+   
    struct vbo_mfs_key
    {
       account_id_type   account_id;
@@ -158,7 +156,9 @@ namespace detail {
           return vbo_mfs_hash(k.account_id, k.asset_id);
        }
    };
-} //detail
+}*/
+
+//detail
 
 /*asset database::get_market_fee_vesting_balance(const account_id_type &account_id, const asset_id_type &asset_id)
 {
@@ -173,7 +173,7 @@ namespace detail {
    return vbo_it->balance;
 }*/
 
-void database::deposit_market_fee_vesting_balance(const account_id_type &account_id, const asset &delta)
+/*void database::deposit_market_fee_vesting_balance(const account_id_type &account_id, const asset &delta)
 { try {
    FC_ASSERT( delta.amount >= 0, "Invalid negative value for balance");
 
@@ -200,7 +200,7 @@ void database::deposit_market_fee_vesting_balance(const account_id_type &account
          vbo.deposit_vested(block_time, delta);
       });
    }
-} FC_CAPTURE_AND_RETHROW( (account_id)(delta) ) }
+} FC_CAPTURE_AND_RETHROW( (account_id)(delta) ) }*/
 
 optional< vesting_balance_id_type > database::deposit_lazy_vesting(
    const optional< vesting_balance_id_type >& ovbid,
