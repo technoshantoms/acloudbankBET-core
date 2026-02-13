@@ -99,13 +99,12 @@ void database::adjust_balance(asset_id_type lottery_id, asset delta)
    }
 }
 
-/*void database::adjust_sweeps_vesting_balance(account_id_type account, int64_t delta)
+void database::adjust_sweeps_vesting_balance(account_id_type account, int64_t delta)
 {
    if( delta == 0 )
       return;
-
-   //asset_id_type asset_id = get_global_properties().parameters.get_next_id()
-    asset_id_type asset_id = get_global_properties().parameters.sweeps_distribution_asset();
+   
+   asset_id_type asset_id = get_global_properties().parameters.sweeps_distribution_asset();
    
    auto& index = get_index_type<sweeps_vesting_balance_index>().indices().get<by_owner>();
    auto itr = index.find(account);
@@ -130,7 +129,7 @@ void database::adjust_balance(asset_id_type lottery_id, asset delta)
          b.last_claim_date = head_block_time();
       });
    }
-}*/
+}
 
 namespace detail {
 
@@ -161,7 +160,7 @@ namespace detail {
    };
 } //detail
 
-asset database::get_market_fee_vesting_balance(const account_id_type &account_id, const asset_id_type &asset_id)
+/*asset database::get_market_fee_vesting_balance(const account_id_type &account_id, const asset_id_type &asset_id)
 {
    auto& vesting_balances = get_index_type<vesting_balance_index>().indices().get<by_vesting_type>();
    const auto& key = detail::vbo_mfs_key{account_id, asset_id};
@@ -172,7 +171,7 @@ asset database::get_market_fee_vesting_balance(const account_id_type &account_id
       return asset(0, asset_id);
    }
    return vbo_it->balance;
-}
+}*/
 
 void database::deposit_market_fee_vesting_balance(const account_id_type &account_id, const asset &delta)
 { try {
