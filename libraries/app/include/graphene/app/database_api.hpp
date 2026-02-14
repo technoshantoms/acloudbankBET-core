@@ -71,6 +71,15 @@ struct order {
    double base;
 };
 */
+struct gpos_info {
+   double vesting_factor;
+   asset award;
+   share_type total_amount;
+   uint32_t current_subperiod;
+   fc::time_point_sec last_voted_time;
+   share_type allowed_withdraw_amount;
+   share_type account_vested_balance;
+};
 
 class database_api_impl;
 
@@ -1146,6 +1155,15 @@ class database_api
     */
    map<string, account_id_type> lookup_accounts(const string &lower_bound_name, uint32_t limit) const;
 
+
+
+   //////////
+   // GPOS //
+   //////////
+   /**
+    * @return account and network GPOS information
+    */
+   gpos_info get_gpos_info(const account_id_type account) const;
        //////////
       // RBAC //
       //////////
@@ -1296,6 +1314,8 @@ private:
 
 extern template class fc::api<graphene::app::database_api>;
 
+FC_REFLECT(graphene::app::gpos_info, (vesting_factor)(award)(total_amount)(current_subperiod)(last_voted_time)(allowed_withdraw_amount)(account_vested_balance));
+
 FC_API(graphene::app::database_api,
    // Objects
    (get_objects)
@@ -1428,6 +1448,9 @@ FC_API(graphene::app::database_api,
    (get_rooms_by_owner)
    (get_room_participants)
    (get_rooms_by_participant)
+
+   // gpos
+   (get_gpos_info)
 
    //rbac
    (get_custom_permissions)

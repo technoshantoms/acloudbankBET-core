@@ -71,7 +71,77 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       vector<ico_balance_object> get_ico_balance_objects( const vector<string>& addrs )const;
       vector<asset> get_vested_balances( const vector<balance_id_type>& objs )const;
       vector<vesting_balance_object> get_vesting_balances( const std::string account_id_or_name )const;
+  
+    // gpos
+   gpos_info get_gpos_info(const account_id_type account) const;
+   // Account Role
+   vector<account_role_object> get_account_roles_by_owner(account_id_type owner) const;
 
+   uint32_t api_limit_get_lower_bound_symbol = 100;
+   uint32_t api_limit_get_limit_orders = 300;
+   uint32_t api_limit_get_limit_orders_by_account = 101;
+   uint32_t api_limit_get_order_book = 50;
+   uint32_t api_limit_all_offers_count = 100;
+   uint32_t api_limit_lookup_accounts = 1000;
+   uint32_t api_limit_lookup_witness_accounts = 1000;
+   uint32_t api_limit_lookup_committee_member_accounts = 1000;
+   uint32_t api_limit_lookup_son_accounts = 1000;
+   uint32_t api_limit_lookup_worker_accounts = 1000;
+   uint32_t api_limit_get_trade_history = 100;
+   uint32_t api_limit_get_trade_history_by_sequence = 100;
+
+   // rbac
+   vector<custom_permission_object> get_custom_permissions(const account_id_type account) const;
+   fc::optional<custom_permission_object> get_custom_permission_by_name(const account_id_type account, const string &permission_name) const;
+   vector<custom_account_authority_object> get_custom_account_authorities(const account_id_type account) const;
+   vector<custom_account_authority_object> get_custom_account_authorities_by_permission_id(const custom_permission_id_type permission_id) const;
+   vector<custom_account_authority_object> get_custom_account_authorities_by_permission_name(const account_id_type account, const string &permission_name) const;
+   vector<authority> get_active_custom_account_authorities_by_operation(const account_id_type account, int operation_type) const;
+
+   // NFT
+   uint64_t nft_get_balance(const account_id_type owner) const;
+   optional<account_id_type> nft_owner_of(const nft_id_type token_id) const;
+   optional<account_id_type> nft_get_approved(const nft_id_type token_id) const;
+   bool nft_is_approved_for_all(const account_id_type owner, const account_id_type operator_) const;
+   string nft_get_name(const nft_metadata_id_type nft_metadata_id) const;
+   string nft_get_symbol(const nft_metadata_id_type nft_metadata_id) const;
+   string nft_get_token_uri(const nft_id_type token_id) const;
+   uint64_t nft_get_total_supply(const nft_metadata_id_type nft_metadata_id) const;
+   nft_object nft_token_by_index(const nft_metadata_id_type nft_metadata_id, const uint64_t token_idx) const;
+   nft_object nft_token_of_owner_by_index(const nft_metadata_id_type nft_metadata_id, const account_id_type owner, const uint64_t token_idx) const;
+   vector<nft_object> nft_get_all_tokens() const;
+   vector<nft_object> nft_get_tokens_by_owner(const account_id_type owner) const;
+   // Sidechain addresses
+   /*vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
+   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
+   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
+   fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const;
+   uint64_t get_sidechain_addresses_count() const;*/
+      // Peerplays
+   vector<sport_object> list_sports() const;
+   vector<event_group_object> list_event_groups(sport_id_type sport_id) const;
+   vector<event_object> list_events_in_group(event_group_id_type event_group_id) const;
+   vector<betting_market_group_object> list_betting_market_groups(event_id_type) const;
+   vector<betting_market_object> list_betting_markets(betting_market_group_id_type) const;
+   vector<bet_object> get_unmatched_bets_for_bettor(betting_market_id_type, account_id_type) const;
+   vector<bet_object> get_all_unmatched_bets_for_bettor(account_id_type) const;
+
+   // Lottery Assets
+   vector<asset_object> get_lotteries(asset_id_type stop = asset_id_type(),
+                                      unsigned limit = 100,
+                                      asset_id_type start = asset_id_type()) const;
+   vector<asset_object> get_account_lotteries(account_id_type issuer,
+                                              asset_id_type stop,
+                                              unsigned limit,
+                                              asset_id_type start) const;
+   asset get_lottery_balance(asset_id_type lottery_id) const;
+   sweeps_vesting_balance_object get_sweeps_vesting_balance_object(account_id_type account) const;
+   asset get_sweeps_vesting_balance_available_for_claim(account_id_type account) const;
+      // helper function
+   vector<optional<asset_object>> get_assets(const vector<asset_id_type> &asset_ids) const;
+   vector<asset_object> list_assets(const string &lower_bound_symbol, uint32_t limit) const;
+   vector<optional<asset_object>> lookup_asset_symbols(const vector<string> &symbols_or_ids) const;
+   uint64_t get_asset_count() const;
       // Assets
       uint64_t get_asset_count()const;
       asset_id_type get_asset_id_from_string(const std::string& symbol_or_id)const;

@@ -11,6 +11,7 @@
 #include <graphene/chain/custom_permission_object.hpp>
 #include <graphene/chain/nft_object.hpp>
 #include <graphene/chain/offer_object.hpp>
+#include <graphene/chain/tournament_object.hpp>
 
 #include <graphene/app/util.hpp>
 #include <graphene/chain/get_config.hpp>
@@ -24,10 +25,10 @@
 #include <boost/range/iterator_range.hpp>
 
 #include <cctype>
-
 template class fc::api<graphene::app::database_api>;
 
 namespace graphene { namespace app {
+
 
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
