@@ -42,7 +42,8 @@
 #include <graphene/chain/worker_object.hpp>
 #include <graphene/chain/htlc_object.hpp>
 #include <graphene/chain/proposal_object.hpp>
-#include <graphene/chain/hardfork_visitor.hpp>
+//#include <graphene/chain/hardfork_visitor.hpp>
+#include <graphene/chain/rbac_hardfork_visitor.hpp>
 
 #include <fc/crypto/digest.hpp>
 
