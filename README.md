@@ -1,4 +1,4 @@
-Acloudbank Core: We are the first Decentralized Database powering Banks, Insurance Companies, Credit Unions & SACCOs.
+acloudbank Core: We are the first Decentralized Database powering Banks, Insurance Companies, Credit Unions & SACCOs.
 ==============
 
 [acloudbank Core](https://github.com/acloudbank/acloudbank-core) is the acloudbank blockchain node software and command-line wallet software.
