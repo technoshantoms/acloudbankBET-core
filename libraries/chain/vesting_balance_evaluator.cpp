@@ -79,9 +79,10 @@ struct init_policy_visitor
       p = policy;
    }
 
-   void operator()( const instant_vesting_policy_initializer& i )const
+   void operator()( const dormant_vesting_policy_initializer& i )const
    {
-      p = instant_vesting_policy{};
+      dormant_vesting_policy policy;
+      p = policy;
    }
 
 };

@@ -121,34 +121,34 @@ namespace graphene { namespace chain {
       void on_deposit_vested(const vesting_policy_context& ctx);
       void on_withdraw(const vesting_policy_context& ctx);
    };
-    /**
-    * @brief instant vesting policy
+
+   /**
+    * @brief Cant withdraw anything while balance is in this policy.
     *
-    * This policy allows to withdraw everything that is on a balance immediately
+    * This policy is needed to register SON users where balance may be claimable only after
+    * the SON object is deleted(plus a linear policy).
+    * When deleting a SON member the dormant mode will be replaced by a linear policy.
     *
+    * @note New funds may not be added to a dormant vesting balance.
     */
-   struct instant_vesting_policy
-   {
-      asset get_allowed_withdraw(const vesting_policy_context& ctx)const;
-      bool is_deposit_allowed(const vesting_policy_context& ctx)const;
-      bool is_deposit_vested_allowed(const vesting_policy_context&)const { return false; }
-      bool is_withdraw_allowed(const vesting_policy_context& ctx)const;
-      void on_deposit(const vesting_policy_context& ctx);
-      void on_deposit_vested(const vesting_policy_context&);
-      void on_withdraw(const vesting_policy_context& ctx);
-   };
+      struct dormant_vesting_policy
+      {
+         asset get_allowed_withdraw(const vesting_policy_context& ctx)const;
+         bool is_deposit_allowed(const vesting_policy_context& ctx)const;
+         bool is_deposit_vested_allowed(const vesting_policy_context&)const { return false; }
+         bool is_withdraw_allowed(const vesting_policy_context& ctx)const;
+         void on_deposit(const vesting_policy_context& ctx);
+         void on_deposit_vested(const vesting_policy_context&)
+         { FC_THROW( "May not deposit vested into a linear vesting balance." ); }
+         void on_withdraw(const vesting_policy_context& ctx);
+      };
 
    typedef fc::static_variant<
       linear_vesting_policy,
       cdd_vesting_policy,
-      instant_vesting_policy
-      > vesting_policy;
+      dormant_vesting_policy
+   > vesting_policy;
 
-   enum class vesting_balance_type {   unspecified,
-                                       cashback,
-                                       worker,
-                                       witness,
-                                       market_fee_sharing };
    /**
     * Vesting balance object is a balance that is locked by the blockchain for a period of time.
     */
@@ -166,7 +166,7 @@ namespace graphene { namespace chain {
          /// The vesting policy stores details on when funds vest, and controls when they may be withdrawn
          vesting_policy policy;
 
-         /// We can have 2 types of vesting, gpos and all the rest
+         /// We can have 3 types of vesting, gpos, son and the rest
          vesting_balance_type balance_type = vesting_balance_type::normal;
 
          vesting_balance_object() {}
@@ -263,7 +263,8 @@ FC_REFLECT(graphene::chain::cdd_vesting_policy,
            (coin_seconds_earned)
            (coin_seconds_earned_last_update)
           )
-FC_REFLECT_EMPTY( graphene::chain::instant_vesting_policy )
+
+FC_REFLECT(graphene::chain::dormant_vesting_policy, )
 
 FC_REFLECT_TYPENAME( graphene::chain::vesting_policy )
 
@@ -273,9 +274,7 @@ FC_REFLECT_DERIVED(graphene::chain::vesting_balance_object, (graphene::db::objec
                    (policy)
                    (balance_type)
                   )
-FC_REFLECT_ENUM( graphene::chain::vesting_balance_type, (unspecified)(cashback)(worker)(witness)(market_fee_sharing) )
 
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::linear_vesting_policy )
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::cdd_vesting_policy )
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::vesting_balance_object )
-

@@ -185,7 +185,7 @@ struct parameter_extension
          return  GPOS_SUBPERIOD; /// gpos_period % gpos_subperiod = 0
       }
       inline uint32_t gpos_period_start()const {
-         return  GPOS_PERIOD_START.sec_since_epoch(); /// current period start date
+         return  GPOS_PERIOD_START.sec_since_epoch();
       }
       inline uint32_t gpos_vesting_lockin_period()const {
          return  GPOS_VESTING_LOCKIN_PERIOD; /// GPOS vesting lockin period

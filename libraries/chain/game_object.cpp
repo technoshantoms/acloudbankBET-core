@@ -9,6 +9,7 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/msm/back/tools.hpp>
 #include <boost/range/algorithm/copy.hpp>
+#include <graphene/protocol/rock_paper_scissors.hpp>
 
 #include <fc/crypto/hash_ctr_rng.hpp>
 
