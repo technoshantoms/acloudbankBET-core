@@ -27,6 +27,7 @@
 #include <graphene/chain/betting_market_object.hpp>
 #include <graphene/chain/game_object.hpp>
 #include <graphene/chain/tournament_object.hpp>
+#include <graphene/chain/offer_object.hpp>
 
 #include <graphene/chain/database.hpp>
 #include <graphene/chain/db_with.hpp>
@@ -210,9 +211,6 @@ void database::place_delayed_bets()
    }
 } FC_CAPTURE_AND_RETHROW() }
 
-void process_finished_matches(database& db)
-{
-}
 
 void process_in_progress_tournaments(database& db)
 {
@@ -224,27 +222,6 @@ void process_in_progress_tournaments(database& db)
       auto next_iter = std::next(start_iter);
       start_iter->check_for_new_matches_to_start(db);
       start_iter = next_iter;
-   }
-}
-
-void cancel_expired_tournaments(database& db)
-{
-   // First, cancel any tournaments that didn't get enough players
-   auto& registration_deadline_index = db.get_index_type<tournament_index>().indices().get<by_registration_deadline>();
-   // this index is sorted on state and deadline, so the tournaments awaiting registrations with the earliest
-   // deadlines will be at the beginning
-   while (!registration_deadline_index.empty() &&
-          registration_deadline_index.begin()->get_state() == tournament_state::accepting_registrations &&
-          registration_deadline_index.begin()->options.registration_deadline <= db.head_block_time())
-   {
-      const tournament_object& tournament_obj = *registration_deadline_index.begin();
-      fc_ilog(fc::logger::get("tournament"),
-              "Canceling tournament ${id} because its deadline expired",
-              ("id", tournament_obj.id));
-      // cancel this tournament
-      db.modify(tournament_obj, [&](tournament_object& t) {
-         t.on_registration_deadline_passed(db);
-      });
    }
 }
 
@@ -295,22 +272,6 @@ void initiate_next_games(database& db)
    }
 }
 
-void database::update_tournaments()
-{
-   // Process as follows:
-   // - Process games
-   // - Process matches
-   // - Process tournaments
-   // - Process matches
-   // - Process games
-   process_finished_games(*this);
-   process_finished_matches(*this);
-   cancel_expired_tournaments(*this);
-   start_fully_registered_tournaments(*this);
-   process_in_progress_tournaments(*this);
-   initiate_next_round_of_matches(*this);
-   initiate_next_games(*this);
-}
 
 void process_settled_betting_markets(database& db, fc::time_point_sec current_block_time)
 {
@@ -355,7 +316,7 @@ void database::finalize_expired_offers(){
                  finalize.fee_paying_account = offer.issuer;
                  finalize.offer_id = offer.id;
                  finalize.fee = asset( 0, asset_id_type() );
-                 finalize.result = offer.bidder ? result_type::Expired : result_type::ExpiredNoBid;
+                 finalize.result = offer.bidder ? result_types::Expired : result_types::ExpiredNoBid;
 
                  cancel_context.skip_fee_schedule_check = true;
                  apply_operation(cancel_context, finalize);
@@ -729,10 +690,6 @@ void database::update_withdraw_permissions()
    while( !permit_index.empty() && permit_index.begin()->expiration <= head_block_time() )
       remove(*permit_index.begin());
 }
-void process_finished_games(database& db)
-{
-   //auto& games_index = db.get_index_type<game_index>().indices().get<by_id>();
-}
 
 uint64_t database::get_random_bits( uint64_t bound )
 {
@@ -755,7 +712,164 @@ void database::clear_expired_htlcs()
       remove( obj );
    }
 }
+//comment me: auto& games_index = db.get_index_type<game_index>().indices().get<by_id>();
+void process_finished_games(database& db)
+{
+    auto& games_index = db.get_index_type<game_index>().indices().get<by_id>();
+}
 
+void process_finished_matches(database& db)
+{
+}
+
+void process_in_progress_tournaments(database& db)
+{
+   auto& start_time_index = db.get_index_type<tournament_index>().indices().get<by_start_time>();
+   auto start_iter = start_time_index.lower_bound(boost::make_tuple(tournament_state::in_progress));
+   while (start_iter != start_time_index.end() &&
+          start_iter->get_state() == tournament_state::in_progress)
+   {
+      auto next_iter = std::next(start_iter);
+      start_iter->check_for_new_matches_to_start(db);
+      start_iter = next_iter;
+   }
+}
+
+void cancel_expired_tournaments(database& db)
+{
+   // First, cancel any tournaments that didn't get enough players
+   auto& registration_deadline_index = db.get_index_type<tournament_index>().indices().get<by_registration_deadline>();
+   // this index is sorted on state and deadline, so the tournaments awaiting registrations with the earliest
+   // deadlines will be at the beginning
+   while (!registration_deadline_index.empty() &&
+          registration_deadline_index.begin()->get_state() == tournament_state::accepting_registrations &&
+          registration_deadline_index.begin()->options.registration_deadline <= db.head_block_time())
+   {
+      const tournament_object& tournament_obj = *registration_deadline_index.begin();
+      fc_ilog(fc::logger::get("tournament"),
+              "Canceling tournament ${id} because its deadline expired",
+              ("id", tournament_obj.id));
+      // cancel this tournament
+      db.modify(tournament_obj, [&](tournament_object& t) {
+         t.on_registration_deadline_passed(db);
+      });
+   }
+}
+
+void start_fully_registered_tournaments(database& db)
+{
+   // Next, start any tournaments that have enough players and whose start time just arrived
+   auto& start_time_index = db.get_index_type<tournament_index>().indices().get<by_start_time>();
+   while (1)
+   {
+      // find the first tournament waiting to start; if its start time has arrived, start it
+      auto start_iter = start_time_index.lower_bound(boost::make_tuple(tournament_state::awaiting_start));
+      if (start_iter != start_time_index.end() &&
+          start_iter->get_state() == tournament_state::awaiting_start && 
+          *start_iter->start_time <= db.head_block_time())
+      {
+         db.modify(*start_iter, [&](tournament_object& t) {
+            t.on_start_time_arrived(db);
+         });
+      }
+      else
+         break;
+   }
+}
+
+void initiate_next_round_of_matches(database& db)
+{
+}
+
+void initiate_next_games(database& db)
+{
+   // Next, trigger timeouts on any games which have been waiting too long for commit or
+   // reveal moves
+   auto& next_timeout_index = db.get_index_type<game_index>().indices().get<by_next_timeout>();
+   while (1)
+   {
+      // empty time_points are sorted to the beginning, so upper_bound takes us to the first 
+      // non-empty time_point
+      auto start_iter = next_timeout_index.upper_bound(boost::make_tuple(optional<time_point_sec>()));
+      if (start_iter != next_timeout_index.end() &&
+          *start_iter->next_timeout <= db.head_block_time())
+      {
+         db.modify(*start_iter, [&](game_object& game) {
+            game.on_timeout(db);
+         });
+      }
+      else
+         break;
+   }
+}
+
+void database::update_tournaments()
+{
+   // Process as follows:
+   // - Process games
+   // - Process matches
+   // - Process tournaments
+   // - Process matches
+   // - Process games
+   process_finished_games(*this);
+   process_finished_matches(*this);
+   cancel_expired_tournaments(*this);
+   start_fully_registered_tournaments(*this);
+   process_in_progress_tournaments(*this);
+   initiate_next_round_of_matches(*this);
+   initiate_next_games(*this);
+}
+
+void process_settled_betting_markets(database& db, fc::time_point_sec current_block_time)
+{
+   // after a betting market is graded, it goes through a delay period in which it
+   // can be flagged for re-grading.  If it isn't flagged during this interval, 
+   // it is automatically settled (paid).  Process these now.
+   const auto& betting_market_group_index = db.get_index_type<betting_market_group_object_index>().indices().get<by_settling_time>();
+
+   // this index will be sorted with all bmgs with no settling time set first, followed by 
+   // ones with the settling time set by increasing time.  Start at the first bmg with a time set
+   auto betting_market_group_iter = betting_market_group_index.upper_bound(fc::optional<fc::time_point_sec>());
+   while (betting_market_group_iter != betting_market_group_index.end() && 
+          *betting_market_group_iter->settling_time <= current_block_time)
+   {
+      auto next_iter = std::next(betting_market_group_iter);
+      db.settle_betting_market_group(*betting_market_group_iter);
+      betting_market_group_iter = next_iter;
+   }
+}
+
+void database::update_betting_markets(fc::time_point_sec current_block_time)
+{
+   process_settled_betting_markets(*this, current_block_time);
+   remove_completed_events();
+}
+
+void database::finalize_expired_offers(){
+    try {
+       detail::with_skip_flags( *this,
+          get_node_properties().skip_flags | skip_authority_check, [&](){
+             transaction_evaluation_state cancel_context(this);
+
+             //Cancel expired limit orders
+             auto& limit_index = get_index_type<offer_index>().indices().get<by_expiration_date>();
+             auto itr = limit_index.begin();
+             while( itr != limit_index.end() && itr->offer_expiration_date <= head_block_time() )
+             {
+                 const offer_object& offer = *itr;
+                 ++itr;
+
+                 finalize_offer_operation finalize;
+                 finalize.fee_paying_account = offer.issuer;
+                 finalize.offer_id = offer.id;
+                 finalize.fee = asset( 0, asset_id_type() );
+                 finalize.result = offer.bidder ? result_type::Expired : result_type::ExpiredNoBid;
+
+                 cancel_context.skip_fee_schedule_check = true;
+                 apply_operation(cancel_context, finalize);
+             }
+         });
+} FC_CAPTURE_AND_RETHROW()}
 generic_operation_result database::process_tickets()
 {
    generic_operation_result result;

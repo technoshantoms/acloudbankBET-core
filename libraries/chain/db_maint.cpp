@@ -2,9 +2,11 @@
  * AcloudBank
  *
  */
+#include <graphene/chain/protocol/types.hpp>
 #include <graphene/protocol/chain_parameters.hpp>
 #include <graphene/chain/custom_account_authority_object.hpp>
 #include <graphene/chain/account_role_object.hpp>
+#include <graphene/protocol/asset_ops.hpp>
 
 #include <graphene/protocol/config.hpp>
 
@@ -32,6 +34,7 @@
 
 #include <fc/uint128.hpp>
 #include <numeric>
+#include <fc/optional.hpp>
 
 namespace graphene { namespace chain {
 
@@ -935,56 +938,26 @@ share_type credit_account(database& db, const account_id_type owner_id, const st
    }
    return remaining_amount_to_distribute;
 }
-/*
+
 void rolling_period_start(database& db)
 {
-   if(db.head_block_time() >= HARDFORK_GPOS_TIME)
-   {
-      auto gpo = db.get_global_properties();
-      auto period_start = db.get_global_properties().parameters.gpos_period_start();
-      auto vesting_period = db.get_global_properties().parameters.gpos_period();
+   //if(db.head_block_time() >= HARDFORK_GPOS_TIME)
+  // {
+  //    auto gpo = db.get_global_properties();
+  //    auto period_start = db.get_global_properties().parameters.gpos_period_start();
+   //   auto vesting_period = db.get_global_properties().parameters.gpos_period();
 
-      auto now = db.head_block_time();
-      if(now.sec_since_epoch() >= (period_start + vesting_period))
-      {
-         // roll
-         db.modify(db.get_global_properties(), [period_start, vesting_period](global_property_object& p) {
-            p.gpos_period_start =  period_start + vesting_period;
-         });
-      }
-   }
-}*/
-
-void rolling_period_start(database& db) {
-    // 1. Check hardfork
-    if (db.head_block_time() < HARDFORK_GPOS_TIME) {
-        return;
-    }
-
-    // 2. Fetch properties once for efficiency
-    const auto& gpo = db.get_global_properties();
-    const auto& params = gpo.parameters;
-    
-    // 3. Use proper time types (assuming fc::time_point_sec)
-    auto now = db.head_block_time();
-    auto period_start = fc::time_point_sec(params.gpos_period_start());
-    auto vesting_period_seconds = params.gpos_period(); // Assuming this is seconds
-
-    // 4. Calculate when the next period should start
-    auto next_period_start = period_start + vesting_period_seconds;
-
-    // 5. Check if we need to roll
-    if (now >= next_period_start) {
-        // 6. Modify the database correctly
-        db.modify(gpo, [&](global_property_object& p) {
-            // Update to the new start time
-            p.parameters.gpos_period_start = next_period_start.sec_since_epoch();
-            
-            // NOTE: You likely need to reset GPOS metrics here as well, 
-            // e.g., p.current_gpos_weight = 0;
-        });
-    }
+  //    auto now = db.head_block_time();
+   //   if(now.sec_since_epoch() >= (period_start + vesting_period))
+   //   {
+   //      // roll
+    //     db.modify(db.get_global_properties(), [period_start, vesting_period](global_property_object& p) {
+   //         p.gpos_period_start =  period_start + vesting_period;
+    //     });
+   //   }
+   //}
 }
+
 
 void clear_expired_custom_account_authorities(database& db)
 {

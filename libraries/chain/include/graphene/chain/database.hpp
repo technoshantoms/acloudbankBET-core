@@ -66,7 +66,7 @@ namespace graphene { namespace chain {
             skip_transaction_dupe_check = 1 << 2,  ///< used while reindexing
             skip_block_size_check       = 1 << 4,  ///< used when applying locally generated transactions
             skip_tapos_check            = 1 << 5,  ///< used while reindexing -- note this skips expiration check as well
-            // skip_authority_check        = 1 << 6,  ///< removed because effectively identical to skip_transaction_signatures
+            skip_authority_check        = 1 << 6,  ///< removed because effectively identical to skip_transaction_signatures
             skip_merkle_check           = 1 << 7,  ///< used while reindexing
             skip_assert_evaluation      = 1 << 8,  ///< used while reindexing
             skip_undo_history_check     = 1 << 9,  ///< used while reindexing
