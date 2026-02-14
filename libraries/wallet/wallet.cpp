@@ -362,6 +362,82 @@ vector<operation_detail> wallet_api::get_account_history(const string& name, uin
    return result;
 }
 
+ signed_transaction withdraw_GPOS_vesting_balance(
+      string account_name,
+      string amount,
+      string asset_symbol,
+      bool broadcast = false)
+   { try {
+
+      //Can be deleted after GPOS hardfork time
+      time_point_sec now = time_point::now();
+      if(now < HARDFORK_GPOS_TIME)
+         FC_THROW("GPOS related functionality is not avaiable until next Spring");
+
+      asset_object asset_obj = get_asset( asset_symbol );
+      vector< vesting_balance_object > vbos;
+      vesting_balance_object vbo;
+      fc::optional<vesting_balance_id_type> vbid = maybe_id<vesting_balance_id_type>(account_name);
+      if( !vbid )
+      {
+         vbos = _remote_db->get_vesting_balances( account_name );
+         if( vbos.size() == 0 )
+            FC_THROW("Account ${account} has no core TOKEN vested and thus its not allowed to withdraw.", ("account", account_name));
+      }
+
+      //whether it is a witness or user, keep it in a container and iterate over to process all vesting balances and types
+      if(!vbos.size())
+         vbos.emplace_back( get_object(*vbid) );
+
+      for (const vesting_balance_object& vesting_balance_obj: vbos) {
+         if(vesting_balance_obj.balance_type == vesting_balance_type::gpos)
+         {
+            vbo = vesting_balance_obj;
+            break;
+         }
+      }
+
+      vesting_balance_withdraw_operation vesting_balance_withdraw_op;
+
+      vesting_balance_withdraw_op.vesting_balance = vbo.id;
+      vesting_balance_withdraw_op.owner = vbo.owner;
+      vesting_balance_withdraw_op.amount = asset_obj.amount_from_string(amount);
+
+      signed_transaction tx;
+      tx.operations.push_back( vesting_balance_withdraw_op );
+      set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees );
+      tx.validate();
+
+      return sign_transaction( tx, broadcast );
+   } FC_CAPTURE_AND_RETHROW( (account_name)(amount) )}
+
+   signed_transaction create_vesting_balance(string owner_account,
+                                     string amount,
+                                     string asset_symbol,
+                                     vesting_balance_type vesting_type,
+                                     bool broadcast /* = false */)
+   { try {
+      FC_ASSERT( !is_locked() );
+      account_object user_account = get_account(owner_account);
+      fc::optional<asset_object> asset_obj = get_asset(asset_symbol);
+      FC_ASSERT(asset_obj, "Invalid asset symbol {asst}", ("asst", asset_symbol));
+
+      vesting_balance_create_operation op;
+      op.creator = user_account.get_id();
+      op.owner = user_account.get_id();
+      op.amount = asset_obj->amount_from_string(amount);
+      op.balance_type = vesting_type;
+      if (op.balance_type == vesting_balance_type::son)
+          op.policy = dormant_vesting_policy_initializer {};
+
+      signed_transaction tx;
+      tx.operations.push_back( op );
+      set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);
+      tx.validate();
+
+      return sign_transaction( tx, broadcast );
+   } FC_CAPTURE_AND_RETHROW( (owner_account)(broadcast) ) }
+
 vector<operation_detail> wallet_api::get_relative_account_history(
       const string& name,
       uint32_t stop,
@@ -1039,6 +1115,15 @@ committee_member_object wallet_api::get_committee_member(string owner_account)
    return my->get_committee_member(owner_account);
 }
 
+signed_transaction wallet_api::create_vesting_balance(string owner_account,
+                                              string amount,
+                                              string asset_symbol,
+                                              vesting_balance_type vesting_type,
+                                              bool broadcast /* = false */)
+{
+   return my->create_vesting_balance(owner_account, amount, asset_symbol, vesting_type, broadcast);
+}
+
 signed_transaction wallet_api::create_witness(string owner_account,
                                               string url,
                                               bool broadcast /* = false */)
@@ -1228,6 +1313,44 @@ signed_transaction create_custom_permission(string owner,
       tx.validate();
       return sign_transaction(tx, broadcast);
    }
+   signed_transaction withdraw_vesting(
+      string witness_name,
+      string amount,
+      string asset_symbol,
+      bool broadcast = false )
+   { try {
+      asset_object asset_obj = get_asset( asset_symbol );
+      fc::optional<vesting_balance_id_type> vbid = maybe_id<vesting_balance_id_type>(witness_name);
+      if( !vbid )
+      {
+         if (is_witness(witness_name))
+         {
+            witness_object wit = get_witness( witness_name );
+            FC_ASSERT( wit.pay_vb, "Account ${account} has no core Token ${TOKEN} vested and thus its not allowed to withdraw.", ("account", witness_name)("TOKEN", GRAPHENE_SYMBOL));
+            vbid = wit.pay_vb;
+         }
+         else
+            FC_THROW("Account ${account} has no core Token ${TOKEN} vested and thus its not allowed to withdraw.", ("account", witness_name)("TOKEN", GRAPHENE_SYMBOL));
+      }
+
+      vesting_balance_object vbo = get_object( *vbid );
+
+      if(vbo.balance_type == vesting_balance_type::gpos)
+         FC_THROW("Allowed to withdraw only Normal and Son type vest balances with this method");
+
+      vesting_balance_withdraw_operation vesting_balance_withdraw_op;
+
+      vesting_balance_withdraw_op.vesting_balance = *vbid;
+      vesting_balance_withdraw_op.owner = vbo.owner;
+      vesting_balance_withdraw_op.amount = asset_obj.amount_from_string(amount);
+
+      signed_transaction tx;
+      tx.operations.push_back( vesting_balance_withdraw_op );
+      set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees );
+      tx.validate();
+
+      return sign_transaction( tx, broadcast );
+   } FC_CAPTURE_AND_RETHROW( (witness_name)(amount) )}
 
    signed_transaction update_custom_account_authority(string owner,
                                                       custom_account_authority_id_type auth_id,
@@ -1247,7 +1370,27 @@ signed_transaction create_custom_permission(string owner,
       tx.validate();
       return sign_transaction(tx, broadcast);
    }
+   vector< vesting_balance_object_with_info > get_vesting_balances( string account_name )
+   { try {
+      fc::optional<vesting_balance_id_type> vbid = maybe_id<vesting_balance_id_type>( account_name );
+      std::vector<vesting_balance_object_with_info> result;
+      fc::time_point_sec now = _remote_db->get_dynamic_global_properties().time;
 
+      if( vbid )
+      {
+         result.emplace_back( get_object(*vbid), now );
+         return result;
+      }
+
+      vector< vesting_balance_object > vbos = _remote_db->get_vesting_balances( account_name );
+      if( vbos.size() == 0 )
+         return result;
+
+      for( const vesting_balance_object& vbo : vbos )
+         result.emplace_back( vbo, now );
+
+      return result;
+   } FC_CAPTURE_AND_RETHROW( (account_name) )}
    signed_transaction delete_custom_account_authority(string owner,
                                                       custom_account_authority_id_type auth_id,
                                                       bool broadcast)

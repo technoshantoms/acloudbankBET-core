@@ -1897,11 +1897,27 @@ class wallet_api
        * @param broadcast true if you wish to broadcast the transaction
        * @return the signed version of the transaction
        */
-      signed_transaction create_vesting_balance(string owner,
-                                                string amount,
-                                                string asset_symbol,
-                                                bool is_gpos,
-                                                bool broadcast);
+      signed_transaction create_vesting_balance(
+                                     string owner_account,
+                                     string amount,
+                                     string asset_symbol,
+                                     vesting_balance_type vesting_type,
+                                     bool broadcast /* = false */)
+
+        /**
+       * Withdraw a GPOS vesting balance.
+       *
+       * @param account_name The account name of the witness/user, also accepts account ID or vesting balance ID type.
+       * @param amount The amount to withdraw.
+       * @param asset_symbol The symbol of the asset to withdraw.
+       * @param broadcast true if you wish to broadcast the transaction
+       */
+      signed_transaction withdraw_GPOS_vesting_balance(
+         string account_name,
+         string amount,
+         string asset_symbol,
+         bool broadcast = false);
+
 
       /** Signs a transaction.
        *
@@ -2621,6 +2637,36 @@ FC_API( graphene::wallet::wallet_api,
         (htlc_redeem)
         (htlc_extend)
         (get_vesting_balances)
+        (list_sports)
+        (list_event_groups)
+        (list_betting_market_groups)
+        (list_betting_markets)
+        (list_events_in_group)
+        (get_unmatched_bets_for_bettor)
+        (get_all_unmatched_bets_for_bettor)
+        (get_global_betting_statistics)
+        (propose_create_sport)
+        (propose_create_event_group)
+        (propose_create_event)
+        (propose_create_betting_market_group)
+        (propose_create_betting_market)
+        (propose_create_betting_market_rules)
+        (propose_update_betting_market_rules)
+        (propose_update_sport)
+        (propose_update_event_group)
+        (propose_update_event)
+        (propose_update_betting_market_group)
+        (propose_update_betting_market)
+        (propose_delete_sport)
+        (propose_delete_event_group)
+        (place_bet)
+        (cancel_bet)
+        (propose_resolve_betting_market_group)
+        (tournament_create)
+        (tournament_join)
+        (tournament_leave)
+        (rps_throw)
+        (create_vesting_balance)
         (nft_metadata_create)
         (nft_metadata_update)
         (nft_create)
@@ -2649,6 +2695,7 @@ FC_API( graphene::wallet::wallet_api,
         (update_account_role)
         (delete_account_role)
         (withdraw_vesting)
+        (withdraw_GPOS_vesting_balance)
         (vote_for_committee_member)
         (vote_for_witness)
         (set_voting_proxy)
