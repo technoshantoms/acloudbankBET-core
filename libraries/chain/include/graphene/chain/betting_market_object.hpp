@@ -1,5 +1,7 @@
 
 #pragma once
+#include <boost/multi_index/identity.hpp>
+#include <graphene/db/generic_index.hpp>
 
 #include <graphene/chain/types.hpp>
 
@@ -167,8 +169,8 @@ class betting_market_object : public graphene::db::abstract_object< betting_mark
 class bet_object : public graphene::db::abstract_object< bet_object >
 {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id = bet_object_type;
+      static const uint8_t space_id = protocol_ids;
+      static const uint8_t type_id = bet_object_type;
 
       account_id_type bettor_id;
       
@@ -202,8 +204,8 @@ class bet_object : public graphene::db::abstract_object< bet_object >
 class betting_market_position_object : public graphene::db::abstract_object< betting_market_position_object >
 {
    public:
-      static constexpr uint8_t space_id = implementation_ids;
-      static constexpr uint8_t type_id = impl_betting_market_position_object_type;
+      static const uint8_t space_id = implementation_ids;
+      static const uint8_t type_id = impl_betting_market_position_object_type;
 
       account_id_type bettor_id;
       
