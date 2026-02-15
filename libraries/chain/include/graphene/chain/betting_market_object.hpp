@@ -3,7 +3,7 @@
 #include <boost/multi_index/identity.hpp>
 #include <graphene/db/generic_index.hpp>
 
-#include <graphene/chain/types.hpp>
+#include <graphene/protocol/types.hpp>
 
 #include <graphene/protocol/betting_market.hpp>
 
@@ -169,8 +169,8 @@ class betting_market_object : public graphene::db::abstract_object< betting_mark
 class bet_object : public graphene::db::abstract_object< bet_object >
 {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id = bet_object_type;
+      static constexpr uint8_t space_id = protocol_ids;
+      static constexpr uint8_t type_id = bet_object_type;
 
       account_id_type bettor_id;
       
