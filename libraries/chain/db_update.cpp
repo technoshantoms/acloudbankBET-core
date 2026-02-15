@@ -749,7 +749,7 @@ void database::finalize_expired_offers(){
                  finalize.fee_paying_account = offer.issuer;
                  finalize.offer_id = offer.id;
                  finalize.fee = asset( 0, asset_id_type() );
-                 finalize.result = offer.bidder ? result_type::Expired : result_type::ExpiredNoBid;
+                 finalize.result = offer.bidder ? result_types::Expired : result_types::ExpiredNoBid;
 
                  cancel_context.skip_fee_schedule_check = true;
                  apply_operation(cancel_context, finalize);
