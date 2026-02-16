@@ -415,7 +415,7 @@ betting_market_group_status betting_market_group_object::get_status() const
    (void)&state_constants_are_correct;
    betting_market_group_state state = (betting_market_group_state)my->state_machine.current_state()[0];
    
-   ddump((state));
+   //ddump((state));
 
    switch (state)
    {

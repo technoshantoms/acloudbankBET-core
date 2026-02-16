@@ -253,7 +253,7 @@ void_result bet_place_evaluator::do_evaluate(const bet_place_operation& op)
    FC_ASSERT( op.amount_to_bet.asset_id == _betting_market_group->asset_id,
               "Asset type bet does not match the market's asset type" );
 
-   ddump((_betting_market_group->get_status()));
+   //ddump((_betting_market_group->get_status()));
    FC_ASSERT( _betting_market_group->get_status() != betting_market_group_status::frozen, 
               "Unable to place bets while the market is frozen" );
    FC_ASSERT( _betting_market_group->get_status() != betting_market_group_status::closed, 
@@ -310,7 +310,7 @@ object_id_type bet_place_evaluator::do_apply(const bet_place_operation& op)
    bet_id_type new_bet_id = new_bet.id; // save the bet id here, new_bet may be deleted during place_bet()
 
    // place the bet, this may return guaranteed winnings
-   ddump((_betting_market_group->bets_are_delayed())(_current_params->live_betting_delay_time()));
+   //ddump((_betting_market_group->bets_are_delayed())(_current_params->live_betting_delay_time()));
    if (!_betting_market_group->bets_are_delayed() || _current_params->live_betting_delay_time() <= 0)
       d.place_bet(new_bet);
 

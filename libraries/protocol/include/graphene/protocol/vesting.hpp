@@ -27,12 +27,14 @@
 
 namespace graphene { namespace protocol { 
 
-   enum class vesting_balance_type { normal, gpos };
+   enum class vesting_balance_type { normal, gpos, son };
 
    inline std::string get_vesting_balance_type(vesting_balance_type type) {
       switch (type) {
          case vesting_balance_type::normal:
             return "NORMAL";
+         case vesting_balance_type::son:
+            return "SON";
          case vesting_balance_type::gpos:
          default:
             return "GPOS";
@@ -54,15 +56,13 @@ namespace graphene { namespace protocol {
       uint32_t           vesting_seconds = 0;
       cdd_vesting_policy_initializer( uint32_t vest_sec = 0, fc::time_point_sec sc = fc::time_point_sec() ):start_claim(sc),vesting_seconds(vest_sec){}
    };
-
-   struct instant_vesting_policy_initializer
-   {
-   };
+   
+    struct dormant_vesting_policy_initializer {};
 
    typedef fc::static_variant<
       linear_vesting_policy_initializer,
       cdd_vesting_policy_initializer,
-      instant_vesting_policy_initializer
+      dormant_vesting_policy_initializer
    > vesting_policy_initializer;
 
 
@@ -139,9 +139,9 @@ FC_REFLECT( graphene::protocol::vesting_balance_withdraw_operation, (fee)(vestin
 
 FC_REFLECT(graphene::protocol::linear_vesting_policy_initializer, (begin_timestamp)(vesting_cliff_seconds)(vesting_duration_seconds) )
 FC_REFLECT(graphene::protocol::cdd_vesting_policy_initializer, (start_claim)(vesting_seconds) )
-FC_REFLECT_EMPTY( graphene::protocol::instant_vesting_policy_initializer )
+FC_REFLECT_EMPTY( graphene::protocol::dormant_vesting_policy_initializer )
 FC_REFLECT_TYPENAME( graphene::protocol::vesting_policy_initializer )
-FC_REFLECT_ENUM( graphene::protocol::vesting_balance_type, (normal)(gpos) )
+FC_REFLECT_ENUM( graphene::protocol::vesting_balance_type, (normal)(gpos)(son) )
 
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::protocol::vesting_balance_create_operation::fee_parameters_type )
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::protocol::vesting_balance_withdraw_operation::fee_parameters_type )

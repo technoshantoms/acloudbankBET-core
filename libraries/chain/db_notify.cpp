@@ -5,6 +5,11 @@
 #include <graphene/protocol/transaction.hpp>
 #include <graphene/protocol/tnt/validation.hpp>
 
+#include <graphene/protocol/affiliate.hpp>
+#include <graphene/chain/match_object.hpp>
+#include <graphene/chain/game_object.hpp>
+#include <graphene/chain/tournament_object.hpp>
+
 #include <graphene/chain/withdraw_permission_object.hpp>
 #include <graphene/chain/database.hpp>
 #include <graphene/chain/worker_object.hpp>

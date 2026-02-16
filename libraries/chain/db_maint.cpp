@@ -1688,21 +1688,7 @@ void database::perform_chain_maintenance(const signed_block& next_block, const g
          if(d.head_block_time() >= HARDFORK_GPOS_TIME)
             balance_type = vesting_balance_type::gpos;
 
-         // begin use balance_type 
-
-         const vesting_balance_index& vesting_index = d.get_index_type<vesting_balance_index>();
-
-         auto vesting_balances_begin =
-              vesting_index.indices().get<by_asset_balance>().lower_bound(boost::make_tuple(asset_id_type(), balance_type));
-         auto vesting_balances_end =
-              vesting_index.indices().get<by_asset_balance>().upper_bound(boost::make_tuple(asset_id_type(), balance_type, share_type()));
-         for (const vesting_balance_object& vesting_balance_obj : boost::make_iterator_range(vesting_balances_begin, vesting_balances_end))
-         {
-            vesting_amounts[vesting_balance_obj.owner] += vesting_balance_obj.balance.amount;
-            dlog("Vesting balance for account: ${owner}, amount: ${amount}",
-                 ("owner", vesting_balance_obj.owner(d).name)
-                 ("amount", vesting_balance_obj.balance.amount));
-         }
+      
          // begin use balance_type 
          witness_recalc_times   = detail::vote_recalc_options::witness().get_vote_recalc_times( now );
          committee_recalc_times = detail::vote_recalc_options::committee().get_vote_recalc_times( now );

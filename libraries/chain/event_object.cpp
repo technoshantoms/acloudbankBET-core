@@ -431,8 +431,8 @@ namespace graphene { namespace chain {
       static bool state_constants_are_correct = verify_event_status_constants();
       (void)&state_constants_are_correct;
       event_state state = (event_state)my->state_machine.current_state()[0];
-      
-      ddump((state));
+      // Satia, please impl. me?
+      //ddump((state)); 
    
       switch (state)
       {
