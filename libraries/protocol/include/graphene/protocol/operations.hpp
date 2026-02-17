@@ -160,51 +160,51 @@ namespace graphene { namespace protocol {
             /* 97 */ nft_lottery_reward_operation,
             /* 98 */ nft_lottery_end_operation,
             /* 99 */random_number_store_operation,
-            //sidechain_address_add_operation,
-            //sidechain_address_update_operation,
-            //sidechain_address_delete_operation,
-            //sidechain_transaction_create_operation,
-            //sidechain_transaction_sign_operation,
-            //sidechain_transaction_send_operation,
-            //sidechain_transaction_settle_operation,
-            tournament_create_operation,
-            tournament_join_operation,
-            game_move_operation,
-            asset_update_dividend_operation,
-            asset_dividend_distribution_operation, // VIRTUAL
-            tournament_payout_operation, // VIRTUAL
-            tournament_leave_operation,
-            sport_create_operation,
-            sport_update_operation,
-            event_group_create_operation,
-            event_group_update_operation,
-            event_create_operation,
-            event_update_operation,
-            betting_market_rules_create_operation,
-            betting_market_rules_update_operation,
-            betting_market_group_create_operation,
-            betting_market_create_operation,
-            bet_place_operation,
-            betting_market_group_resolve_operation,
-            betting_market_group_resolved_operation, // VIRTUAL
-            bet_adjusted_operation, // VIRTUAL
-            betting_market_group_cancel_unmatched_bets_operation,
-            bet_matched_operation, // VIRTUAL
-            bet_cancel_operation,
-            bet_canceled_operation, // VIRTUAL
-            betting_market_group_update_operation,
-            betting_market_update_operation,
-            event_update_status_operation,
-            sport_delete_operation,
-            event_group_delete_operation,
-            /* 64 */ permission_create_many_operation,
-            /* 65 */ room_create_operation,
-            /* 66 */ room_update_operation,
-            /* 67 */ room_add_participant_operation,
-            /* 68 */ room_remove_participant_operation
-            //affiliate_payout_operation, // VIRTUAL
-            //affiliate_referral_payout_operation // VIRTUAL
-          // /* 100 */ affiliate_referral_payout_operation // VIRTUAL
+            /* 100 */tournament_create_operation,
+            /* 101 */tournament_join_operation,
+            /* 102 */game_move_operation,
+            /* 103 */asset_update_dividend_operation,
+            /* 104 */asset_dividend_distribution_operation, // VIRTUAL
+            /* 105 */tournament_payout_operation, // VIRTUAL
+            /* 106 */tournament_leave_operation,
+            /* 107 */sport_create_operation,
+            /* 108 */sport_update_operation,
+            /* 109 */event_group_create_operation,
+            /* 110 */event_group_update_operation,
+            /* 111 */event_create_operation,
+            /* 112 */event_update_operation,
+            /* 113 */betting_market_rules_create_operation,
+            /* 114 */betting_market_rules_update_operation,
+            /* 115 */betting_market_group_create_operation,
+            /* 116 */betting_market_create_operation,
+            /* 117 */bet_place_operation,
+            /* 118 */betting_market_group_resolve_operation,
+            /* 119 */betting_market_group_resolved_operation, // VIRTUAL
+            /* 120 */bet_adjusted_operation, // VIRTUAL
+            /* 121 */betting_market_group_cancel_unmatched_bets_operation,
+            /* 122 */bet_matched_operation, // VIRTUAL
+            /* 123 */bet_cancel_operation,
+            /* 124 */bet_canceled_operation, // VIRTUAL
+            /* 125 */betting_market_group_update_operation,
+            /* 126 */betting_market_update_operation,
+            /* 127 */event_update_status_operation,
+            /* 128 */sport_delete_operation,
+            /* 129 */event_group_delete_operation,
+            /* 130 */ permission_create_many_operation,
+            /* 131 */ room_create_operation,
+            /* 132 */ room_update_operation,
+            /* 133 */ room_add_participant_operation,
+            /* 134 */ room_remove_participant_operation,
+            /* 135 */ affiliate_payout_operation, // VIRTUAL
+            /* 136 */ affiliate_referral_payout_operation, // VIRTUAL
+            /* 137 */ affiliate_referral_payout_operation // VIRTUAL
+            /* 138 */ //sidechain_address_add_operation,
+            /* 139 */ //sidechain_address_update_operation,
+            /* 140 */ //sidechain_address_delete_operation,
+            /* 141 */ //sidechain_transaction_create_operation,
+            /* 142 */ //sidechain_transaction_sign_operation,
+            /* 143 */ //sidechain_transaction_send_operation,
+            /* 144 */ //sidechain_transaction_settle_operation,
          > operation;
 
    /// @} // operations group
