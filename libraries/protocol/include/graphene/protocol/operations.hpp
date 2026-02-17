@@ -159,7 +159,7 @@ namespace graphene { namespace protocol {
             /* 96 */ nft_lottery_token_purchase_operation,
             /* 97 */ nft_lottery_reward_operation,
             /* 98 */ nft_lottery_end_operation,
-            /* 99 */random_number_store_operation,
+            /* 99 */ random_number_store_operation,
             /* 100 */tournament_create_operation,
             /* 101 */tournament_join_operation,
             /* 102 */game_move_operation,
@@ -190,13 +190,13 @@ namespace graphene { namespace protocol {
             /* 127 */event_update_status_operation,
             /* 128 */sport_delete_operation,
             /* 129 */event_group_delete_operation,
-            /* 130 */ permission_create_many_operation,
-            /* 131 */ room_create_operation,
-            /* 132 */ room_update_operation,
-            /* 133 */ room_add_participant_operation,
-            /* 134 */ room_remove_participant_operation,
-            /* 135 */ affiliate_payout_operation, // VIRTUAL
-            /* 136 */ affiliate_referral_payout_operation // VIRTUAL
+            /* 130 */permission_create_many_operation,
+            /* 131 */room_create_operation,
+            /* 132 */room_update_operation,
+            /* 133 */room_add_participant_operation,
+            /* 134 */room_remove_participant_operation,
+            /* 135 */affiliate_payout_operation, // VIRTUAL
+            /* 136 */affiliate_referral_payout_operation // VIRTUAL
             /* 138 */ //sidechain_address_add_operation,
             /* 139 */ //sidechain_address_update_operation,
             /* 140 */ //sidechain_address_delete_operation,
