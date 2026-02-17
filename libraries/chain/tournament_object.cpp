@@ -624,11 +624,11 @@ namespace graphene { namespace chain {
       }
    }
 
-  fc::sha256 rock_paper_scissors_throw::calculate_hash() const
-   {
-      std::vector<char> full_throw_packed(fc::raw::pack(*this));
-      return fc::sha256::hash(full_throw_packed.data(), full_throw_packed.size());
-   } 
+  //fc::sha256 rock_paper_scissors_throw::calculate_hash() const
+  // {
+  //    std::vector<char> full_throw_packed(fc::raw::pack(*this));
+   //   return fc::sha256::hash(full_throw_packed.data(), full_throw_packed.size());
+   //} 
    vector<tournament_id_type> tournament_players_index::get_registered_tournaments_for_account( const account_id_type& a )const
    {
       auto iter = account_to_joined_tournaments.find(a);
@@ -639,7 +639,7 @@ namespace graphene { namespace chain {
 
    void tournament_players_index::object_inserted(const object& obj)
    {
-       object_created(obj);
+       object_inserted(obj);
    }
 
 

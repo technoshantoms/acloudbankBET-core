@@ -9,6 +9,7 @@
 #include <graphene/app/api.hpp>
 #include <graphene/utilities/key_conversion.hpp>
 #include <graphene/protocol/rock_paper_scissors.hpp>
+#include <graphene/protocol/types.hpp>
 #include "wallet_structs.hpp"
 
 using namespace graphene::app;

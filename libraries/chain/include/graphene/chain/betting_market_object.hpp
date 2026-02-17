@@ -1,16 +1,16 @@
-
 #pragma once
+#include <boost/multi_index/composite_key.hpp>
+#include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
 #include <graphene/db/generic_index.hpp>
-
+#include <graphene/chain/types.hpp>
 #include <graphene/protocol/types.hpp>
+#include <graphene/chain/account_object.hpp>
+#include <graphene/chain/event_object.hpp>
 
 #include <graphene/protocol/betting_market.hpp>
 
 #include <graphene/db/object.hpp>
-#include <graphene/db/generic_index.hpp>
-
-#include <boost/multi_index/composite_key.hpp>
 
 #include <sstream>
 
@@ -204,8 +204,8 @@ class bet_object : public graphene::db::abstract_object< bet_object >
 class betting_market_position_object : public graphene::db::abstract_object< betting_market_position_object >
 {
    public:
-      static const uint8_t space_id = implementation_ids;
-      static const uint8_t type_id = impl_betting_market_position_object_type;
+      static constexpr uint8_t space_id = implementation_ids;
+      static constexpr uint8_t type_id = impl_betting_market_position_object_type;
 
       account_id_type bettor_id;
       

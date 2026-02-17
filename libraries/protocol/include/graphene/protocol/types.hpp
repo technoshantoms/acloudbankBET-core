@@ -29,10 +29,11 @@
 #include <fc/safe.hpp>
 #include <fc/container/flat.hpp>
 #include <fc/string.hpp>
-//#include <graphene/protocol/ext.hpp>
+#include <graphene/protocol/ext.hpp>
 
 #include <fc/io/datastream.hpp>
 #include <fc/io/raw_fwd.hpp>
+#include <fc/uint128.hpp>
 #include <fc/static_variant.hpp>
 
 #include <graphene/protocol/object_id.hpp>

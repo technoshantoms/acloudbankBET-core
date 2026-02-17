@@ -7,6 +7,7 @@
 #include <graphene/chain/event_object.hpp>
 #include <graphene/chain/database.hpp>
 #include <boost/integer/common_factor_rt.hpp>
+//#include <graphene/protocol/types.hpp>
 
 #include <boost/msm/back/state_machine.hpp>
 #include <boost/msm/front/state_machine_def.hpp>
