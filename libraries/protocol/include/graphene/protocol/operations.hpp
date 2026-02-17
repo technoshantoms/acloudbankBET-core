@@ -37,7 +37,7 @@
 #include <graphene/protocol/nft_lottery.hpp>
 #include <graphene/protocol/lottery_ops.hpp>
 //refferal payout
-//#include <graphene/protocol/affiliate.hpp>
+#include <graphene/protocol/affiliate.hpp>
 //nft
 #include <graphene/protocol/custom_permission.hpp>
 #include <graphene/protocol/custom_account_authority.hpp>
@@ -197,14 +197,13 @@ namespace graphene { namespace protocol {
             /* 134 */ room_remove_participant_operation,
             /* 135 */ affiliate_payout_operation, // VIRTUAL
             /* 136 */ affiliate_referral_payout_operation, // VIRTUAL
-            /* 137 */ affiliate_referral_payout_operation // VIRTUAL
-            /* 138 */ //sidechain_address_add_operation,
-            /* 139 */ //sidechain_address_update_operation,
-            /* 140 */ //sidechain_address_delete_operation,
-            /* 141 */ //sidechain_transaction_create_operation,
-            /* 142 */ //sidechain_transaction_sign_operation,
-            /* 143 */ //sidechain_transaction_send_operation,
-            /* 144 */ //sidechain_transaction_settle_operation,
+            /* 137 */ //sidechain_address_add_operation,
+            /* 138 */ //sidechain_address_update_operation,
+            /* 139 */ //sidechain_address_delete_operation,
+            /* 140 */ //sidechain_transaction_create_operation,
+            /* 141 */ //sidechain_transaction_sign_operation,
+            /* 142 */ //sidechain_transaction_send_operation,
+            /* 143 */ //sidechain_transaction_settle_operation,
          > operation;
 
    /// @} // operations group
