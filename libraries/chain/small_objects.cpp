@@ -45,9 +45,9 @@
 #include <graphene/chain/custom_authority_object.hpp>
 
 #include <fc/io/raw.hpp>
-
-//FC_REFLECT_DERIVED_NO_TYPENAME( graphene::chain::balance_object, (graphene::db::object),
-//                    (owner)(balance)(vesting_policy)(last_claim_date) )
+// SATIA COMMENT
+FC_REFLECT_DERIVED_NO_TYPENAME( graphene::chain::balance_object, (graphene::db::object),
+                    (owner)(balance)(vesting_policy)(last_claim_date) )
 
 FC_REFLECT_DERIVED_NO_TYPENAME( graphene::chain::ico_balance_object, (graphene::db::object),
                     (eth_address)(balance) )

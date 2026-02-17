@@ -583,5 +583,5 @@ FC_REFLECT_DERIVED( graphene::chain::pending_dividend_payout_balance_for_holder_
 
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::account_object )
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::account_balance_object )
-GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::pending_dividend_payout_balance_for_holder_object )
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::account_statistics_object )
+GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::pending_dividend_payout_balance_for_holder_object )

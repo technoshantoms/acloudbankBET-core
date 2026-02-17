@@ -5,7 +5,6 @@
 #include <graphene/protocol/transaction.hpp>
 #include <graphene/protocol/tnt/validation.hpp>
 
-#include <graphene/protocol/affiliate.hpp>
 #include <graphene/chain/match_object.hpp>
 #include <graphene/chain/game_object.hpp>
 #include <graphene/chain/tournament_object.hpp>
@@ -38,7 +37,7 @@
 #include <graphene/chain/account_role_object.hpp>
 #include <graphene/chain/random_number_object.hpp>
 
-//#include <graphene/chain/sidechain_address_object.hpp>
+#include <graphene/chain/sidechain_address_object.hpp>
 
 #include <graphene/chain/account_object.hpp>
 #include <graphene/protocol/random_number.hpp>
@@ -577,7 +576,7 @@ struct get_impacted_account_visitor
    void operator()( const nft_lottery_token_purchase_operation& op ){
       _impacted.insert( op.buyer );
    }
-   /* 
+   
    void operator()( const sidechain_address_add_operation& op ) {
       _impacted.insert( op.payer );
    }
@@ -599,7 +598,6 @@ struct get_impacted_account_visitor
    void operator()( const sidechain_transaction_settle_operation& op ) {
       _impacted.insert( op.payer );
    }
-   */
     void operator()( const random_number_store_operation& op ){
       _impacted.insert( op.account );
    }
@@ -726,17 +724,21 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
            break;
         } case sport_object_type:
            break;
-          case event_group_object_type:
+         case event_group_object_type:
            break;
-          case event_object_type:
+         case event_object_type:
            break;
-          case betting_market_rules_object_type:
+         case betting_market_rules_object_type:
            break;
-          case betting_market_group_object_type:
+         case betting_market_group_object_type:
            break;
-          case betting_market_object_type:
+         case room_object_type:
            break;
-          case bet_object_type:{
+         case room_participant_object_type:
+           break;
+         case betting_market_object_type:
+           break;
+         case bet_object_type:{
            auto aobj = dynamic_cast<const bet_object*>(obj);
            FC_ASSERT(aobj != nullptr);
            accounts.insert(aobj->bettor_id);
@@ -846,7 +848,7 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
            accounts.insert( aobj->whitelisted_accounts.begin(), aobj->whitelisted_accounts.end() );
            break;
         }
-       /* 
+      
        case sidechain_address_object_type:{
            const auto& aobj = dynamic_cast<const sidechain_address_object*>(obj);
            FC_ASSERT( aobj != nullptr );
@@ -855,7 +857,7 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
         } case sidechain_transaction_object_type:{
            break;
         }
-        */
+      
       }
    }
    else if( obj->id.space() == implementation_ids )

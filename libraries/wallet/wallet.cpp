@@ -2202,6 +2202,57 @@ signed_transaction wallet_api::rps_throw(game_id_type game_id,
    return my->sign_transaction( tx, broadcast );
 }
 
+signed_transaction add_sidechain_address(string account,
+                                            sidechain_type sidechain,
+                                            string deposit_public_key,
+                                            string deposit_address,
+                                            string withdraw_public_key,
+                                            string withdraw_address,
+                                            bool broadcast /* = false */)
+   { try {
+      account_id_type sidechain_address_account_id = get_account_id(account);
+
+      sidechain_address_add_operation op;
+      op.payer = sidechain_address_account_id;
+      op.sidechain_address_account = sidechain_address_account_id;
+      op.sidechain = sidechain;
+      op.deposit_public_key = deposit_public_key;
+      op.deposit_address = deposit_address;
+      op.withdraw_public_key = withdraw_public_key;
+      op.withdraw_address = withdraw_address;
+
+      signed_transaction tx;
+      tx.operations.push_back( op );
+      set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);
+      tx.validate();
+
+      return sign_transaction( tx, broadcast );
+   } FC_CAPTURE_AND_RETHROW() }
+
+   signed_transaction delete_sidechain_address(string account,
+                                               sidechain_type sidechain,
+                                               bool broadcast /* = false */)
+   { try {
+      account_id_type sidechain_address_account_id = get_account_id(account);
+      fc::optional<sidechain_address_object> sao = _remote_db->get_sidechain_address_by_account_and_sidechain(sidechain_address_account_id, sidechain);
+      if (!sao)
+         FC_THROW("No sidechain address for account ${account} and sidechain ${sidechain}", ("account", sidechain_address_account_id)("sidechain", sidechain));
+
+      sidechain_address_delete_operation op;
+      op.payer = sidechain_address_account_id;
+      op.sidechain_address_id = sao->id;
+      op.sidechain_address_account = sidechain_address_account_id;
+      op.sidechain = sidechain;
+
+      signed_transaction tx;
+      tx.operations.push_back( op );
+      set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);
+      tx.validate();
+
+      return sign_transaction( tx, broadcast );
+
+   } FC_CAPTURE_AND_RETHROW() }
+
 signed_transaction wallet_api::nft_metadata_create(string owner_account_id_or_name,
                                                    string name,
                                                    string symbol,
@@ -3293,6 +3344,46 @@ bool wallet_api::verify_message( string message, string account, int block, cons
 bool wallet_api::verify_signed_message( signed_message message )
 {
    return my->verify_signed_message( message );
+}
+
+signed_transaction wallet_api::add_sidechain_address(string account,
+                                          sidechain_type sidechain,
+                                          string deposit_public_key,
+                                          string deposit_address,
+                                          string withdraw_public_key,
+                                          string withdraw_address,
+                                          bool broadcast /* = false */)
+{
+   return my->add_sidechain_address(account, sidechain, deposit_public_key, deposit_address, withdraw_public_key, withdraw_address, broadcast);
+}
+
+signed_transaction wallet_api::delete_sidechain_address(string account,
+                                          sidechain_type sidechain,
+                                          bool broadcast /* = false */)
+{
+   return my->delete_sidechain_address(account, sidechain, broadcast);
+}
+
+vector<optional<sidechain_address_object>> wallet_api::get_sidechain_addresses_by_account(string account)
+{
+   account_id_type account_id = get_account_id(account);
+   return my->_remote_db->get_sidechain_addresses_by_account(account_id);
+}
+
+vector<optional<sidechain_address_object>> wallet_api::get_sidechain_addresses_by_sidechain(sidechain_type sidechain)
+{
+   return my->_remote_db->get_sidechain_addresses_by_sidechain(sidechain);
+}
+
+fc::optional<sidechain_address_object> wallet_api::get_sidechain_address_by_account_and_sidechain(string account, sidechain_type sidechain)
+{
+   account_id_type account_id = get_account_id(account);
+   return my->_remote_db->get_sidechain_address_by_account_and_sidechain(account_id, sidechain);
+}
+
+uint64_t wallet_api::get_sidechain_addresses_count()
+{
+   return my->_remote_db->get_sidechain_addresses_count();
 }
 
 /** Verify a message signed with sign_message, in its encapsulated form.
