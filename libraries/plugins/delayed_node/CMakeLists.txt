@@ -3,8 +3,8 @@ file(GLOB HEADERS "include/graphene/delayed_node/*.hpp")
 add_library( graphene_delayed_node 
              delayed_node_plugin.cpp
            )
-
-target_link_libraries( graphene_delayed_node PRIVATE graphene_plugin graphene_accounts_list graphene_affiliate_stats graphene_bookie graphene_debug_witness  graphene_market_history )
+           
+target_link_libraries( graphene_delayed_node PRIVATE graphene_plugin graphene_affiliate_stats graphene_bookie graphene_debug_witness  graphene_market_history )
 target_include_directories( graphene_delayed_node
                             PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" )
 
