@@ -112,11 +112,11 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
    vector<nft_object> nft_get_all_tokens() const;
    vector<nft_object> nft_get_tokens_by_owner(const account_id_type owner) const;
    // Sidechain addresses
-   /*vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
+   vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
    vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
    vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
    fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const;
-   uint64_t get_sidechain_addresses_count() const;*/
+   uint64_t get_sidechain_addresses_count() const;
       // Peerplays
    vector<sport_object> list_sports() const;
    vector<event_group_object> list_event_groups(sport_id_type sport_id) const;

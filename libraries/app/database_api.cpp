@@ -1027,7 +1027,7 @@ vector<optional<extended_asset_object>> database_api_impl::lookup_asset_symbols(
 {
    return get_assets( symbols_or_ids, false );
 }
-// Sidechain addresses
+/*// Sidechain addresses
    vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
    vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
    vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
@@ -1052,7 +1052,7 @@ vector<optional<extended_asset_object>> database_api_impl::lookup_asset_symbols(
                                               asset_id_type start) const;
    asset get_lottery_balance(asset_id_type lottery_id) const;
    sweeps_vesting_balance_object get_sweeps_vesting_balance_object(account_id_type account) const;
-   asset get_sweeps_vesting_balance_available_for_claim(account_id_type account) const;
+   asset get_sweeps_vesting_balance_available_for_claim(account_id_type account) const;*/
 
    ////////////////////
 // Lottery Assets //

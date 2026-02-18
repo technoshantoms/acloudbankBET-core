@@ -44,10 +44,10 @@
 #include <graphene/protocol/offer.hpp>
 #include <graphene/protocol/nft_ops.hpp>
 
-/*
+//sidechain
 #include <graphene/protocol/sidechain_address.hpp>
 #include <graphene/protocol/sidechain_transaction.hpp>
-*/
+
 
 #include <graphene/protocol/random_number.hpp>
 

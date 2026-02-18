@@ -516,6 +516,12 @@ namespace graphene { namespace app {
        return result;
     }
 
+   vector<account_balance_object> history_api::list_core_accounts() const {
+    auto list = _app.get_plugin<accounts_list_plugin>("accounts_list");
+    FC_ASSERT(list);
+   return list->list_accounts();
+   }
+
     flat_set<uint32_t> history_api::get_market_history_buckets()const
     {
        auto market_hist_plugin = _app.get_plugin<market_history_plugin>( "market_history" );

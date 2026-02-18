@@ -25,6 +25,7 @@
 #pragma once
 
 #include <graphene/app/database_api.hpp>
+#include <graphene/accounts_list/accounts_list_plugin.hpp>
 
 #include <graphene/protocol/types.hpp>
 
@@ -58,6 +59,7 @@ namespace graphene { namespace app {
    using namespace graphene::market_history;
    using namespace graphene::grouped_orders;
    using namespace graphene::custom_operations;
+   using namespace graphene::accounts_list;
 
    using namespace fc::ecc;
    using std::string;
