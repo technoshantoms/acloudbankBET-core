@@ -17,8 +17,8 @@ namespace detail
 class accounts_list_plugin : public graphene::app::plugin
 {
    public:
-      accounts_list_plugin();
-      virtual ~accounts_list_plugin();
+     // accounts_list_plugin();
+     // virtual ~accounts_list_plugin();
 
       std::string plugin_name()const override;
       virtual void plugin_set_program_options(
