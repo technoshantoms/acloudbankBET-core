@@ -95,6 +95,10 @@ namespace graphene { namespace db {
          const index&  get_index()const { return get_index(T::space_id,T::type_id); }
          const index&  get_index(uint8_t space_id, uint8_t type_id)const;
          const index&  get_index(object_id_type id)const { return get_index(id.space(),id.type()); }
+         template<typename T>
+         const index* find_index()const { return find_index(T::space_id,T::type_id); }
+         const index* find_index(object_id_type id)const { return find_index(id.space(), id.type()); }
+         const index* find_index(uint8_t space_id, uint8_t type_id)const;
          /// @}
 
          const object& get_object( object_id_type id )const;
@@ -166,15 +170,15 @@ namespace graphene { namespace db {
           template<typename SecondaryIndexType, typename PrimaryIndexType = typename SecondaryIndexType::watched_index>
          SecondaryIndexType* add_secondary_index()
          {
-            uint8_t space_id = PrimaryIndexType::object_type::space_id;
-            uint8_t type_id = PrimaryIndexType::object_type::type_id;
+            //uint8_t space_id = PrimaryIndexType::object_type::space_id;
+            //uint8_t type_id = PrimaryIndexType::object_type::type_id;
             auto new_index =
                     get_mutable_index_type<PrimaryIndexType>().template add_secondary_index<SecondaryIndexType>();
             //safety_check_policy* check = _safety_checks[space_id].get();
-            FC_ASSERT(check != nullptr &&
-                      check->allow_new_secondary_index(type_id, *new_index),
-                      "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
-                      ("S", space_id)("T", type_id));
+           // FC_ASSERT(check != nullptr &&
+           //           check->allow_new_secondary_index(type_id, *new_index),
+           //           "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
+           //           ("S", space_id)("T", type_id));
             return new_index;
          }
          template<typename SecondaryIndexType>
@@ -187,10 +191,43 @@ namespace graphene { namespace db {
 
             auto new_index = base_primary->template add_secondary_index<SecondaryIndexType>();
             //safety_check_policy* check = _safety_checks[space_id].get();
-            FC_ASSERT(check != nullptr && check->allow_new_secondary_index(type_id, *new_index),
-                      "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
-                      ("S", space_id)("T", type_id));
+            //FC_ASSERT(check != nullptr && check->allow_new_secondary_index(type_id, *new_index),
+            //          "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
+            //          ("S", space_id)("T", type_id));
             return new_index;
+         }
+
+         template<typename PrimaryIndexType>
+         void delete_secondary_index(const secondary_index& secondary) {
+            //uint8_t space_id = PrimaryIndexType::object_type::space_id;
+            //uint8_t type_id = PrimaryIndexType::object_type::type_id;
+            //safety_check_policy* check = _safety_checks[space_id].get();
+            //FC_ASSERT(check != nullptr &&
+            //          check->allow_delete_secondary_index(type_id, secondary),
+            //          "Safety Check: Deletion of secondary index on ${S}.${T} not allowed!",
+            //          ("S", space_id)("T", type_id));
+            get_mutable_index_type<PrimaryIndexType>().delete_secondary_index(secondary);
+         }
+         void delete_secondary_index(const uint8_t space_id, const uint8_t type_id, const secondary_index& secondary) {
+            //safety_check_policy* check = _safety_checks[space_id].get();
+            //FC_ASSERT(check != nullptr && check->allow_delete_secondary_index(type_id, secondary),
+             //         "Safety Check: Deletion of secondary index on ${S}.${T} not allowed!",
+            //          ("S", space_id)("T", type_id));
+            auto* base_primary = dynamic_cast<base_primary_index*>(&get_mutable_index(space_id, type_id));
+            FC_ASSERT(base_primary != nullptr, "Cannot delete secondary index: index for space ID ${S} and type ID "
+                                               "${T} does not support secondary indexes.",
+                      ("S", space_id)("T", type_id));
+            base_primary->delete_secondary_index(secondary);
+         }
+
+          // Inspect each index in an object space. F is a callable taking a const index&
+         template<typename F>
+         void inspect_all_indexes(uint8_t space_id, F&& f) const {
+             FC_ASSERT(_index.size() > space_id, "Cannot inspect indexes in space ID ${ID}: no such object space",
+                       ("ID", space_id));
+             for (const auto& ptr : _index[space_id])
+                 if (ptr != nullptr)
+                     f((const index&)(*ptr));
          }
 
          template<typename IndexType, typename SecondaryIndexType, typename... Args>
