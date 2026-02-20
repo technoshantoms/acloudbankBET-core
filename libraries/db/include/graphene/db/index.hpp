@@ -144,8 +144,6 @@ namespace graphene { namespace db {
          virtual void object_removed( const object& obj ){};
          virtual void about_to_modify( const object& before ){};
          virtual void object_modified( const object& after  ){};
-         // Called when an object from the current node session is created
-         virtual void object_created( const object& obj ){};
    };
 
    /**
@@ -223,38 +221,6 @@ namespace graphene { namespace db {
          virtual ~direct_index(){}
 
          virtual void object_inserted( const object& obj )
-         {
-            uint64_t instance = obj.id.instance();
-            if( instance == next )
-            {
-               if( !(next & _mask) )
-               {
-                  content.resize((next >> chunkbits) + 1);
-                  content[next >> chunkbits].resize( 1 << chunkbits, nullptr );
-               }
-               next++;
-            }
-            else if( instance < next )
-               FC_ASSERT( !content[instance >> chunkbits][instance & _mask], "Overwriting insert at {id}!", ("id",obj.id) );
-            else // instance > next, allow small "holes"
-            {
-               FC_ASSERT( instance <= next + MAX_HOLE, "Out-of-order insert: {id} > {next}!", ("id",obj.id)("next",next) );
-               if( !(next & _mask) || (next & (~_mask)) != (instance & (~_mask)) )
-               {
-                  content.resize((instance >> chunkbits) + 1);
-                  content[instance >> chunkbits].resize( 1 << chunkbits, nullptr );
-               }
-               while( next <= instance )
-               {
-                  content[next >> chunkbits][next & _mask] = nullptr;
-                  next++;
-               }
-            }
-            FC_ASSERT( nullptr != dynamic_cast<const Object*>(&obj), "Wrong object type!" );
-            content[instance >> chunkbits][instance & _mask] = static_cast<const Object*>( &obj );
-         }
-
-         virtual void object_created( const object& obj )
          {
             uint64_t instance = obj.id.instance();
             if( instance == next )
@@ -443,26 +409,6 @@ namespace graphene { namespace db {
                item->object_removed( obj );
             on_remove(obj);
             DerivedIndex::remove(obj);
-         }
-
-         virtual const object&  create(const std::function<void(object&)>& constructor )override
-         {
-            uint8_t type_id = object_type::type_id;
-            try {
-            FC_ASSERT(_check.allow_object_creation(_next_id),
-                      "Safety Check: Creation of object ${ID} is not allowed", ("ID", _next_id));
-            } catch(...) {
-               // When debugging a safety check failure, throw a breakpoint here to see where it's coming from
-               throw;
-            }
-            const auto& result = DerivedIndex::create( constructor );
-            for( const auto& item : _sindex ) {
-               _check.pre_secondary_index_notification(type_id, *item);
-               item->object_created( result );
-               _check.post_secondary_index_notification(type_id, *item);
-            }
-            on_add( result );
-            return result;
          }
 
          virtual void modify( const object& obj, const std::function<void(object&)>& m )override

@@ -41,14 +41,13 @@ typedef multi_index_container<
 typedef generic_index<persistent_event_object, persistent_event_multi_index_type> persistent_event_index;
 
 #if 0 // we no longer have competitors, just leaving this here as an example of how to do a secondary index
-//
 class events_by_competitor_index : public secondary_index
 {
    public:
       virtual ~events_by_competitor_index() {}
 
       virtual void object_loaded( const object& obj ) override;
-      //virtual void object_created( const object& obj ) override;
+      virtual void object_created( const object& obj ) override;
       virtual void object_removed( const object& obj ) override;
       virtual void about_to_modify( const object& before ) override;
       virtual void object_modified( const object& after  ) override;
