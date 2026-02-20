@@ -445,25 +445,25 @@ namespace graphene { namespace db {
             DerivedIndex::remove(obj);
          }
 
-         virtual const object&  create(const std::function<void(object&)>& constructor )override
+         /*virtual const object&  create(const std::function<void(object&)>& constructor )override
          {
-            uint8_t type_id = object_type::type_id;
-            try {
-            FC_ASSERT(_check.allow_object_creation(_next_id),
-                      "Safety Check: Creation of object ${ID} is not allowed", ("ID", _next_id));
-            } catch(...) {
-               // When debugging a safety check failure, throw a breakpoint here to see where it's coming from
-               throw;
-            }
+            //uint8_t type_id = object_type::type_id;
+            //try {
+            //FC_ASSERT(_check.allow_object_creation(_next_id),
+            //          "Safety Check: Creation of object ${ID} is not allowed", ("ID", _next_id));
+            //} catch(...) {
+            //   // When debugging a safety check failure, throw a breakpoint here to see where it's coming from
+            //   throw;
+            //}
             const auto& result = DerivedIndex::create( constructor );
             for( const auto& item : _sindex ) {
-               _check.pre_secondary_index_notification(type_id, *item);
+             //  _check.pre_secondary_index_notification(type_id, *item);
                item->object_created( result );
-               _check.post_secondary_index_notification(type_id, *item);
+             //  _check.post_secondary_index_notification(type_id, *item);
             }
             on_add( result );
             return result;
-         }
+         }*/
 
          virtual void modify( const object& obj, const std::function<void(object&)>& m )override
          {

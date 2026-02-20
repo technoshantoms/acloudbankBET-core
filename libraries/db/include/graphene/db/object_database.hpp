@@ -170,7 +170,7 @@ namespace graphene { namespace db {
             uint8_t type_id = PrimaryIndexType::object_type::type_id;
             auto new_index =
                     get_mutable_index_type<PrimaryIndexType>().template add_secondary_index<SecondaryIndexType>();
-            safety_check_policy* check = _safety_checks[space_id].get();
+            //safety_check_policy* check = _safety_checks[space_id].get();
             FC_ASSERT(check != nullptr &&
                       check->allow_new_secondary_index(type_id, *new_index),
                       "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
@@ -186,7 +186,7 @@ namespace graphene { namespace db {
                       ("S", space_id)("T", type_id));
 
             auto new_index = base_primary->template add_secondary_index<SecondaryIndexType>();
-            safety_check_policy* check = _safety_checks[space_id].get();
+            //safety_check_policy* check = _safety_checks[space_id].get();
             FC_ASSERT(check != nullptr && check->allow_new_secondary_index(type_id, *new_index),
                       "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
                       ("S", space_id)("T", type_id));
