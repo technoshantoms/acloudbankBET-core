@@ -64,6 +64,26 @@ namespace graphene { namespace db {
             } ));
          }
 
+            /**
+          * @brief Allocate an object space, setting a safety check policy for that object space
+          * @param space_id The ID of the object space to allocate
+          * @tparam SafetyCheckPolicy Specific type of the safety check policy for the object space
+          * @tparam ConstructorArgs Variadic of arguments for the constructor of SafetyCheckPolicy
+          * @return A non-owning pointer to the safety_check_policy object for the newly allocated object space
+          *
+          * Allocate a new object space in the database, setting the safety check policy for that object space. The
+          * policy object's lifetime is managed by the database, and a non-owning pointer to the newly created policy
+          * object is returned to the caller. The pointer will remain valid until the database is closed, or the
+          * indexes are reset.
+          */
+      //   template<typename SafetyCheckPolicy, typename... ConstructorArgs>
+      //   SafetyCheckPolicy* allocate_object_space(uint8_t space_id, ConstructorArgs&&... args) {
+      //      FC_ASSERT(_safety_checks[space_id] == nullptr,
+      //                "Cannot allocate object space ${ID}: object space already allocated.", ("ID", space_id));
+      //      _safety_checks[space_id] = std::make_unique<SafetyCheckPolicy>(std::forward<ConstructorArgs>(args)...);
+      //      return static_cast<SafetyCheckPolicy*>(_safety_checks[space_id].get());
+      //   }
+
          ///These methods are used to retrieve indexes on the object_database. All public index accessors are const-access only.
          /// @{
          template<typename IndexType>
@@ -141,6 +161,36 @@ namespace graphene { namespace db {
             unique_ptr<index> indexptr( std::make_unique<IndexType>(*this) );
             _index[ObjectType::space_id][ObjectType::type_id] = std::move(indexptr);
             return static_cast<IndexType*>(_index[ObjectType::space_id][ObjectType::type_id].get());
+         }
+
+          template<typename SecondaryIndexType, typename PrimaryIndexType = typename SecondaryIndexType::watched_index>
+         SecondaryIndexType* add_secondary_index()
+         {
+            uint8_t space_id = PrimaryIndexType::object_type::space_id;
+            uint8_t type_id = PrimaryIndexType::object_type::type_id;
+            auto new_index =
+                    get_mutable_index_type<PrimaryIndexType>().template add_secondary_index<SecondaryIndexType>();
+            safety_check_policy* check = _safety_checks[space_id].get();
+            FC_ASSERT(check != nullptr &&
+                      check->allow_new_secondary_index(type_id, *new_index),
+                      "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
+                      ("S", space_id)("T", type_id));
+            return new_index;
+         }
+         template<typename SecondaryIndexType>
+         SecondaryIndexType* add_secondary_index(const uint8_t space_id, const uint8_t type_id)
+         {
+            auto* base_primary = dynamic_cast<base_primary_index*>(&get_mutable_index(space_id, type_id));
+            FC_ASSERT(base_primary != nullptr, "Cannot add secondary index: index for space ID ${S} and type ID ${T} "
+                                               "does not support secondary indexes.",
+                      ("S", space_id)("T", type_id));
+
+            auto new_index = base_primary->template add_secondary_index<SecondaryIndexType>();
+            safety_check_policy* check = _safety_checks[space_id].get();
+            FC_ASSERT(check != nullptr && check->allow_new_secondary_index(type_id, *new_index),
+                      "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
+                      ("S", space_id)("T", type_id));
+            return new_index;
          }
 
          template<typename IndexType, typename SecondaryIndexType, typename... Args>
