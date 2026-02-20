@@ -53,7 +53,7 @@ namespace detail
  *    This primary index will be used to index plugin objects that are copies of node objects
  *    observed during Step 2.
  * 2. During a node session: the helper is notified by the database about the watched node objects
- *    that are created during the node session through its `object_created()` callback.
+ *    that are created during the node session through its `object_inserted()` callback.
  *    During that callback, the helper will create its own copy (plugin object) of the of node
  *    objectand inject it into its own primary index.
  * 3. When the node session shuts down, the database will persist the helper's primary index
@@ -61,9 +61,9 @@ namespace detail
  * 4. When the node is restarted, the database will automatically load the previous session(s)'s
  *    node objectsinto the helper's primary index.
  *
- * The helper can ignore the `object_loaded()` events that are triggered when the watched node
+ * The helper can ignore the `object_inserted()` events that are triggered when the watched node
  * objects are loaded from persistence by the database because those objects were already processed
- * by the the helper's `object_created()` during the prior sessions.
+ * by the the helper's `object_inserted()` during the prior sessions.
  *
  * NOTE: The helper should register itself for notifications of new node objects
  *       during `plugin_initialize()` rather than `plugin_startup()`
@@ -76,8 +76,8 @@ class persistent_bet_object_helper : public secondary_index
 
       using watched_index = primary_index<bet_object_index>;
 
-      //virtual void object_loaded(const object& obj) override;
-      virtual void object_insert(const object& obj) override;
+      virtual void object_inserted(const object& obj) override;
+      //virtual void object_created(const object& obj) override;
       //virtual void object_removed( const object& obj ) override;
       //virtual void about_to_modify( const object& before ) override;
       virtual void object_modified(const object& after) override;
@@ -86,7 +86,7 @@ class persistent_bet_object_helper : public secondary_index
       bookie_plugin* _bookie_plugin;
 };
 
-void persistent_bet_object_helper::object_created(const object& obj)
+void persistent_bet_object_helper::object_inserted(const object& obj)
 {
    const bet_object& bet_obj = *boost::polymorphic_downcast<const bet_object*>(&obj);
    _bookie_plugin->database().create<persistent_bet_object>([&](persistent_bet_object& saved_bet_obj) {
@@ -114,8 +114,8 @@ class persistent_betting_market_object_helper : public secondary_index
 
       using watched_index = primary_index<betting_market_object_index>;
 
-      //virtual void object_loaded(const object& obj) override;
-      virtual void object_created(const object& obj) override;
+      virtual void object_inserted(const object& obj) override;
+      //virtual void object_created(const object& obj) override;
       //virtual void object_removed( const object& obj ) override;
       //virtual void about_to_modify( const object& before ) override;
       virtual void object_modified(const object& after) override;
@@ -124,7 +124,7 @@ class persistent_betting_market_object_helper : public secondary_index
       bookie_plugin* _bookie_plugin;
 };
 
-void persistent_betting_market_object_helper::object_created(const object& obj)
+void persistent_betting_market_object_helper::object_inserted(const object& obj)
 {
    const betting_market_object& betting_market_obj = *boost::polymorphic_downcast<const betting_market_object*>(&obj);
    _bookie_plugin->database().create<persistent_betting_market_object>([&](persistent_betting_market_object& saved_betting_market_obj) {
@@ -152,8 +152,8 @@ class persistent_betting_market_group_object_helper : public secondary_index
 
       using watched_index = primary_index<betting_market_group_object_index>;
 
-      //virtual void object_loaded(const object& obj) override;
-      virtual void object_created(const object& obj) override;
+      virtual void object_inserted(const object& obj) override;
+      //virtual void object_created(const object& obj) override;
       //virtual void object_removed( const object& obj ) override;
       //virtual void about_to_modify( const object& before ) override;
       virtual void object_modified(const object& after) override;
@@ -162,7 +162,7 @@ class persistent_betting_market_group_object_helper : public secondary_index
       bookie_plugin* _bookie_plugin;
 };
 
-void persistent_betting_market_group_object_helper::object_created(const object& obj)
+void persistent_betting_market_group_object_helper::object_inserted(const object& obj)
 {
    const betting_market_group_object& betting_market_group_obj = *boost::polymorphic_downcast<const betting_market_group_object*>(&obj);
    _bookie_plugin->database().create<persistent_betting_market_group_object>([&](persistent_betting_market_group_object& saved_betting_market_group_obj) {
@@ -190,8 +190,8 @@ class persistent_event_object_helper : public secondary_index
 
       using watched_index = primary_index<event_object_index>;
 
-      //virtual void object_loaded(const object& obj) override;
-      virtual void object_created(const object& obj) override;
+      virtual void object_inserted(const object& obj) override;
+      //virtual void object_created(const object& obj) override;
       //virtual void object_removed( const object& obj ) override;
       //virtual void about_to_modify( const object& before ) override;
       virtual void object_modified(const object& after) override;
@@ -200,7 +200,7 @@ class persistent_event_object_helper : public secondary_index
       bookie_plugin* _bookie_plugin;
 };
 
-void persistent_event_object_helper::object_created(const object& obj)
+void persistent_event_object_helper::object_inserted(const object& obj)
 {
    const event_object& event_obj = *boost::polymorphic_downcast<const event_object*>(&obj);
    _bookie_plugin->database().create<persistent_event_object>([&](persistent_event_object& saved_event_obj) {
@@ -462,14 +462,14 @@ asset bookie_plugin_impl::get_total_matched_bet_amount_for_betting_market_group(
 }
 } // end namespace detail
 
-bookie_plugin::bookie_plugin() :
-   my( new detail::bookie_plugin_impl(*this) )
-{
-}
-
-bookie_plugin::~bookie_plugin()
-{
-}
+//bookie_plugin::bookie_plugin() :
+//   my( new detail::bookie_plugin_impl(*this) )
+//{
+//}
+//
+//bookie_plugin::~bookie_plugin()
+//{
+//}
 
 std::string bookie_plugin::plugin_name()const
 {
@@ -494,7 +494,7 @@ void bookie_plugin::plugin_initialize(const boost::program_options::variables_ma
     database().new_objects.connect([this](const vector<object_id_type>& ids, const flat_set<account_id_type>& impacted_accounts) { my->on_objects_new(ids); });
     database().removed_objects.connect([this](const vector<object_id_type>& ids, const vector<const object*>& objs, const flat_set<account_id_type>& impacted_accounts) { my->on_objects_removed(ids); });
 
-    database().allocate_object_space<null_safety_check>(bookie_objects);
+   // database().allocate_object_space<null_safety_check>(bookie_objects);
 
     //auto event_index =
     database().add_index<primary_index<detail::persistent_event_index> >();

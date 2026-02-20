@@ -173,7 +173,7 @@ void affiliate_stats_plugin::plugin_set_program_options(
 void affiliate_stats_plugin::plugin_initialize(const boost::program_options::variables_map& options)
 {
    database().applied_block.connect( [this]( const signed_block& b){ my->update_affiliate_stats(b); } );
-   database().allocate_object_space<null_safety_check>(AFFILIATE_STATS_SPACE_ID);
+   //database().allocate_object_space<null_safety_check>(AFFILIATE_STATS_SPACE_ID);
 
    my->_ar_index = database().add_index< primary_index< app_reward_index > >();
    my->_rr_index = database().add_index< primary_index< referral_reward_index > >();
