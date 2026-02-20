@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <graphene/chain/database.hpp>

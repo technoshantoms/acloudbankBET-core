@@ -1,4 +1,3 @@
-
 #include <graphene/bookie/bookie_plugin.hpp>
 #include <graphene/bookie/bookie_objects.hpp>
 

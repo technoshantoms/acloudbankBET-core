@@ -1,4 +1,3 @@
-
 #pragma once
 #include <graphene/chain/database.hpp>
 #include <graphene/chain/betting_market_object.hpp>
@@ -61,7 +60,7 @@ void events_by_competitor_index::object_loaded( const object& obj )
    object_created(obj);
 }
 
-void events_by_competitor_index::object_insert( const object& obj )
+void events_by_competitor_index::object_created( const object& obj )
 {
    const persistent_event_object& event_obj = *boost::polymorphic_downcast<const persistent_event_object*>(&obj);
    for (const competitor_id_type& competitor_id : event_obj.competitors)
