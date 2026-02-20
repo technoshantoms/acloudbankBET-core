@@ -45,8 +45,8 @@ class events_by_competitor_index : public secondary_index
    public:
       virtual ~events_by_competitor_index() {}
 
-      virtual void object_loaded( const object& obj ) override;
-      virtual void object_created( const object& obj ) override;
+      virtual void object_inserted( const object& obj ) override;
+     // virtual void object_created( const object& obj ) override;
       virtual void object_removed( const object& obj ) override;
       virtual void about_to_modify( const object& before ) override;
       virtual void object_modified( const object& after  ) override;
@@ -55,19 +55,19 @@ class events_by_competitor_index : public secondary_index
       map<competitor_id_type, set<persistent_event_id_type> > competitor_to_events;
 };
 
-void events_by_competitor_index::object_loaded( const object& obj )
+void events_by_competitor_index::object_inserted( const object& obj )
 {
-   object_created(obj);
+   object_inserted(obj);
 }
 
-void events_by_competitor_index::object_created( const object& obj )
+/*void events_by_competitor_index::object_created( const object& obj )
 {
    const persistent_event_object& event_obj = *boost::polymorphic_downcast<const persistent_event_object*>(&obj);
    for (const competitor_id_type& competitor_id : event_obj.competitors)
       competitor_to_events[competitor_id].insert(event_obj.id);
    for (const competitor_id_type& competitor_id : event_obj.competitors)
       competitor_to_events[competitor_id].insert(event_obj.id);
-}
+}*/
 void events_by_competitor_index::object_removed( const object& obj ) 
 {
    const persistent_event_object& event_obj = *boost::polymorphic_downcast<const persistent_event_object*>(&obj);

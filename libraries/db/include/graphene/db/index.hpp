@@ -145,7 +145,7 @@ namespace graphene { namespace db {
          virtual void about_to_modify( const object& before ){};
          virtual void object_modified( const object& after  ){};
          // Called when an object from the current node session is created
-         virtual void object_created( const object& obj ){};
+         //virtual void object_created( const object& obj ){};
    };
 
    /**
@@ -254,7 +254,7 @@ namespace graphene { namespace db {
             content[instance >> chunkbits][instance & _mask] = static_cast<const Object*>( &obj );
          }
 
-         virtual void object_created( const object& obj )
+        /* virtual void object_created( const object& obj )
          {
             uint64_t instance = obj.id.instance();
             if( instance == next )
@@ -284,7 +284,7 @@ namespace graphene { namespace db {
             }
             FC_ASSERT( nullptr != dynamic_cast<const Object*>(&obj), "Wrong object type!" );
             content[instance >> chunkbits][instance & _mask] = static_cast<const Object*>( &obj );
-         }
+         }*/
 
          virtual void object_removed( const object& obj )
          {
