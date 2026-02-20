@@ -187,6 +187,13 @@ namespace graphene { namespace db {
             FC_THROW_EXCEPTION( fc::assert_exception, "invalid index type" );
          }
 
+          void delete_secondary_index(const secondary_index& secondary) {
+             auto itr = std::find_if(_sindex.begin(), _sindex.end(),
+                                     [&secondary](const auto& ptr) { return &secondary == ptr.get(); });
+             FC_ASSERT(itr != _sindex.end(), "Cannot remove secondary index: secondary index not found");
+             _sindex.erase(itr);
+         }
+
       protected:
          vector< shared_ptr<index_observer> >   _observers;
          vector< unique_ptr<secondary_index> >  _sindex;
@@ -433,7 +440,7 @@ namespace graphene { namespace db {
             const auto& result = DerivedIndex::create( constructor );
             for( const auto& item : _sindex ) {
                _check.pre_secondary_index_notification(type_id, *item);
-               item->object_created( result );
+               item->object_inserted( result );
                _check.post_secondary_index_notification(type_id, *item);
             }
             on_add( result );
