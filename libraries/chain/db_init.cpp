@@ -249,11 +249,13 @@ void database::initialize_indexes()
    reset_indexes();
    //satia enabled me...
    _undo_db.set_max_size( GRAPHENE_MIN_UNDO_HISTORY );
-   //_check_policy_1 = allocate_object_space<database_lock_safety_check>(protocol_ids);
-   //_check_policy_2 = allocate_object_space<database_lock_safety_check>(implementation_ids);
-   // allocate_object_space<null_safety_check>(api_ids);
-   //FC_ASSERT(_check_policy_1 != nullptr && _check_policy_2 != nullptr, "Failed to allocate object spaces");
-
+   
+   _check_policy_1 = allocate_object_space<database_lock_safety_check>(protocol_ids);
+   _check_policy_2 = allocate_object_space<database_lock_safety_check>(implementation_ids);
+   // No checks on API objects
+   allocate_object_space<null_safety_check>(api_ids);
+   FC_ASSERT(_check_policy_1 != nullptr && _check_policy_2 != nullptr, "Failed to allocate object spaces");
+   
    //Protocol object indexes
    add_index< primary_index<asset_index, 13> >(); // 8192 assets per chunk
    add_index< primary_index<force_settlement_index> >();

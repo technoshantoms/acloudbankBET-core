@@ -403,12 +403,12 @@ namespace graphene { namespace chain {
          void debug_dump();
          void apply_debug_updates();
          void debug_update( const fc::variant_object& update );
-         //template<typename Action>
-         //auto bypass_safety_checks(Action&& action) {
-          //  FC_ASSERT(_allow_safety_check_bypass, "Safety check bypass disallowed.");
-           // scoped_database_unlocker unlocker(*_check_policy_1, *_check_policy_2);
-           // return action();
-        // }
+         template<typename Action>
+         auto bypass_safety_checks(Action&& action) {
+            FC_ASSERT(_allow_safety_check_bypass, "Safety check bypass disallowed.");
+            scoped_database_unlocker unlocker(*_check_policy_1, *_check_policy_2);
+            return action();
+         }
 
 
          //////////////////// db_market.cpp ////////////////////
@@ -758,12 +758,12 @@ namespace graphene { namespace chain {
          const witness_schedule_object*         _p_witness_schedule_obj    = nullptr;
          ///@}
 
-         /// Whether or not to allow safety check bypassing (for unit testing only)
-        // bool _allow_safety_check_bypass;
+          /// Whether or not to allow safety check bypassing (for unit testing only)
+         bool _allow_safety_check_bypass;
          /// Safety check policy for object space 1
-        // database_lock_safety_check* _check_policy_1 = nullptr;
+         database_lock_safety_check* _check_policy_1 = nullptr;
          /// Safety check policy for object space 2
-        // database_lock_safety_check* _check_policy_2 = nullptr;
+         database_lock_safety_check* _check_policy_2 = nullptr;
 
          /// Maintenance pseudo random number generator
          ///@{
