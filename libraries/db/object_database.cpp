@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 #include <graphene/db/object_database.hpp>
-#include <graphene/db/safety_check_policy.hpp>
+
 #include <fc/io/raw.hpp>
 #include <fc/container/flat.hpp>
 #include <fc/thread/parallel.hpp>
@@ -33,18 +33,10 @@ object_database::object_database()
 :_undo_db(*this)
 {
    _index.resize(255);
-   _safety_checks.resize(255);
    _undo_db.enable();
 }
 
 object_database::~object_database(){}
-
-void object_database::reset_indexes() {
-   _index.clear();
-   _index.resize(255);
-   _safety_checks.clear();
-   _safety_checks.resize(255);
-}
 
 void object_database::close()
 {
