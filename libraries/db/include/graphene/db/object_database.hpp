@@ -43,7 +43,7 @@ namespace graphene { namespace db {
          object_database();
          ~object_database();
 
-         void reset_indexes() { _index.clear(); _index.resize(255); _safety_checks.clear(); _safety_checks.resize(255); }
+         void reset_indexes();
 
          void open(const fc::path& data_dir );
 
@@ -54,18 +54,7 @@ namespace graphene { namespace db {
          void wipe(const fc::path& data_dir); // remove from disk
          void close();
 
-         template<typename T, typename F>
-         const T& create( F&& constructor )
-         {
-            auto& idx = get_mutable_index<T>();
-            return static_cast<const T&>( idx.create( [&](object& o)
-            {
-               assert( dynamic_cast<T*>(&o) );
-               constructor( static_cast<T&>(o) );
-            } ));
-         }
-
-           /**
+         /**
           * @brief Allocate an object space, setting a safety check policy for that object space
           * @param space_id The ID of the object space to allocate
           * @tparam SafetyCheckPolicy Specific type of the safety check policy for the object space
@@ -108,6 +97,17 @@ namespace graphene { namespace db {
          /// These methods are mutators of the object_database. You must use these methods to make changes to the object_database,
          /// in order to maintain proper undo history.
          ///@{
+
+         template<typename T, typename F>
+         const T& create( F&& constructor )
+         {
+            auto& idx = get_mutable_index<T>();
+            return static_cast<const T&>( idx.create( [&](object& o)
+            {
+               assert( dynamic_cast<T*>(&o) );
+               constructor( static_cast<T&>(o) );
+            } ));
+         }
 
          const object& insert( object&& obj ) { return get_mutable_index(obj.id).insert( std::move(obj) ); }
          void          remove( const object& obj ) { get_mutable_index(obj.id).remove( obj ); }
@@ -180,8 +180,7 @@ namespace graphene { namespace db {
          {
             return get_mutable_index_type<IndexType>().template add_secondary_index<SecondaryIndexType, Args...>(args...);
          }
-
-        /* template<typename SecondaryIndexType, typename PrimaryIndexType = typename SecondaryIndexType::watched_index>
+         template<typename SecondaryIndexType, typename PrimaryIndexType = typename SecondaryIndexType::watched_index>
          SecondaryIndexType* add_secondary_index()
          {
             uint8_t space_id = PrimaryIndexType::object_type::space_id;
@@ -194,8 +193,7 @@ namespace graphene { namespace db {
                       "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
                       ("S", space_id)("T", type_id));
             return new_index;
-         }*/
-         
+         }
          template<typename SecondaryIndexType>
          SecondaryIndexType* add_secondary_index(const uint8_t space_id, const uint8_t type_id)
          {

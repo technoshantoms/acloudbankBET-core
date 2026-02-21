@@ -168,7 +168,7 @@ namespace graphene { namespace db {
 
          /** called just after obj is modified */
          void on_modify( const object& obj );
-
+         
          template<typename T, typename... Args>
          T* add_secondary_index(Args... args)
          {
