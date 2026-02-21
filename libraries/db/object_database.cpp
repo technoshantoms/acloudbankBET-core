@@ -39,13 +39,6 @@ object_database::object_database()
 
 object_database::~object_database(){}
 
-void object_database::reset_indexes() {
-   _index.clear();
-   _index.resize(255);
-   _safety_checks.clear();
-   _safety_checks.resize(255);
-}
-
 void object_database::close()
 {
 }
