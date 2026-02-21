@@ -170,7 +170,7 @@ namespace graphene { namespace db {
          void on_modify( const object& obj );
          
          template<typename T, typename... Args>
-         T* add_secondary_index(Args... args)
+         T* add_secondary_indexer(Args... args)
          {
             _sindex.emplace_back( std::make_unique<T>(args...) );
             return static_cast<T*>(_sindex.back().get());
@@ -332,7 +332,7 @@ namespace graphene { namespace db {
          : base_primary_index(db),_next_id(object_type::space_id,object_type::type_id,0),_check(check_policy)
          {
             if( DirectBits > 0 )
-               _direct_by_id = add_secondary_index< direct_index< object_type, DirectBits > >();
+               _direct_by_id = add_secondary_indexer< direct_index< object_type, DirectBits > >();
          }
 
          virtual uint8_t object_space_id()const override

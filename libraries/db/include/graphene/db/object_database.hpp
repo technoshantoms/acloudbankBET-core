@@ -176,9 +176,9 @@ namespace graphene { namespace db {
          }
 
          template<typename IndexType, typename SecondaryIndexType, typename... Args>
-         SecondaryIndexType* add_secondary_index( Args... args )
+         SecondaryIndexType* add_secondary_indexer( Args... args )
          {
-            return get_mutable_index_type<IndexType>().template add_secondary_index<SecondaryIndexType, Args...>(args...);
+            return get_mutable_index_type<IndexType>().template add_secondary_indexer<SecondaryIndexType, Args...>(args...);
          }
          template<typename SecondaryIndexType, typename PrimaryIndexType = typename SecondaryIndexType::watched_index>
          SecondaryIndexType* add_secondary_index()

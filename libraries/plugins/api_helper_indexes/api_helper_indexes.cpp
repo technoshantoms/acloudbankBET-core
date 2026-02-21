@@ -145,16 +145,17 @@ void api_helper_indexes::plugin_initialize(const boost::program_options::variabl
 void api_helper_indexes::plugin_startup()
 {
    ilog("api_helper_indexes: plugin_startup() begin");
-   amount_in_collateral_idx = database().add_secondary_index< primary_index<call_order_index>,
+   amount_in_collateral_idx = database().add_secondary_indexer< primary_index<call_order_index>,
                                                               amount_in_collateral_index >();
    for( const auto& call : database().get_index_type<call_order_index>().indices() )
       amount_in_collateral_idx->object_inserted( call );
-
-   auto& account_members = *database().add_secondary_index< primary_index<account_index>, account_member_index >();
+ //add_secondary_indexer connected to db_init.cpp [ bal_idx->add_secondary_indexer<balances_by_account_index>();]
+//add_secondary_index for [betting]
+   auto& account_members = *database().add_secondary_indexer< primary_index<account_index>, account_member_index >();
    for( const auto& account : database().get_index_type< account_index >().indices() )
       account_members.object_inserted( account );
 
-   auto& approvals = *database().add_secondary_index< primary_index<proposal_index>, required_approval_index >();
+   auto& approvals = *database().add_secondary_indexer< primary_index<proposal_index>, required_approval_index >();
    for( const auto& proposal : database().get_index_type< proposal_index >().indices() )
       approvals.object_inserted( proposal );
 }

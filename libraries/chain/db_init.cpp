@@ -315,7 +315,8 @@ void database::initialize_indexes()
    add_index< primary_index<transaction_index                             > >();
 
    auto bal_idx = add_index< primary_index<account_balance_index          > >();
-   bal_idx->add_secondary_index<balances_by_account_index>();
+   // add_secondary_indexer is not [add_secondary_index] !!
+   bal_idx->add_secondary_indexer<balances_by_account_index>();
 
    add_index< primary_index<asset_bitasset_data_index,                 13 > >(); // 8192
    add_index< primary_index<asset_dividend_data_object_index              > >();

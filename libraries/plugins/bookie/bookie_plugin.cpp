@@ -465,7 +465,6 @@ asset bookie_plugin_impl::get_total_matched_bet_amount_for_betting_market_group(
 //   my( new detail::bookie_plugin_impl(*this) )
 //{
 //}
-
 //bookie_plugin::~bookie_plugin()
 //{
 //}
