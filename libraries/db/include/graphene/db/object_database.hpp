@@ -156,7 +156,7 @@ namespace graphene { namespace db {
              return get<object_downcast_t<decltype(id)>>(id);
          }
 
-        template<typename IndexType>
+         template<typename IndexType>
          IndexType* add_index()
          {
             typedef typename IndexType::object_type ObjectType;
@@ -175,7 +175,13 @@ namespace graphene { namespace db {
             return static_cast<IndexType*>(_index[space_id][type_id].get());
          }
 
-         template<typename SecondaryIndexType, typename PrimaryIndexType = typename SecondaryIndexType::watched_index>
+         template<typename IndexType, typename SecondaryIndexType, typename... Args>
+         SecondaryIndexType* add_secondary_index( Args... args )
+         {
+            return get_mutable_index_type<IndexType>().template add_secondary_index<SecondaryIndexType, Args...>(args...);
+         }
+
+        /* template<typename SecondaryIndexType, typename PrimaryIndexType = typename SecondaryIndexType::watched_index>
          SecondaryIndexType* add_secondary_index()
          {
             uint8_t space_id = PrimaryIndexType::object_type::space_id;
@@ -188,7 +194,8 @@ namespace graphene { namespace db {
                       "Safety Check: Addition of new secondary index on ${S}.${T} not allowed!",
                       ("S", space_id)("T", type_id));
             return new_index;
-         }
+         }*/
+         
          template<typename SecondaryIndexType>
          SecondaryIndexType* add_secondary_index(const uint8_t space_id, const uint8_t type_id)
          {
@@ -236,12 +243,6 @@ namespace graphene { namespace db {
              for (const auto& ptr : _index[space_id])
                  if (ptr != nullptr)
                      f((const index&)(*ptr));
-         }
-
-         template<typename IndexType, typename SecondaryIndexType, typename... Args>
-         SecondaryIndexType* add_secondary_index( Args... args )
-         {
-            return get_mutable_index_type<IndexType>().template add_secondary_index<SecondaryIndexType, Args...>(args...);
          }
 
          void pop_undo();
