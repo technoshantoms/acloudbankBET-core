@@ -1129,34 +1129,6 @@ class database_api
       */
       vector<htlc_object> list_htlcs(const htlc_id_type start, uint32_t limit) const;
 
-       //////////////
-   // Accounts //
-   //////////////
-
-   /**
-    * @brief Fetch all objects relevant to the specified accounts and subscribe to updates
-    * @param callback Function to call with updates
-    * @param names_or_ids Each item must be the name or ID of an account to retrieve
-    * @return Map of string from @ref names_or_ids to the corresponding account
-    *
-    * This function fetches all relevant objects for the given accounts, and subscribes to updates to the given
-    * accounts. If any of the strings in @ref names_or_ids cannot be tied to an account, that input will be
-    * ignored. All other accounts will be retrieved and subscribed.
-    *
-    */
-   std::map<string, full_account> get_full_accounts(const vector<string> &names_or_ids, bool subscribe);
-  
-
-   /**
-    * @brief Get names and IDs for registered accounts
-    * @param lower_bound_name Lower bound of the first name to return
-    * @param limit Maximum number of results to return -- must not exceed 1000
-    * @return Map of account names to corresponding IDs
-    */
-   //map<string,account_id_type> lookup_accounts(const string &lower_bound_name, uint32_t limit) const;
-
-
-
    //////////
    // GPOS //
    //////////
