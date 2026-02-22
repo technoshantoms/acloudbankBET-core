@@ -1153,7 +1153,7 @@ class database_api
     * @param limit Maximum number of results to return -- must not exceed 1000
     * @return Map of account names to corresponding IDs
     */
-   map<string, account_id_type> lookup_accounts(const string &lower_bound_name, uint32_t limit) const;
+   //map<string,account_id_type> lookup_accounts(const string &lower_bound_name, uint32_t limit) const;
 
 
 
@@ -1429,7 +1429,7 @@ FC_API(graphene::app::database_api,
    (get_withdraw_permissions_by_giver)
    (get_withdraw_permissions_by_recipient)
 
-   // PevPop
+   // RevPop
    (get_personal_data)
    (get_last_personal_data)
    (get_content_card_by_id)

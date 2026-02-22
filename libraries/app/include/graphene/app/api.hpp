@@ -645,7 +645,6 @@ FC_API(graphene::app::login_api,
        (orders)
        (debug)
        (custom_operations)
-       (affiliate_stats)
        (bookie)
        (affiliate_stats)
      )
