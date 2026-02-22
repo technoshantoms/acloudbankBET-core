@@ -49,6 +49,10 @@ using namespace chain;
 #define MARKET_HISTORY_SPACE_ID 5
 #endif
 
+//#ifndef ACCOUNT_HISTORY_SPACE_ID
+//#define ACCOUNT_HISTORY_SPACE_ID 5
+//#endif
+
 enum market_history_object_type
 {
    order_history_object_type = 0,
@@ -79,7 +83,9 @@ struct bucket_key
 };
 
 struct bucket_object : public abstract_object<bucket_object>
-{
+{  
+   //static constexpr uint8_t space_id = ACCOUNT_HISTORY_SPACE_ID;
+   //static constexpr uint8_t type_id  = 1; // market_history_plugin type, referenced from account_history_plugin.hpp
    static constexpr uint8_t space_id = MARKET_HISTORY_SPACE_ID;
    static constexpr uint8_t type_id  = bucket_object_type;
 
@@ -112,7 +118,9 @@ struct history_key {
   }
 };
 struct order_history_object : public abstract_object<order_history_object>
-{
+{  
+   //static constexpr uint8_t space_id = ACCOUNT_HISTORY_SPACE_ID;
+   //static constexpr uint8_t type_id  = 2; // market_history_plugin type, referenced from account_history_plugin.hpp
    static constexpr uint8_t space_id = MARKET_HISTORY_SPACE_ID;
    static constexpr uint8_t type_id  = order_history_object_type;
 

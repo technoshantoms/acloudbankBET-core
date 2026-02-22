@@ -426,7 +426,7 @@ void market_history_plugin::plugin_set_program_options(
 void market_history_plugin::plugin_initialize(const boost::program_options::variables_map& options)
 { try {
    database().applied_block.connect( [this]( const signed_block& b){ my->update_market_histories(b); } );
-   database().allocate_object_space<null_safety_check>(ACCOUNT_HISTORY_SPACE_ID);
+   //database().allocate_object_space<null_safety_check>(ACCOUNT_HISTORY_SPACE_ID);
    database().add_index< primary_index< bucket_index  > >();
    database().add_index< primary_index< history_index  > >();
    database().add_index< primary_index< market_ticker_index, 8 > >(); // 256 markets per chunk

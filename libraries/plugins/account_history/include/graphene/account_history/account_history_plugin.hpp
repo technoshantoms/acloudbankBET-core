@@ -56,6 +56,7 @@ enum account_history_object_type
 };
 
 
+
 namespace detail
 {
     class account_history_plugin_impl;
