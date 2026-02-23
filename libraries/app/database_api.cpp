@@ -96,27 +96,23 @@ fc::variants database_api::get_objects( const vector<object_id_type>& ids, optio
    return my->get_objects( ids, subscribe );
 }
 
-fc::variants database_api_impl::get_objects(const vector<object_id_type> &ids) const {
-   if (_subscribe_callback) {
-      for (auto id : ids) {
-         if (id.type() == api_operation_history_object_type && id.space() == api_ids)
-            continue;
-         if (id.type() == api_account_transaction_history_object_type && id.space() == api_ids)
-            continue;
-
-         this->subscribe_to_item(id);
-      }
-   }
+fc::variants database_api_impl::get_objects( const vector<object_id_type>& ids, optional<bool> subscribe )const
+{
+   bool to_subscribe = get_whether_to_subscribe( subscribe );
 
    fc::variants result;
    result.reserve(ids.size());
 
    std::transform(ids.begin(), ids.end(), std::back_inserter(result),
-                  [this](object_id_type id) -> fc::variant {
-                     if (auto obj = _db.find_object(id))
-                        return obj->to_variant();
-                     return {};
-                  });
+                  [this,to_subscribe](object_id_type id) -> fc::variant {
+      if(auto obj = _db.find_object(id))
+      {
+         if( to_subscribe && !id.is<operation_history_id_type>() && !id.is<account_transaction_history_id_type>() )
+            this->subscribe_to_item( id );
+         return obj->to_variant();
+      }
+      return {};
+   });
 
    return result;
 }
@@ -648,11 +644,6 @@ std::map<std::string, full_account> database_api_impl::get_full_accounts( const 
          acnt.htlcs_to.emplace_back(*itr);
       }
 
-      auto pending_payouts_range =
-            _db.get_index_type<pending_dividend_payout_balance_for_holder_object_index>().indices().get<by_account_dividend_payout>().equal_range(boost::make_tuple(account->id));
-
-      std::copy(pending_payouts_range.first, pending_payouts_range.second, std::back_inserter(acnt.pending_dividend_payments));
-
       results[account_name_or_id] = acnt;
    }
    return results;
@@ -761,8 +752,7 @@ uint64_t database_api_impl::get_account_count()const
 //////////////////////////////////////////////////////////////////////
 
 // Assets
-   asset_id_type get_asset_id_from_string(const std::string &symbol_or_id) const;
-   vector<optional<asset_object>> get_assets(const vector<std::string> &asset_symbols_or_ids) const;
+vector<optional<asset_object>> get_assets(const vector<std::string> &asset_symbols_or_ids) const;
 
 vector<asset> database_api::get_account_balances( const std::string& account_name_or_id,
                                                   const flat_set<asset_id_type>& assets )const
@@ -907,24 +897,6 @@ vector<vesting_balance_object> database_api_impl::get_vesting_balances( const st
 asset_id_type database_api::get_asset_id_from_string(const std::string& symbol_or_id)const
 {
    return my->get_asset_from_string( symbol_or_id )->id;
-}
-
-vector<optional<asset_object>> database_api::get_assets(const vector<std::string> &asset_symbols_or_ids) const {
-   return my->get_assets(asset_symbols_or_ids);
-}
-
-vector<optional<asset_object>> database_api_impl::get_assets(const vector<std::string> &asset_symbols_or_ids) const {
-   vector<optional<asset_object>> result;
-   result.reserve(asset_symbols_or_ids.size());
-   std::transform(asset_symbols_or_ids.begin(), asset_symbols_or_ids.end(), std::back_inserter(result),
-                  [this](std::string id_or_name) -> optional<asset_object> {
-                     const asset_object *asset_obj = get_asset_from_string(id_or_name, false);
-                     if (asset_obj == nullptr)
-                        return {};
-                     subscribe_to_item(asset_obj->id);
-                     return asset_object(*asset_obj);
-                  });
-   return result;
 }
 
 vector<optional<extended_asset_object>> database_api::get_assets(
@@ -1256,17 +1228,20 @@ uint64_t database_api_impl::get_sidechain_addresses_count() const {
 // Tournament methods                                               //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
-vector<tournament_object> database_api::get_tournaments_in_state(tournament_state state, uint32_t limit) const {
+vector<tournament_object> database_api::get_tournaments_in_state(tournament_state state, uint32_t limit) const
+{
    return my->get_tournaments_in_state(state, limit);
 }
 
-vector<tournament_object> database_api_impl::get_tournaments_in_state(tournament_state state, uint32_t limit) const {
+vector<tournament_object> database_api_impl::get_tournaments_in_state(tournament_state state, uint32_t limit) const
+{
    vector<tournament_object> result;
-   const auto &registration_deadline_index = _db.get_index_type<tournament_index>().indices().get<by_registration_deadline>();
+   const auto& registration_deadline_index = _db.get_index_type<tournament_index>().indices().get<by_registration_deadline>();
    const auto range = registration_deadline_index.equal_range(boost::make_tuple(state));
-   for (const tournament_object &tournament_obj : boost::make_iterator_range(range.first, range.second)) {
+   for (const tournament_object& tournament_obj : boost::make_iterator_range(range.first, range.second))
+   {
       result.emplace_back(tournament_obj);
-      subscribe_to_item(tournament_obj.id);
+      subscribe_to_item( tournament_obj.id );
 
       if (result.size() >= limit)
          break;
@@ -1276,83 +1251,71 @@ vector<tournament_object> database_api_impl::get_tournaments_in_state(tournament
 
 vector<tournament_object> database_api::get_tournaments(tournament_id_type stop,
                                                         unsigned limit,
-                                                        tournament_id_type start) {
+                                                        tournament_id_type start)
+{
    return my->get_tournaments(stop, limit, start);
 }
 
 vector<tournament_object> database_api_impl::get_tournaments(tournament_id_type stop,
                                                              unsigned limit,
-                                                             tournament_id_type start) {
+                                                             tournament_id_type start) 
+{
    vector<tournament_object> result;
-   const auto &tournament_idx = _db.get_index_type<tournament_index>().indices().get<by_id>();
-   for (auto elem : tournament_idx) {
-      if (result.size() >= limit)
-         break;
-      if (((elem.get_id().instance.value <= start.instance.value) || start == tournament_id_type()) &&
-          ((elem.get_id().instance.value >= stop.instance.value) || stop == tournament_id_type()))
-         result.push_back(elem);
+   const auto& tournament_idx = _db.get_index_type<tournament_index>().indices().get<by_id>();
+   for (auto elem: tournament_idx) {
+      if( result.size() >= limit ) break;
+      if( ( (elem.get_id().instance.value <= start.instance.value) || start == tournament_id_type()) &&
+          ( (elem.get_id().instance.value >=  stop.instance.value) || stop == tournament_id_type()))
+         result.push_back( elem );
    }
 
    return result;
 }
 
+
 vector<tournament_object> database_api::get_tournaments_by_state(tournament_id_type stop,
                                                                  unsigned limit,
                                                                  tournament_id_type start,
-                                                                 tournament_state state) {
+                                                                 tournament_state state)
+{
    return my->get_tournaments_by_state(stop, limit, start, state);
 }
 
 vector<tournament_object> database_api_impl::get_tournaments_by_state(tournament_id_type stop,
                                                                       unsigned limit,
                                                                       tournament_id_type start,
-                                                                      tournament_state state) {
+                                                                      tournament_state state)
+{   
    vector<tournament_object> result;
-   const auto &tournament_idx = _db.get_index_type<tournament_index>().indices().get<by_id>();
-   for (auto elem : tournament_idx) {
-      if (result.size() >= limit)
-         break;
-      if (((elem.get_id().instance.value <= start.instance.value) || start == tournament_id_type()) &&
-          ((elem.get_id().instance.value >= stop.instance.value) || stop == tournament_id_type()) &&
-          elem.get_state() == state)
-         result.push_back(elem);
+   const auto& tournament_idx = _db.get_index_type<tournament_index>().indices().get<by_id>();
+   for (auto elem: tournament_idx) {
+      if( result.size() >= limit ) break;
+      if( ( (elem.get_id().instance.value <= start.instance.value) || start == tournament_id_type()) &&
+          ( (elem.get_id().instance.value >=  stop.instance.value) || stop ==  tournament_id_type()) &&
+          elem.get_state() == state )
+         result.push_back( elem );
    }
 
    return result;
 }
 
-const account_object *database_api_impl::get_account_from_string(const std::string &name_or_id,
-                                                                 bool throw_if_not_found) const {
-   // TODO cache the result to avoid repeatly fetching from db
-   FC_ASSERT(name_or_id.size() > 0);
-   const account_object *account = nullptr;
-   if (std::isdigit(name_or_id[0]))
-      account = _db.find(fc::variant(name_or_id, 1).as<account_id_type>(1));
-   else {
-      const auto &idx = _db.get_index_type<account_index>().indices().get<by_name>();
-      auto itr = idx.find(name_or_id);
-      if (itr != idx.end())
-         account = &*itr;
-   }
-   if (throw_if_not_found)
-      FC_ASSERT(account, "no such account");
-   return account;
-}
-
-vector<tournament_id_type> database_api::get_registered_tournaments(account_id_type account_filter, uint32_t limit) const {
+vector<tournament_id_type> database_api::get_registered_tournaments(account_id_type account_filter, uint32_t limit) const
+{
    return my->get_registered_tournaments(account_filter, limit);
 }
 
-vector<tournament_id_type> database_api_impl::get_registered_tournaments(account_id_type account_filter, uint32_t limit) const {
-   const auto &tournament_details_idx = _db.get_index_type<tournament_details_index>();
-   const auto &tournament_details_primary_idx = dynamic_cast<const primary_index<tournament_details_index> &>(tournament_details_idx);
-   const auto &players_idx = tournament_details_primary_idx.get_secondary_index<graphene::chain::tournament_players_index>();
+vector<tournament_id_type> database_api_impl::get_registered_tournaments(account_id_type account_filter, uint32_t limit) const
+{
+   const auto& tournament_details_idx = _db.get_index_type<tournament_details_index>();
+   const auto& tournament_details_primary_idx = dynamic_cast<const primary_index<tournament_details_index>&>(tournament_details_idx);
+   const auto& players_idx = tournament_details_primary_idx.get_secondary_index<graphene::chain::tournament_players_index>();
 
    vector<tournament_id_type> tournament_ids = players_idx.get_registered_tournaments_for_account(account_filter);
    if (tournament_ids.size() >= limit)
       tournament_ids.resize(limit);
    return tournament_ids;
 }
+
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
 // Markets / feeds                                                  //

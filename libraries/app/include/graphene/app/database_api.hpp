@@ -1150,6 +1150,29 @@ class database_api
        * @return The htlc object list
       */
       vector<htlc_object> list_htlcs(const htlc_id_type start, uint32_t limit) const;
+  
+
+   /////////////////
+   // Tournaments //
+   /////////////////
+   /**
+    * @return the list of tournaments in the given state
+    */
+   vector<tournament_object> get_tournaments_in_state(tournament_state state, uint32_t limit) const;
+
+   vector<tournament_object> get_tournaments(tournament_id_type stop = tournament_id_type(),
+                                             unsigned limit = 100,
+                                             tournament_id_type start = tournament_id_type());
+
+   vector<tournament_object> get_tournaments_by_state(tournament_id_type stop = tournament_id_type(),
+                                                      unsigned limit = 100,
+                                                      tournament_id_type start = tournament_id_type(),
+                                                      tournament_state state = tournament_state::accepting_registrations);
+
+   /**
+    * @return the list of tournaments that a given account is registered to play in
+    */
+   vector<tournament_id_type> get_registered_tournaments(account_id_type account_filter, uint32_t limit) const;
 
    //////////
    // GPOS //

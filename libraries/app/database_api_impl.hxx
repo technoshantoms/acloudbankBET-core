@@ -72,11 +72,11 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       vector<asset> get_vested_balances( const vector<balance_id_type>& objs )const;
       vector<vesting_balance_object> get_vesting_balances( const std::string account_id_or_name )const;
 
-       // Tournaments
-   vector<tournament_object> get_tournaments_in_state(tournament_state state, uint32_t limit) const;
-   vector<tournament_object> get_tournaments(tournament_id_type stop, unsigned limit, tournament_id_type start);
-   vector<tournament_object> get_tournaments_by_state(tournament_id_type stop, unsigned limit, tournament_id_type start, tournament_state state);
-   vector<tournament_id_type> get_registered_tournaments(account_id_type account_filter, uint32_t limit) const;
+     // Tournaments
+      vector<tournament_object> get_tournaments_in_state(tournament_state state, uint32_t limit) const;
+      vector<tournament_object> get_tournaments(tournament_id_type stop, unsigned limit, tournament_id_type start);
+      vector<tournament_object> get_tournaments_by_state(tournament_id_type stop, unsigned limit, tournament_id_type start, tournament_state state);
+      vector<tournament_id_type> get_registered_tournaments(account_id_type account_filter, uint32_t limit) const;
 
   
     // gpos
@@ -116,7 +116,10 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
    vector<offer_history_object> get_offer_history_by_issuer(const offer_history_id_type lower_id, const account_id_type issuer_account_id, uint32_t limit) const;
    vector<offer_history_object> get_offer_history_by_item(const offer_history_id_type lower_id, const nft_id_type item, uint32_t limit) const;
    vector<offer_history_object> get_offer_history_by_bidder(const offer_history_id_type lower_id, const account_id_type bidder_account_id, uint32_t limit) const;
-
+    
+    // rng
+    vector<uint64_t> get_random_number_ex(uint64_t minimum, uint64_t maximum, uint64_t selections, bool duplicates) const;
+    uint64_t get_random_number(uint64_t bound) const;
    // Sidechain addresses
    vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
    vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
@@ -162,6 +165,9 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       asset_id_type get_asset_id_from_string(const std::string& symbol_or_id)const;
       vector<optional<extended_asset_object>> get_assets( const vector<std::string>& asset_symbols_or_ids,
                                                           optional<bool> subscribe )const;
+       // helper function
+      vector<optional<extended_asset_object>> get_assets( const vector<asset_id_type>& asset_ids,
+                                                          optional<bool> subscribe = optional<bool>() )const;
       vector<extended_asset_object>           list_assets(const string& lower_bound_symbol, uint32_t limit)const;
       vector<optional<extended_asset_object>> lookup_asset_symbols(const vector<string>& symbols_or_ids)const;
       vector<extended_asset_object>           get_assets_by_issuer(const std::string& issuer_name_or_id,
@@ -318,10 +324,6 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
 
       const asset_object* get_asset_from_string( const std::string& symbol_or_id,
                                                  bool throw_if_not_found = true ) const;
-      // helper function
-      vector<optional<extended_asset_object>> get_assets( const vector<asset_id_type>& asset_ids,
-                                                          optional<bool> subscribe = optional<bool>() )const;
-
       ////////////////////////////////////////////////
       // Markets
       ////////////////////////////////////////////////
