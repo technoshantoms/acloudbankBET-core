@@ -1,4 +1,26 @@
-
+/*
+ * Copyright (c) 2020-2023 Revolution Populi Limited, and contributors.
+ * 
+ * The MIT License
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include <graphene/chain/content_card_evaluator.hpp>
 #include <graphene/chain/permission_object.hpp>
@@ -26,6 +48,14 @@ void_result content_card_create_evaluator::do_evaluate( const content_card_creat
    auto itr = content_op_idx.lower_bound(boost::make_tuple(op.subject_account, op.hash));
    FC_ASSERT(itr->subject_account != op.subject_account || itr->hash != op.hash, "Content card already exists.");
 
+   // Check room membership if room is specified
+   if(op.room.valid()) {
+      const auto& participant_idx = d.get_index_type<room_participant_index>();
+      const auto& by_room_part = participant_idx.indices().get<by_room_and_participant>();
+      auto part_itr = by_room_part.find(boost::make_tuple(*op.room, op.subject_account));
+      FC_ASSERT(part_itr != by_room_part.end(), "Only room participants can create content cards in this room.");
+   }
+
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
@@ -35,10 +65,17 @@ object_id_type content_card_create_evaluator::do_apply( const content_card_creat
    const auto& node_properties = d.get_node_properties();
    bool use_full_content_card = node_properties.active_plugins.find("content_cards") != node_properties.active_plugins.end();
 
-   const auto& new_content_object = d.create<content_card_object>( [&o, &use_full_content_card]( content_card_object& obj )
+   const auto& new_content_object = d.create<content_card_object>( [&o, &use_full_content_card, &d]( content_card_object& obj )
    {
          obj.subject_account = o.subject_account;
          obj.hash            = o.hash;
+         obj.room            = o.room;
+
+         if( o.room.valid() )
+         {
+            const auto& room_obj = d.get(*o.room);
+            obj.key_epoch = room_obj.current_epoch;
+         }
 
          if (use_full_content_card) {
             obj.url             = o.url;
@@ -66,6 +103,14 @@ void_result content_card_update_evaluator::do_evaluate( const content_card_updat
    auto itr = content_op_idx.lower_bound(boost::make_tuple(op.subject_account, op.hash));
    FC_ASSERT(itr->subject_account == op.subject_account && itr->hash == op.hash, "Content card does not exists.");
 
+   // Check room membership if room is specified
+   if(op.room.valid()) {
+      const auto& participant_idx = d.get_index_type<room_participant_index>();
+      const auto& by_room_part = participant_idx.indices().get<by_room_and_participant>();
+      auto part_itr = by_room_part.find(boost::make_tuple(*op.room, op.subject_account));
+      FC_ASSERT(part_itr != by_room_part.end(), "Only room participants can update content cards in this room.");
+   }
+
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
@@ -78,7 +123,7 @@ object_id_type content_card_update_evaluator::do_apply( const content_card_updat
 
    auto itr = content_op_idx.lower_bound(boost::make_tuple(o.subject_account, o.hash));
 
-   d.modify( *itr, [&o](content_card_object& obj){
+   d.modify( *itr, [&o, &d](content_card_object& obj){
          obj.subject_account = o.subject_account;
          obj.hash            = o.hash;
          obj.url             = o.url;
@@ -87,6 +132,17 @@ object_id_type content_card_update_evaluator::do_apply( const content_card_updat
          obj.content_key     = o.content_key;
          obj.timestamp       = time_point::now().sec_since_epoch();
          obj.storage_data    = o.storage_data;
+         obj.room            = o.room;
+
+         if( o.room.valid() )
+         {
+            const auto& room_obj = d.get(*o.room);
+            obj.key_epoch = room_obj.current_epoch;
+         }
+         else
+         {
+            obj.key_epoch = 0;
+         }
    });
 
    return itr->id;

@@ -3717,30 +3717,56 @@ vector<room_participant_object> database_api_impl::get_room_participants( const 
    return result;
 }
 
-vector<room_participant_object> database_api::get_rooms_by_participant( const account_id_type participant,
-                                                                        const room_participant_id_type participant_id,
-                                                                        uint32_t limit ) const
+// Room Key Epochs
+
+vector<room_key_epoch_object> database_api::get_room_key_epochs( const room_id_type room,
+                                                                   const account_id_type participant,
+                                                                   uint32_t limit ) const
 {
-   return my->get_rooms_by_participant(participant, participant_id, limit);
+   return my->get_room_key_epochs(room, participant, limit);
 }
 
-vector<room_participant_object> database_api_impl::get_rooms_by_participant( const account_id_type participant,
-                                                                             const room_participant_id_type participant_id,
-                                                                             uint32_t limit ) const
+vector<room_key_epoch_object> database_api_impl::get_room_key_epochs( const room_id_type room,
+                                                                        const account_id_type participant,
+                                                                        uint32_t limit ) const
 {
-   const auto& participant_idx = _db.get_index_type<room_participant_index>();
-   const auto& by_part_idx = participant_idx.indices().get<by_participant>();
-   auto itr = by_part_idx.lower_bound(participant);
+   FC_ASSERT( limit <= 100, "limit must not exceed 100" );
 
-   vector<room_participant_object> result;
-   while( itr != by_part_idx.end() && itr->participant == participant && limit-- )
+   const auto& epoch_idx = _db.get_index_type<room_key_epoch_index>();
+   const auto& by_room_part_idx = epoch_idx.indices().get<by_room_and_participant_epoch>();
+   auto itr = by_room_part_idx.lower_bound(boost::make_tuple(room, participant));
+
+   vector<room_key_epoch_object> result;
+   while( itr != by_room_part_idx.end() && itr->room == room && itr->participant == participant && limit-- )
    {
-      if( itr->id.instance() >= participant_id.instance.value )
-         result.push_back(*itr);
+      result.push_back(*itr);
       ++itr;
    }
 
    return result;
+}
+
+fc::optional<room_key_epoch_object> database_api::get_room_key_epoch( const room_id_type room,
+                                                                       uint32_t epoch,
+                                                                       const account_id_type participant ) const
+{
+   return my->get_room_key_epoch(room, epoch, participant);
+}
+
+fc::optional<room_key_epoch_object> database_api_impl::get_room_key_epoch( const room_id_type room,
+                                                                             uint32_t epoch,
+                                                                             const account_id_type participant ) const
+{
+   const auto& epoch_idx = _db.get_index_type<room_key_epoch_index>();
+   const auto& by_rep_idx = epoch_idx.indices().get<by_room_epoch_participant>();
+   auto itr = by_rep_idx.find(boost::make_tuple(room, epoch, participant));
+
+   if( itr == by_rep_idx.end() )
+   {
+      return fc::optional<room_key_epoch_object>();
+   }
+
+   return *itr;
 }
 //////////////////////////////////////////////////////////////////////
 //                                                                  //

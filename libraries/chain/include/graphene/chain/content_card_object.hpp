@@ -55,12 +55,14 @@ namespace graphene { namespace chain {
             string   description;
             string   content_key;
             string   storage_data;
-            optional<room_id_type> room; // Optional room for encrypted threads
+            optional<room_id_type> room;  // Optional room for encrypted threads
+            uint32_t key_epoch = 0;       // Epoch of the room key used to encrypt this card
         };
 
         struct by_subject_account;
         struct by_subject_account_and_hash;
         struct by_hash;
+        struct by_room_content;
 
         typedef multi_index_container<
               content_card_object,
@@ -81,6 +83,12 @@ namespace graphene { namespace chain {
                      ordered_unique< tag<by_hash>,
                            composite_key< content_card_object,
                                  member< content_card_object, string, &content_card_object::hash>,
+                                 member< object, object_id_type, &object::id>
+                           >
+                     >,
+                     ordered_non_unique< tag<by_room_content>,
+                           composite_key< content_card_object,
+                                 member< content_card_object, optional<room_id_type>, &content_card_object::room>,
                                  member< object, object_id_type, &object::id>
                            >
                      >

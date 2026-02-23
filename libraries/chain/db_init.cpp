@@ -181,6 +181,7 @@ void database::initialize_evaluators()
    register_evaluator<room_update_evaluator>();
    register_evaluator<room_add_participant_evaluator>();
    register_evaluator<room_remove_participant_evaluator>();
+   register_evaluator<room_rotate_key_evaluator>();
    // For NFT
    register_evaluator<create_custom_permission_evaluator>();
    register_evaluator<update_custom_permission_evaluator>();
@@ -346,6 +347,7 @@ void database::initialize_indexes()
    add_index< primary_index< commit_reveal_index,                       20> >();
    add_index< primary_index< room_index,                                20> >();
    add_index< primary_index< room_participant_index,                    20> >();
+   add_index< primary_index< room_key_epoch_index,                     20> >();
 
   // _check_policy_1->lock();
   // _check_policy_2->lock();
