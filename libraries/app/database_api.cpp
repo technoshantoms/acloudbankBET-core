@@ -1027,32 +1027,6 @@ vector<optional<extended_asset_object>> database_api_impl::lookup_asset_symbols(
 {
    return get_assets( symbols_or_ids, false );
 }
-/*// Sidechain addresses
-   vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
-   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
-   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
-   fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const;
-   uint64_t get_sidechain_addresses_count() const;
- // Peerplays
-   vector<sport_object> list_sports() const;
-   vector<event_group_object> list_event_groups(sport_id_type sport_id) const;
-   vector<event_object> list_events_in_group(event_group_id_type event_group_id) const;
-   vector<betting_market_group_object> list_betting_market_groups(event_id_type) const;
-   vector<betting_market_object> list_betting_markets(betting_market_group_id_type) const;
-   vector<bet_object> get_unmatched_bets_for_bettor(betting_market_id_type, account_id_type) const;
-   vector<bet_object> get_all_unmatched_bets_for_bettor(account_id_type) const;
-
-// Lottery Assets
-   vector<asset_object> get_lotteries(asset_id_type stop = asset_id_type(),
-                                      unsigned limit = 100,
-                                      asset_id_type start = asset_id_type()) const;
-   vector<asset_object> get_account_lotteries(account_id_type issuer,
-                                              asset_id_type stop,
-                                              unsigned limit,
-                                              asset_id_type start) const;
-   asset get_lottery_balance(asset_id_type lottery_id) const;
-   sweeps_vesting_balance_object get_sweeps_vesting_balance_object(account_id_type account) const;
-   asset get_sweeps_vesting_balance_available_for_claim(account_id_type account) const;*/
 
    ////////////////////
 // Lottery Assets //
@@ -2423,26 +2397,6 @@ set<public_key_type> database_api_impl::get_required_signatures( const signed_tr
                                        available_keys,
                                        [&]( account_id_type id ){ return &id(_db).active; },
                                        [&]( account_id_type id ){ return &id(_db).owner; },
-                                       [&]( account_id_type id, const operation& op ) {
-                                          return _db.get_account_custom_authorities(id, op);
-                                       },
-                                       [&]( account_id_type id, const operation& op ) {
-         vector<authority> custom_auths = _db.get_account_custom_authorities(id, op);
-         for (const auto& cauth: custom_auths)
-         {
-            for (const auto& k : cauth.get_keys())
-            {
-               result.insert(k);
-            }
-         }
-         return custom_auths;
-   },
-      [&]( account_id_type id, const operation& op ) {
-         return _db.get_account_custom_authorities(id, op);
-      },
-      [this]( account_id_type id, const operation& op ) {
-                           return _db.get_account_custom_authorities(id, op); },
-
                                        allow_non_immediate_owner,
                                        ignore_custom_op_reqd_auths,
                                        _db.get_global_properties().parameters.max_authority_depth );
@@ -3161,105 +3115,51 @@ fc::optional<custom_permission_object> database_api_impl::get_custom_permission_
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
- // NFT
-   uint64_t nft_get_balance(const account_id_type owner) const;
-   optional<account_id_type> nft_owner_of(const nft_id_type token_id) const;
-   optional<account_id_type> nft_get_approved(const nft_id_type token_id) const;
-   bool nft_is_approved_for_all(const account_id_type owner, const account_id_type operator_) const;
-   string nft_get_name(const nft_metadata_id_type nft_metadata_id) const;
-   string nft_get_symbol(const nft_metadata_id_type nft_metadata_id) const;
-   string nft_get_token_uri(const nft_id_type token_id) const;
-   uint64_t nft_get_total_supply(const nft_metadata_id_type nft_metadata_id) const;
-   nft_object nft_token_by_index(const nft_metadata_id_type nft_metadata_id, const uint64_t token_idx) const;
-   nft_object nft_token_of_owner_by_index(const nft_metadata_id_type nft_metadata_id, const account_id_type owner, const uint64_t token_idx) const;
-   vector<nft_object> nft_get_all_tokens() const;
-   vector<nft_object> nft_get_tokens_by_owner(const account_id_type owner) const;
-
-   // Marketplace
-   vector<offer_object> list_offers(const offer_id_type lower_id, uint32_t limit) const;
-   vector<offer_object> list_sell_offers(const offer_id_type lower_id, uint32_t limit) const;
-   vector<offer_object> list_buy_offers(const offer_id_type lower_id, uint32_t limit) const;
-   vector<offer_history_object> list_offer_history(const offer_history_id_type lower_id, uint32_t limit) const;
-   vector<offer_object> get_offers_by_issuer(const offer_id_type lower_id, const account_id_type issuer_account_id, uint32_t limit) const;
-   vector<offer_object> get_offers_by_item(const offer_id_type lower_id, const nft_id_type item, uint32_t limit) const;
-   vector<offer_history_object> get_offer_history_by_issuer(const offer_history_id_type lower_id, const account_id_type issuer_account_id, uint32_t limit) const;
-   vector<offer_history_object> get_offer_history_by_item(const offer_history_id_type lower_id, const nft_id_type item, uint32_t limit) const;
-   vector<offer_history_object> get_offer_history_by_bidder(const offer_history_id_type lower_id, const account_id_type bidder_account_id, uint32_t limit) const;
-
-    // Account Role
-   vector<account_role_object> get_account_roles_by_owner(account_id_type owner) const;
-
-        // rng
-   vector<uint64_t> get_random_number_ex(uint64_t minimum, uint64_t maximum, uint64_t selections, bool duplicates) const;
-   uint64_t get_random_number(uint64_t bound) const;
-
-   uint32_t api_limit_get_lower_bound_symbol = 100;
-   uint32_t api_limit_get_limit_orders = 300;
-   uint32_t api_limit_get_limit_orders_by_account = 101;
-   uint32_t api_limit_get_order_book = 50;
-   uint32_t api_limit_all_offers_count = 100;
-   uint32_t api_limit_lookup_accounts = 1000;
-   uint32_t api_limit_lookup_witness_accounts = 1000;
-   uint32_t api_limit_lookup_committee_member_accounts = 1000;
-   uint32_t api_limit_lookup_son_accounts = 1000;
-   uint32_t api_limit_lookup_worker_accounts = 1000;
-   uint32_t api_limit_get_trade_history = 100;
-   uint32_t api_limit_get_trade_history_by_sequence = 100;
-
-
-uint64_t database_api::nft_get_balance(const account_id_type owner) const
-{
+uint64_t database_api::nft_get_balance(const account_id_type owner) const {
    return my->nft_get_balance(owner);
 }
 
-uint64_t database_api_impl::nft_get_balance(const account_id_type owner) const
-{
+uint64_t database_api_impl::nft_get_balance(const account_id_type owner) const {
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_owner>();
    const auto &idx_nft_range = idx_nft.equal_range(owner);
    return std::distance(idx_nft_range.first, idx_nft_range.second);
 }
 
-optional<account_id_type> database_api::nft_owner_of(const nft_id_type token_id) const
-{
+optional<account_id_type> database_api::nft_owner_of(const nft_id_type token_id) const {
    return my->nft_owner_of(token_id);
 }
 
-optional<account_id_type> database_api_impl::nft_owner_of(const nft_id_type token_id) const
-{
+optional<account_id_type> database_api_impl::nft_owner_of(const nft_id_type token_id) const {
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_id>();
    auto itr_nft = idx_nft.find(token_id);
    if (itr_nft != idx_nft.end()) {
-       return itr_nft->owner;
+      return itr_nft->owner;
    }
    return {};
 }
 
-optional<account_id_type> database_api::nft_get_approved(const nft_id_type token_id) const
-{
+optional<account_id_type> database_api::nft_get_approved(const nft_id_type token_id) const {
    return my->nft_get_approved(token_id);
 }
 
-optional<account_id_type> database_api_impl::nft_get_approved(const nft_id_type token_id) const
-{
+optional<account_id_type> database_api_impl::nft_get_approved(const nft_id_type token_id) const {
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_id>();
    auto itr_nft = idx_nft.find(token_id);
    if (itr_nft != idx_nft.end()) {
-       return itr_nft->approved;
+      return itr_nft->approved;
    }
    return {};
 }
 
-bool database_api::nft_is_approved_for_all(const account_id_type owner, const account_id_type operator_) const
-{
+bool database_api::nft_is_approved_for_all(const account_id_type owner, const account_id_type operator_) const {
    return my->nft_is_approved_for_all(owner, operator_);
 }
 
-bool database_api_impl::nft_is_approved_for_all(const account_id_type owner, const account_id_type operator_) const
-{
+bool database_api_impl::nft_is_approved_for_all(const account_id_type owner, const account_id_type operator_) const {
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_owner>();
    const auto &idx_nft_range = idx_nft.equal_range(owner);
    if (std::distance(idx_nft_range.first, idx_nft_range.second) == 0) {
-       return false;
+      return false;
    }
    bool result = true;
    std::for_each(idx_nft_range.first, idx_nft_range.second, [&](const nft_object &obj) {
@@ -3268,43 +3168,37 @@ bool database_api_impl::nft_is_approved_for_all(const account_id_type owner, con
    return result;
 }
 
-string database_api::nft_get_name(const nft_metadata_id_type nft_metadata_id) const
-{
+string database_api::nft_get_name(const nft_metadata_id_type nft_metadata_id) const {
    return my->nft_get_name(nft_metadata_id);
 }
 
-string database_api_impl::nft_get_name(const nft_metadata_id_type nft_metadata_id) const
-{
+string database_api_impl::nft_get_name(const nft_metadata_id_type nft_metadata_id) const {
    const auto &idx_nft_md = _db.get_index_type<nft_metadata_index>().indices().get<by_id>();
    auto itr_nft_md = idx_nft_md.find(nft_metadata_id);
    if (itr_nft_md != idx_nft_md.end()) {
-       return itr_nft_md->name;
+      return itr_nft_md->name;
    }
    return "";
 }
 
-string database_api::nft_get_symbol(const nft_metadata_id_type nft_metadata_id) const
-{
+string database_api::nft_get_symbol(const nft_metadata_id_type nft_metadata_id) const {
    return my->nft_get_symbol(nft_metadata_id);
 }
 
-string database_api_impl::nft_get_symbol(const nft_metadata_id_type nft_metadata_id) const
-{
+string database_api_impl::nft_get_symbol(const nft_metadata_id_type nft_metadata_id) const {
    const auto &idx_nft_md = _db.get_index_type<nft_metadata_index>().indices().get<by_id>();
    auto itr_nft_md = idx_nft_md.find(nft_metadata_id);
    if (itr_nft_md != idx_nft_md.end()) {
-       return itr_nft_md->symbol;
+      return itr_nft_md->symbol;
    }
    return "";
 }
 
-string database_api::nft_get_token_uri(const nft_id_type token_id) const
-{
+string database_api::nft_get_token_uri(const nft_id_type token_id) const {
    return my->nft_get_token_uri(token_id);
 }
 
-string database_api_impl::nft_get_token_uri(const nft_id_type token_id) const
-{
+string database_api_impl::nft_get_token_uri(const nft_id_type token_id) const {
    string result = "";
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_id>();
    auto itr_nft = idx_nft.find(token_id);
@@ -3319,62 +3213,54 @@ string database_api_impl::nft_get_token_uri(const nft_id_type token_id) const
    return result;
 }
 
-uint64_t database_api::nft_get_total_supply(const nft_metadata_id_type nft_metadata_id) const
-{
+uint64_t database_api::nft_get_total_supply(const nft_metadata_id_type nft_metadata_id) const {
    return my->nft_get_total_supply(nft_metadata_id);
 }
 
-uint64_t database_api_impl::nft_get_total_supply(const nft_metadata_id_type nft_metadata_id) const
-{
+uint64_t database_api_impl::nft_get_total_supply(const nft_metadata_id_type nft_metadata_id) const {
    const auto &idx_nft_md = _db.get_index_type<nft_metadata_index>().indices().get<by_id>();
    return idx_nft_md.size();
 }
 
-nft_object database_api::nft_token_by_index(const nft_metadata_id_type nft_metadata_id, const uint64_t token_idx) const
-{
+nft_object database_api::nft_token_by_index(const nft_metadata_id_type nft_metadata_id, const uint64_t token_idx) const {
    return my->nft_token_by_index(nft_metadata_id, token_idx);
 }
 
-nft_object database_api_impl::nft_token_by_index(const nft_metadata_id_type nft_metadata_id, const uint64_t token_idx) const
-{
+nft_object database_api_impl::nft_token_by_index(const nft_metadata_id_type nft_metadata_id, const uint64_t token_idx) const {
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_metadata>();
    auto idx_nft_range = idx_nft.equal_range(nft_metadata_id);
    uint64_t tmp_idx = token_idx;
    for (auto itr = idx_nft_range.first; itr != idx_nft_range.second; ++itr) {
       if (tmp_idx == 0) {
-          return *itr;
+         return *itr;
       }
       tmp_idx = tmp_idx - 1;
    }
    return {};
 }
 
-nft_object database_api::nft_token_of_owner_by_index(const nft_metadata_id_type nft_metadata_id, const account_id_type owner, const uint64_t token_idx) const
-{
+nft_object database_api::nft_token_of_owner_by_index(const nft_metadata_id_type nft_metadata_id, const account_id_type owner, const uint64_t token_idx) const {
    return my->nft_token_of_owner_by_index(nft_metadata_id, owner, token_idx);
 }
 
-nft_object database_api_impl::nft_token_of_owner_by_index(const nft_metadata_id_type nft_metadata_id, const account_id_type owner, const uint64_t token_idx) const
-{
+nft_object database_api_impl::nft_token_of_owner_by_index(const nft_metadata_id_type nft_metadata_id, const account_id_type owner, const uint64_t token_idx) const {
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_metadata_and_owner>();
    auto idx_nft_range = idx_nft.equal_range(std::make_tuple(nft_metadata_id, owner));
    uint64_t tmp_idx = token_idx;
    for (auto itr = idx_nft_range.first; itr != idx_nft_range.second; ++itr) {
       if (tmp_idx == 0) {
-          return *itr;
+         return *itr;
       }
       tmp_idx = tmp_idx - 1;
    }
    return {};
 }
 
-vector<nft_object> database_api::nft_get_all_tokens() const
-{
+vector<nft_object> database_api::nft_get_all_tokens() const {
    return my->nft_get_all_tokens();
 }
 
-vector<nft_object> database_api_impl::nft_get_all_tokens() const
-{
+vector<nft_object> database_api_impl::nft_get_all_tokens() const {
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_id>();
    vector<nft_object> result;
    for (auto itr = idx_nft.begin(); itr != idx_nft.end(); ++itr) {
@@ -3383,13 +3269,11 @@ vector<nft_object> database_api_impl::nft_get_all_tokens() const
    return result;
 }
 
-vector<nft_object> database_api::nft_get_tokens_by_owner(const account_id_type owner) const
-{
+vector<nft_object> database_api::nft_get_tokens_by_owner(const account_id_type owner) const {
    return my->nft_get_tokens_by_owner(owner);
 }
 
-vector<nft_object> database_api_impl::nft_get_tokens_by_owner(const account_id_type owner) const
-{
+vector<nft_object> database_api_impl::nft_get_tokens_by_owner(const account_id_type owner) const {
    const auto &idx_nft = _db.get_index_type<nft_index>().indices().get<by_owner>();
    auto idx_nft_range = idx_nft.equal_range(owner);
    vector<nft_object> result;
@@ -3762,7 +3646,7 @@ uint64_t database_api_impl::get_random_number(uint64_t bound) const {
 }
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
-// Rooms                                                            //
+// Rooms  methods                                                           //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 

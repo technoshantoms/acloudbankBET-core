@@ -71,24 +71,18 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       vector<ico_balance_object> get_ico_balance_objects( const vector<string>& addrs )const;
       vector<asset> get_vested_balances( const vector<balance_id_type>& objs )const;
       vector<vesting_balance_object> get_vesting_balances( const std::string account_id_or_name )const;
+
+       // Tournaments
+   vector<tournament_object> get_tournaments_in_state(tournament_state state, uint32_t limit) const;
+   vector<tournament_object> get_tournaments(tournament_id_type stop, unsigned limit, tournament_id_type start);
+   vector<tournament_object> get_tournaments_by_state(tournament_id_type stop, unsigned limit, tournament_id_type start, tournament_state state);
+   vector<tournament_id_type> get_registered_tournaments(account_id_type account_filter, uint32_t limit) const;
+
   
     // gpos
    gpos_info get_gpos_info(const account_id_type account) const;
    // Account Role
    vector<account_role_object> get_account_roles_by_owner(account_id_type owner) const;
-
-   uint32_t api_limit_get_lower_bound_symbol = 100;
-   uint32_t api_limit_get_limit_orders = 300;
-   uint32_t api_limit_get_limit_orders_by_account = 101;
-   uint32_t api_limit_get_order_book = 50;
-   uint32_t api_limit_all_offers_count = 100;
-   uint32_t api_limit_lookup_accounts = 1000;
-   uint32_t api_limit_lookup_witness_accounts = 1000;
-   uint32_t api_limit_lookup_committee_member_accounts = 1000;
-   uint32_t api_limit_lookup_son_accounts = 1000;
-   uint32_t api_limit_lookup_worker_accounts = 1000;
-   uint32_t api_limit_get_trade_history = 100;
-   uint32_t api_limit_get_trade_history_by_sequence = 100;
 
    // rbac
    vector<custom_permission_object> get_custom_permissions(const account_id_type account) const;
@@ -111,12 +105,37 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
    nft_object nft_token_of_owner_by_index(const nft_metadata_id_type nft_metadata_id, const account_id_type owner, const uint64_t token_idx) const;
    vector<nft_object> nft_get_all_tokens() const;
    vector<nft_object> nft_get_tokens_by_owner(const account_id_type owner) const;
+
+    // Marketplace
+   vector<offer_object> list_offers(const offer_id_type lower_id, uint32_t limit) const;
+   vector<offer_object> list_sell_offers(const offer_id_type lower_id, uint32_t limit) const;
+   vector<offer_object> list_buy_offers(const offer_id_type lower_id, uint32_t limit) const;
+   vector<offer_history_object> list_offer_history(const offer_history_id_type lower_id, uint32_t limit) const;
+   vector<offer_object> get_offers_by_issuer(const offer_id_type lower_id, const account_id_type issuer_account_id, uint32_t limit) const;
+   vector<offer_object> get_offers_by_item(const offer_id_type lower_id, const nft_id_type item, uint32_t limit) const;
+   vector<offer_history_object> get_offer_history_by_issuer(const offer_history_id_type lower_id, const account_id_type issuer_account_id, uint32_t limit) const;
+   vector<offer_history_object> get_offer_history_by_item(const offer_history_id_type lower_id, const nft_id_type item, uint32_t limit) const;
+   vector<offer_history_object> get_offer_history_by_bidder(const offer_history_id_type lower_id, const account_id_type bidder_account_id, uint32_t limit) const;
+
    // Sidechain addresses
    vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
    vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
    vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
    fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const;
    uint64_t get_sidechain_addresses_count() const;
+
+    // SON members
+   //vector<optional<son_object>> get_sons(const vector<son_id_type> &son_ids) const;
+   //fc::optional<son_object> get_son_by_account_id(account_id_type account) const;
+   //fc::optional<son_object> get_son_by_account(const std::string account_id_or_name) const;
+   //map<string, son_id_type> lookup_son_accounts(const string &lower_bound_name, uint32_t limit) const;
+   //uint64_t get_son_count() const;
+
+   // SON wallets
+   //optional<son_wallet_object> get_active_son_wallet();
+   //optional<son_wallet_object> get_son_wallet_by_time_point(time_point_sec time_point);
+   //vector<optional<son_wallet_object>> get_son_wallets(uint32_t limit);
+   //
       // Peerplays
    vector<sport_object> list_sports() const;
    vector<event_group_object> list_event_groups(sport_id_type sport_id) const;
@@ -137,11 +156,7 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
    asset get_lottery_balance(asset_id_type lottery_id) const;
    sweeps_vesting_balance_object get_sweeps_vesting_balance_object(account_id_type account) const;
    asset get_sweeps_vesting_balance_available_for_claim(account_id_type account) const;
-      // helper function
-   vector<optional<asset_object>> get_assets(const vector<asset_id_type> &asset_ids) const;
-   vector<asset_object> list_assets(const string &lower_bound_symbol, uint32_t limit) const;
-   vector<optional<asset_object>> lookup_asset_symbols(const vector<string> &symbols_or_ids) const;
-   uint64_t get_asset_count() const;
+  
       // Assets
       uint64_t get_asset_count()const;
       asset_id_type get_asset_id_from_string(const std::string& symbol_or_id)const;
@@ -247,7 +262,7 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
                                           htlc_id_type start, uint32_t limit) const;
       vector<htlc_object> list_htlcs(const htlc_id_type lower_bound_id, uint32_t limit) const;
 
-      // AcloudBank personal data
+      // R-Squared personal data
       vector<personal_data_object> get_personal_data( const account_id_type subject_account,
                                                       const account_id_type operator_account ) const;
       fc::optional<personal_data_object> get_last_personal_data( const account_id_type subject_account,
@@ -258,6 +273,17 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       fc::optional<permission_object> get_permission_by_id( const permission_id_type permission_id ) const;
       vector<permission_object> get_permissions( const account_id_type operator_account,
                                                  const permission_id_type permission_id, uint32_t limit ) const;
+
+      // Rooms
+      fc::optional<room_object> get_room_by_id( const room_id_type room_id ) const;
+      vector<room_object> get_rooms_by_owner( const account_id_type owner,
+                                              const room_id_type room_id, uint32_t limit ) const;
+      vector<room_participant_object> get_room_participants( const room_id_type room,
+                                                             const room_participant_id_type participant_id,
+                                                             uint32_t limit ) const;
+      vector<room_participant_object> get_rooms_by_participant( const account_id_type participant,
+                                                                const room_participant_id_type participant_id,
+                                                                uint32_t limit ) const;
 
       ////////////////////////////////////////////////
       // Accounts

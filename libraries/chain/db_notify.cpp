@@ -663,7 +663,10 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
            break;
         } case custom_object_type:{
           break;
-        } case proposal_object_type:{
+        } case reserved0_object_type:{
+           break;
+        }
+       case proposal_object_type:{
            const auto& aobj = dynamic_cast<const proposal_object*>(obj);
            FC_ASSERT( aobj != nullptr );
            transaction_get_impacted_accounts( aobj->proposed_transaction, accounts,
