@@ -1,6 +1,3 @@
-/*
- * acloudbank
- */
 
 #include <graphene/chain/room_object.hpp>
 #include <graphene/chain/database.hpp>

@@ -743,10 +743,6 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
            break;
          case betting_market_group_object_type:
            break;
-         case room_object_type:
-           break;
-         case room_participant_object_type:
-           break;
          case betting_market_object_type:
            break;
          case bet_object_type:{

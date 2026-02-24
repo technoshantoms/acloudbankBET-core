@@ -118,8 +118,8 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
    vector<offer_history_object> get_offer_history_by_bidder(const offer_history_id_type lower_id, const account_id_type bidder_account_id, uint32_t limit) const;
     
     // rng
-    vector<uint64_t> get_random_number_ex(uint64_t minimum, uint64_t maximum, uint64_t selections, bool duplicates) const;
-    uint64_t get_random_number(uint64_t bound) const;
+      vector<uint64_t> get_random_number_ex(uint64_t minimum, uint64_t maximum, uint64_t selections, bool duplicates) const;
+      uint64_t get_random_number(uint64_t bound) const;
    // Sidechain addresses
    vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
    vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;

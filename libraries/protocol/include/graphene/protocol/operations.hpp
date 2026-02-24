@@ -195,17 +195,16 @@ namespace graphene { namespace protocol {
             /* 132 */ room_update_operation,
             /* 133 */ room_add_participant_operation,
             /* 134 */ room_remove_participant_operation,
-            /* 135 */ room_remove_participant_operation,
-            /* 136 */ room_rotate_key_operation
-            /* 137 */ affiliate_payout_operation, // VIRTUAL
-            /* 138 */ affiliate_referral_payout_operation, // VIRTUAL
-            /* 139 */ sidechain_address_add_operation,
-            /* 140 */ sidechain_address_update_operation,
-            /* 141 */ sidechain_address_delete_operation,
-            /* 142 */ sidechain_transaction_create_operation,
-            /* 143 */ sidechain_transaction_sign_operation,
-            /* 144 */ sidechain_transaction_send_operation,
-            /* 145 */ sidechain_transaction_settle_operation
+            /* 135 */ room_rotate_key_operation,
+            /* 136 */ affiliate_payout_operation, // VIRTUAL
+            /* 137 */ affiliate_referral_payout_operation, // VIRTUAL
+            /* 138 */ sidechain_address_add_operation,
+            /* 139 */ sidechain_address_update_operation,
+            /* 140 */ sidechain_address_delete_operation,
+            /* 141 */ sidechain_transaction_create_operation,
+            /* 142 */ sidechain_transaction_sign_operation,
+            /* 143 */ sidechain_transaction_send_operation,
+            /* 144 */ sidechain_transaction_settle_operation
          > operation;
 
    /// @} // operations group

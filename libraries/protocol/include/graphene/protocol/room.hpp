@@ -1,6 +1,3 @@
-/*
- * acloudbank
- */
 
 #pragma once
 
