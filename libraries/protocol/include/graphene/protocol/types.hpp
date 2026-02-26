@@ -352,9 +352,11 @@ GRAPHENE_DEFINE_IDS(protocol, protocol_ids, /*protocol objects are not prefixed*
                     /* 1.28.x */ (nft_metadata)
                     /* 1.29.x */ (nft)
                     /* 1.30.x */ (account_role)
-                    /* 1.31.x */ (sidechain_address)
-                    /* 1.32.x */(sidechain_transaction)
+                   // /* 1.31.x */ (sidechain_address)
+                   // /* 1.32.x */(sidechain_transaction)
                     /* 1.33.x */(random_number)
+                    /* 1.21.x */ (credit_offer)
+                    /* 1.22.x */ (credit_deal)
                    )
 
 FC_REFLECT(graphene::protocol::public_key_type, (key_data))

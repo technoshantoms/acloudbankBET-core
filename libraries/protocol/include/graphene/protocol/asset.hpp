@@ -115,6 +115,9 @@ namespace graphene { namespace protocol {
 
       bool is_null()const;
       void validate()const;
+      /// @brief Check if the object is valid
+          /// @param check_upper_bound Whether to check if the amounts in the price are too large
+     // void validate( bool check_upper_bound = false )const;
    };
 
    price operator / ( const asset& base, const asset& quote );

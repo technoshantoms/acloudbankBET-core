@@ -123,13 +123,13 @@ struct wallet_data
        * @param broadcast true to broadcast the transaction on the network
        * @returns the signed transaction adding sidechain address
        */
-      signed_transaction add_sidechain_address(string account,
-                                          sidechain_type sidechain,
-                                          string deposit_public_key,
-                                          string deposit_address,
-                                          string withdraw_public_key,
-                                          string withdraw_address,
-                                          bool broadcast = false);
+      // signed_transaction add_sidechain_address(string account,
+      //                                     sidechain_type sidechain,
+      //                                     string deposit_public_key,
+      //                                     string deposit_address,
+      //                                     string withdraw_public_key,
+      //                                     string withdraw_address,
+      //                                     bool broadcast = false);
 
       /** Deletes existing sidechain address owned by the given account for a given sidechain.
        *
@@ -138,23 +138,23 @@ struct wallet_data
        * @param broadcast true to broadcast the transaction on the network
        * @returns the signed transaction updating sidechain address
        */
-      signed_transaction delete_sidechain_address(string account,
-                                          sidechain_type sidechain,
-                                          bool broadcast = false);
+      // signed_transaction delete_sidechain_address(string account,
+      //                                     sidechain_type sidechain,
+      //                                     bool broadcast = false);
 
       /** Retrieves all sidechain addresses owned by given account.
        *
        * @param account the name or id of the account who owns the address
        * @returns the list of all sidechain addresses owned by given account.
        */
-      vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(string account);
+      //vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(string account);
 
       /** Retrieves all sidechain addresses registered for a given sidechain.
        *
        * @param sidechain the name of the sidechain
        * @returns the list of all sidechain addresses registered for a given sidechain.
        */
-      vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain);
+      //vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain);
 
       /** Retrieves sidechain address owned by given account for a given sidechain.
        *
@@ -162,13 +162,13 @@ struct wallet_data
        * @param sidechain the name of the sidechain
        * @returns the sidechain address owned by given account for a given sidechain.
        */
-      fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(string account, sidechain_type sidechain);
+     // fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(string account, sidechain_type sidechain);
 
       /** Retrieves the total number of sidechain addresses registered in the system.
        *
        * @returns the total number of sidechain addresses registered in the system.
        */
-      uint64_t get_sidechain_addresses_count();
+      //uint64_t get_sidechain_addresses_count();
 
 /**
  * This wallet assumes it is connected to the database server with a high-bandwidth, low-latency connection and
@@ -2735,12 +2735,12 @@ FC_API( graphene::wallet::wallet_api,
         (get_committee_member)
         (list_witnesses)
         (list_committee_members)
-        (add_sidechain_address)
-        (delete_sidechain_address)
-        (get_sidechain_addresses_by_account)
-        (get_sidechain_addresses_by_sidechain)
-        (get_sidechain_address_by_account_and_sidechain)
-        (get_sidechain_addresses_count)
+        //(add_sidechain_address)
+        //(delete_sidechain_address)
+        //(get_sidechain_addresses_by_account)
+        //(get_sidechain_addresses_by_sidechain)
+        //(get_sidechain_address_by_account_and_sidechain)
+        //(get_sidechain_addresses_count)
         (create_witness)
         (update_witness)
         (create_worker)

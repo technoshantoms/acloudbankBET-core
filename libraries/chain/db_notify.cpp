@@ -37,8 +37,8 @@
 #include <graphene/chain/nft_object.hpp>
 #include <graphene/chain/account_role_object.hpp>
 #include <graphene/chain/random_number_object.hpp>
-
-#include <graphene/chain/sidechain_address_object.hpp>
+#include <graphene/chain/credit_offer_object.hpp>
+//#include <graphene/chain/sidechain_address_object.hpp>
 
 #include <graphene/chain/account_object.hpp>
 #include <graphene/protocol/random_number.hpp>
@@ -320,6 +320,35 @@ struct get_impacted_account_visitor
    {
       _impacted.insert( op.payout_account_id );
    }
+    void operator()( const credit_offer_create_operation& op )
+   {
+      _impacted.insert( op.fee_payer() ); // owner_account
+   }
+   void operator()( const credit_offer_delete_operation& op )
+   {
+      _impacted.insert( op.fee_payer() ); // owner_account
+   }
+   void operator()( const credit_offer_update_operation& op )
+   {
+      _impacted.insert( op.fee_payer() ); // owner_account
+   }
+   void operator()( const credit_offer_accept_operation& op )
+   {
+      _impacted.insert( op.fee_payer() ); // borrower
+   }
+   void operator()( const credit_deal_repay_operation& op )
+   {
+      _impacted.insert( op.fee_payer() ); // account
+   }
+   void operator()( const credit_deal_expired_operation& op )
+   {
+      _impacted.insert( op.offer_owner );
+      _impacted.insert( op.borrower );
+   }
+   void operator()( const credit_deal_update_operation& op )
+   {
+      _impacted.insert( op.fee_payer() ); // account
+   }
    void operator()( const htlc_create_operation& op )
    {
       _impacted.insert( op.fee_payer() );
@@ -585,27 +614,27 @@ struct get_impacted_account_visitor
       _impacted.insert( op.buyer );
    }
    
-   void operator()( const sidechain_address_add_operation& op ) {
-      _impacted.insert( op.payer );
-   }
-   void operator()( const sidechain_address_update_operation& op ) {
-       _impacted.insert( op.payer );
-   }
-   void operator()( const sidechain_address_delete_operation& op ) {
-      _impacted.insert( op.payer );
-   }
-   void operator()( const sidechain_transaction_create_operation& op ) {
-      _impacted.insert( op.payer );
-   }
-   void operator()( const sidechain_transaction_sign_operation& op ) {
-      _impacted.insert( op.payer );
-   }
-   void operator()( const sidechain_transaction_send_operation& op ) {
-      _impacted.insert( op.payer );
-   }
-   void operator()( const sidechain_transaction_settle_operation& op ) {
-      _impacted.insert( op.payer );
-   }
+   // void operator()( const sidechain_address_add_operation& op ) {
+   //    _impacted.insert( op.payer );
+   // }
+   // void operator()( const sidechain_address_update_operation& op ) {
+   //     _impacted.insert( op.payer );
+   // }
+   // void operator()( const sidechain_address_delete_operation& op ) {
+   //    _impacted.insert( op.payer );
+   // }
+   // void operator()( const sidechain_transaction_create_operation& op ) {
+   //    _impacted.insert( op.payer );
+   // }
+   // void operator()( const sidechain_transaction_sign_operation& op ) {
+   //    _impacted.insert( op.payer );
+   // }
+   // void operator()( const sidechain_transaction_send_operation& op ) {
+   //    _impacted.insert( op.payer );
+   // }
+   // void operator()( const sidechain_transaction_settle_operation& op ) {
+   //    _impacted.insert( op.payer );
+   // }
     void operator()( const random_number_store_operation& op ){
       _impacted.insert( op.account );
    }
@@ -873,15 +902,25 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
            accounts.insert( aobj->whitelisted_accounts.begin(), aobj->whitelisted_accounts.end() );
            break;
         }
-      
-       case sidechain_address_object_type:{
-           const auto& aobj = dynamic_cast<const sidechain_address_object*>(obj);
-           FC_ASSERT( aobj != nullptr );
-           accounts.insert( aobj->sidechain_address_account );
+        case credit_offer_object_type:{
+           const auto* aobj = dynamic_cast<const credit_offer_object*>( obj );
+           accounts.insert( aobj->owner_account );
            break;
-        } case sidechain_transaction_object_type:{
+        } case credit_deal_object_type:{
+           const auto* aobj = dynamic_cast<const credit_deal_object*>( obj );
+           accounts.insert( aobj->offer_owner );
+           accounts.insert( aobj->borrower );
            break;
         }
+      
+       // case sidechain_address_object_type:{
+       //     const auto& aobj = dynamic_cast<const sidechain_address_object*>(obj);
+       //     FC_ASSERT( aobj != nullptr );
+       //     accounts.insert( aobj->sidechain_address_account );
+       //     break;
+       //  } case sidechain_transaction_object_type:{
+       //     break;
+       //  }
       
       }
    }
@@ -919,6 +958,12 @@ void get_relevant_accounts( const object* obj, flat_set<account_id_type>& accoun
               break;
             case impl_reserved1_object_type:
               break;
+            case impl_credit_deal_summary_object_type:{
+              const auto* aobj = dynamic_cast<const credit_deal_summary_object*>(obj);
+              accounts.insert( aobj->offer_owner );
+              accounts.insert( aobj->borrower );
+              break;
+           }
           /*case impl_account_transaction_history_object_type: {
               const auto& aobj = dynamic_cast<const account_transaction_history_object*>(obj);
               FC_ASSERT( aobj != nullptr );

@@ -17,6 +17,8 @@
 #include <graphene/chain/chain_property_object.hpp>
 #include <graphene/chain/committee_member_object.hpp>
 #include <graphene/chain/fba_object.hpp>
+#include <graphene/chain/credit_offer_object.hpp>
+#include <graphene/chain/credit_offer_evaluator.hpp>
 #include <graphene/chain/global_property_object.hpp>
 #include <graphene/chain/market_object.hpp>
 #include <graphene/chain/operation_history_object.hpp>
@@ -233,6 +235,13 @@ void database::initialize_evaluators()
    register_evaluator<lottery_reward_evaluator>();
    register_evaluator<lottery_end_evaluator>();
    register_evaluator<sweeps_vesting_claim_evaluator>();
+
+   register_evaluator<credit_offer_create_evaluator>();
+   register_evaluator<credit_offer_delete_evaluator>();
+   register_evaluator<credit_offer_update_evaluator>();
+   register_evaluator<credit_offer_accept_evaluator>();
+   register_evaluator<credit_deal_repay_evaluator>();
+   register_evaluator<credit_deal_update_evaluator>();
    /*
    register_evaluator<add_sidechain_address_evaluator>();
    register_evaluator<update_sidechain_address_evaluator>();
@@ -348,6 +357,9 @@ void database::initialize_indexes()
    add_index< primary_index< room_index,                                20> >();
    add_index< primary_index< room_participant_index,                    20> >();
    add_index< primary_index< room_key_epoch_index,                     20> >();
+   add_index< primary_index<credit_offer_index> >();
+   add_index< primary_index<credit_deal_index> >();
+   add_index< primary_index<credit_deal_summary_index                     > >();
 
   // _check_policy_1->lock();
   // _check_policy_2->lock();

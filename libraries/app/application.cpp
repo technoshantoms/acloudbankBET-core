@@ -396,6 +396,10 @@ void application_impl::set_api_limit() {
       _app_options.api_limit_get_withdraw_permissions_by_recipient =
             _options->at("api-limit-get-withdraw-permissions-by-recipient").as<uint64_t>();
    }
+   if(_options->count("api-limit-get-credit-offers") > 0) {
+      _app_options.api_limit_get_credit_offers =
+            _options->at("api-limit-get-credit-offers").as<uint32_t>();
+   }
    if(_options->count("api-limit-get-tickets") > 0) {
       _app_options.api_limit_get_tickets =
             _options->at("api-limit-get-tickets").as<uint64_t>();
@@ -1217,6 +1221,9 @@ void application::set_program_options(boost::program_options::options_descriptio
          ("api-limit-get-withdraw-permissions-by-recipient",
           bpo::value<uint64_t>()->default_value(default_opts.api_limit_get_withdraw_permissions_by_recipient),
           "For database_api_impl::get_withdraw_permissions_by_recipient to set max limit value")
+         ("api-limit-get-credit-offers",
+          bpo::value<uint32_t>()->default_value(default_opts.api_limit_get_credit_offers),
+          "Set maximum limit value for database APIs which query for credit offers or credit deals")
          ("api-limit-get-tickets",
           bpo::value<uint64_t>()->default_value(default_opts.api_limit_get_tickets),
           "Set maximum limit value for database APIs which query for tickets")

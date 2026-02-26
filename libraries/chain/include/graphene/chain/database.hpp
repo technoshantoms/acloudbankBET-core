@@ -668,8 +668,8 @@ namespace graphene { namespace chain {
                                    const asset_bitasset_data_object* bitasset_ptr = nullptr );
          void update_betting_markets(fc::time_point_sec current_block_time);
          void clear_expired_htlcs();
-
-          void finalize_expired_offers();
+         void update_credit_offers_and_deals();
+         void finalize_expired_offers();
 
          ///Steps performed only at maintenance intervals
          ///@{

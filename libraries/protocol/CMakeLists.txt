@@ -49,6 +49,7 @@ list(APPEND SOURCES account.cpp
                     nft.cpp
                     nft_lottery.cpp
                     account_role.cpp
+                    credit_offer.cpp
 
                     betting_market.cpp
 

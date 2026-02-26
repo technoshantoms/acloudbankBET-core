@@ -27,6 +27,8 @@
 #include <graphene/protocol/account_role.hpp>
 #include <graphene/protocol/room.hpp> 
 
+#include <graphene/protocol/credit_offer.hpp>
+
 //bet
 #include <graphene/protocol/sport.hpp>
 #include <graphene/protocol/event_group.hpp>
@@ -45,8 +47,8 @@
 #include <graphene/protocol/nft_ops.hpp>
 
 //sidechain
-#include <graphene/protocol/sidechain_address.hpp>
-#include <graphene/protocol/sidechain_transaction.hpp>
+//#include <graphene/protocol/sidechain_address.hpp>
+//#include <graphene/protocol/sidechain_transaction.hpp>
 
 
 #include <graphene/protocol/random_number.hpp>
@@ -198,13 +200,20 @@ namespace graphene { namespace protocol {
             /* 135 */ room_rotate_key_operation,
             /* 136 */ affiliate_payout_operation, // VIRTUAL
             /* 137 */ affiliate_referral_payout_operation, // VIRTUAL
-            /* 138 */ sidechain_address_add_operation,
-            /* 139 */ sidechain_address_update_operation,
-            /* 140 */ sidechain_address_delete_operation,
-            /* 141 */ sidechain_transaction_create_operation,
-            /* 142 */ sidechain_transaction_sign_operation,
-            /* 143 */ sidechain_transaction_send_operation,
-            /* 144 */ sidechain_transaction_settle_operation
+           /* 69 */ credit_offer_create_operation,
+            /* 70 */ credit_offer_delete_operation,
+            /* 71 */ credit_offer_update_operation,
+            /* 72 */ credit_offer_accept_operation,
+            /* 73 */ credit_deal_repay_operation,
+            /* 74 */ credit_deal_expired_operation,   // VIRTUAL
+            /* 76 */ credit_deal_update_operation
+            ///* 138 */ sidechain_address_add_operation,
+            ///* 139 */ sidechain_address_update_operation,
+            ///* 140 */ sidechain_address_delete_operation,
+            ///* 141 */ sidechain_transaction_create_operation,
+            ///* 142 */ sidechain_transaction_sign_operation,
+            ///* 143 */ sidechain_transaction_send_operation,
+            ///* 144 */ sidechain_transaction_settle_operation
          > operation;
 
    /// @} // operations group

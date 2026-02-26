@@ -57,6 +57,8 @@ add_library( graphene_chain
              special_authority_evaluation.cpp
              custom_authority_evaluator.cpp
              buyback.cpp
+             
+             credit_offer_evaluator.cpp
 
              custom_account_authority_evaluator.cpp
              custom_permission_evaluator.cpp
