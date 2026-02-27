@@ -278,6 +278,28 @@ processed_transaction database::_push_transaction( const precomputable_transacti
    notify_on_pending_transaction( trx );
    return processed_trx;
 }
+class undo_session_nesting_guard {
+public:
+   undo_session_nesting_guard( uint32_t& nesting_counter, const database& db )
+      : orig_value(nesting_counter), counter(nesting_counter)
+   {
+      FC_ASSERT( counter < db.get_global_properties().active_witnesses.size() * 2,
+                 "Max undo session nesting depth exceeded!" );
+      ++counter;
+   }
+   ~undo_session_nesting_guard()
+   {
+      --counter;
+      // GCOVR_EXCL_START
+      // Defensive code, should not happen
+      if( counter != orig_value )
+         elog( "Unexpected undo session nesting count value: ${n} != ${o}", ("n",counter)("o",orig_value) );
+      // GCOVR_EXCL_STOP
+   }
+private:
+    const uint32_t  orig_value;
+    uint32_t& counter;
+};
 
 processed_transaction database::validate_transaction( const signed_transaction& trx )
 {
@@ -735,6 +757,34 @@ operation_result database::apply_operation(transaction_evaluation_state& eval_st
    set_applied_operation_result( op_id, result );
    return result;
 } FC_CAPTURE_AND_RETHROW( (op) ) }
+
+operation_result database::try_push_virtual_operation( transaction_evaluation_state& eval_state, const operation& op )
+{
+   operation_validate( op );
+
+   // Note: these variables could be updated during the apply_operation() call
+   size_t old_applied_ops_size = _applied_ops.size();
+   auto old_vop = _current_virtual_op;
+
+   try
+   {
+      undo_session_nesting_guard guard( _undo_session_nesting_depth, *this );
+      if( _undo_db.size() >= _undo_db.max_size() )
+         _undo_db.set_max_size( _undo_db.size() + 1 );
+      auto temp_session = _undo_db.start_undo_session(true);
+      auto result = apply_operation( eval_state, op ); // This is a virtual operation
+      temp_session.merge();
+      return result;
+   }
+   catch( const fc::exception& e )
+   {
+      wlog( "Failed to push virtual operation ${op} at block ${n}; exception was ${e}",
+            ("op", op)("n", head_block_num())("e", e.to_detail_string()) );
+      _current_virtual_op = old_vop;
+      _applied_ops.resize( old_applied_ops_size );
+      throw;
+   }
+}
 
 const witness_object& database::validate_block_header( uint32_t skip, const signed_block& next_block )const
 {

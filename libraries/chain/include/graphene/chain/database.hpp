@@ -635,6 +635,11 @@ namespace graphene { namespace chain {
          processed_transaction _apply_transaction( const signed_transaction& trx );
          void                  _cancel_bids_and_revive_mpa( const asset_object& bitasset, const asset_bitasset_data_object& bad );
 
+         /// Validate, evaluate and apply a virtual operation using a temporary undo_database session,
+         /// if fail, rewind any changes made
+         operation_result      try_push_virtual_operation( transaction_evaluation_state& eval_state,
+                                                           const operation& op );
+
          ///Steps involved in applying a new block
          ///@{
 
@@ -744,6 +749,9 @@ namespace graphene { namespace chain {
           * database::close() has not been called, or failed during execution.
           */
          bool                              _opened = false;
+
+         /// Counts nested undo sessions due to (for example) proposal updates or order-sends-order executions
+         uint32_t                          _undo_session_nesting_depth = 0;
 
          // Counts nested proposal updates
          uint32_t                           _push_proposal_nesting_depth = 0;

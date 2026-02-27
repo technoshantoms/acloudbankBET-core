@@ -53,8 +53,9 @@ GRAPHENE_DEFINE_IDS(chain, implementation_ids, impl_,
                     /* 2.20.x */  (global_betting_statistics)
                     /* 2.21.x */ (lottery_balance)
                     /* 2.22.x */ (nft_lottery_balance)
-                    /* 2.23.x */(sweeps_vesting_balance)
-                    /* 2.24.x */(offer_history)
+                    /* 2.23.x */ (sweeps_vesting_balance)
+                    /* 2.24.x */ (offer_history)
+                    /* 2.25.x */ (credit_deal_summary)
                    )
 //satia: please fix me!
 GRAPHENE_DEFINE_IDS(chain, api_ids, api_,

@@ -97,6 +97,7 @@ namespace graphene { namespace db {
          }
          virtual variant to_variant()const { return variant( static_cast<const DerivedClass&>(*this), MAX_NESTING ); }
          virtual vector<char> pack()const  { return fc::raw::pack( static_cast<const DerivedClass&>(*this) ); }
+         object_id<SpaceID,TypeID> get_id() const { return object_id<SpaceID,TypeID>( this->id ); }
    };
 
    typedef flat_map<uint8_t, object_id_type> annotation_map;
