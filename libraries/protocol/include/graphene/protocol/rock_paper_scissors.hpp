@@ -47,10 +47,10 @@ namespace graphene { namespace protocol {
       uint64_t nonce1;
       uint64_t nonce2;
       rock_paper_scissors_gesture gesture;
-      fc::sha256 calculate_hash() const {
-         std::vector<char> full_throw_packed(fc::raw::pack(*this));
-         return fc::sha256::hash(full_throw_packed.data(), full_throw_packed.size());
-      }
+      // fc::sha256 calculate_hash() const {
+      //    std::vector<char> full_throw_packed(fc::raw::pack(*this));
+      //    return fc::sha256::hash(full_throw_packed.data(), full_throw_packed.size());
+      // }
    };
 
    struct rock_paper_scissors_throw_commit

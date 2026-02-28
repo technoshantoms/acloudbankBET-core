@@ -48,7 +48,7 @@ namespace graphene { namespace chain {
     *  @note  this object is READ ONLY it can never be modified
     */
    class operation_history_object : public abstract_object<operation_history_object,
-                                              protocol_ids, operation_history_object_type>
+                                              api_ids, api_operation_history_object_type>
    {
       public:
 
