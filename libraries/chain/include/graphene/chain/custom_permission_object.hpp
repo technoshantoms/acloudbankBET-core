@@ -16,12 +16,9 @@ namespace graphene { namespace chain {
     * @brief Tracks all the custom permission of an account.
     * @ingroup object
     */
-   class custom_permission_object : public abstract_object<custom_permission_object>
+   class custom_permission_object : public abstract_object<custom_permission_object,protocol_ids,custom_permission_object_type>
    {
       public:
-         static const uint8_t space_id = protocol_ids;
-         static const uint8_t type_id  = custom_permission_object_type;
-
          // Account for which this permission is being created
          account_id_type account;
          // Permission name

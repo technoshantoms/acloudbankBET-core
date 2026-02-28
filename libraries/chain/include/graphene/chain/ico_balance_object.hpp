@@ -27,11 +27,9 @@
 
 namespace graphene { namespace chain {
 
-   class ico_balance_object : public abstract_object<ico_balance_object>
+   class ico_balance_object : public abstract_object<ico_balance_object,protocol_ids,ico_balance_object_type>
    {
       public:
-         static constexpr uint8_t space_id = protocol_ids;
-         static constexpr uint8_t type_id  = ico_balance_object_type;
 
          string eth_address;
          asset  balance;

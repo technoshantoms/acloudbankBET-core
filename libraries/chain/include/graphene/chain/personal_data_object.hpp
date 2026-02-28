@@ -42,11 +42,9 @@ namespace graphene { namespace chain {
          *
          * Personal data the primary unit to give and store permissions to account's personal data.
          */
-        class personal_data_object : public graphene::db::abstract_object<personal_data_object>
+        class personal_data_object : public graphene::db::abstract_object<personal_data_object,protocol_ids,personal_data_object_type>
         {
         public:
-            static const uint8_t space_id = protocol_ids;
-            static const uint8_t type_id  = personal_data_object_type;
 
             account_id_type subject_account;
             account_id_type operator_account;

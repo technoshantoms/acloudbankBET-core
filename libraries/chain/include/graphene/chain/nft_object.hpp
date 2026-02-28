@@ -8,12 +8,9 @@
 namespace graphene { namespace chain {
    using namespace graphene::db;
 
-   class nft_lottery_balance_object : public abstract_object<nft_lottery_balance_object>
+   class nft_lottery_balance_object : public abstract_object<nft_lottery_balance_object,implementation_ids,impl_nft_lottery_balance_object_type>
    {
       public:
-         static const uint8_t space_id = implementation_ids;
-         static const uint8_t type_id  = impl_nft_lottery_balance_object_type;
-
          // Total Progressive jackpot carried over from previous lotteries
          asset total_progressive_jackpot;
          // Current total jackpot in this lottery inclusive of the progressive jackpot
@@ -31,12 +28,9 @@ namespace graphene { namespace chain {
       nft_lottery_balance_id_type lottery_balance_id;
    };
 
-   class nft_metadata_object : public abstract_object<nft_metadata_object>
+   class nft_metadata_object : public abstract_object<nft_metadata_object,protocol_ids,nft_metadata_object_type>
    {
       public:
-         static const uint8_t space_id = protocol_ids;
-         static const uint8_t type_id  = nft_metadata_object_type;
-
          account_id_type owner;
          std::string     name;
          std::string     symbol;
@@ -63,12 +57,9 @@ namespace graphene { namespace chain {
          void end_lottery(database &db);
    };
 
-   class nft_object : public abstract_object<nft_object>
+   class nft_object : public abstract_object<nft_object,protocol_ids,nft_object_type>
    {
       public:
-         static const uint8_t space_id = protocol_ids;
-         static const uint8_t type_id  = nft_object_type;
-
          nft_metadata_id_type    nft_metadata_id;
          account_id_type         owner;
          account_id_type         approved;

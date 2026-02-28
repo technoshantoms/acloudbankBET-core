@@ -41,13 +41,10 @@ namespace graphene { namespace chain {
          *
          * Permission the primary unit to give and store permissions to account's content data.
          */
-        class permission_object : public graphene::db::abstract_object<permission_object>
+        class permission_object : public graphene::db::abstract_object<permission_object,protocol_ids,permission_object_type>
         {
         public:
-            static constexpr uint8_t space_id = protocol_ids;
-            static constexpr uint8_t type_id  = permission_object_type;
-
-            account_id_type subject_account;
+           account_id_type subject_account;
             account_id_type operator_account;
             string permission_type;
             optional<object_id_type> object_id;

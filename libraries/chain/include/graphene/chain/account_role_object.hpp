@@ -9,11 +9,9 @@ namespace graphene
     {
         using namespace graphene::db;
 
-        class account_role_object : public abstract_object<account_role_object>
+        class account_role_object : public abstract_object<account_role_object,protocol_ids,account_role_object_type>
         {
         public:
-            static const uint8_t space_id = protocol_ids;
-            static const uint8_t type_id = account_role_object_type;
 
             account_id_type owner;
             std::string name;

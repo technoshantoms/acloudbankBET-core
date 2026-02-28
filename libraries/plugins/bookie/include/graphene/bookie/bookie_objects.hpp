@@ -18,11 +18,9 @@ enum bookie_object_type
 namespace detail
 {
 
-class persistent_event_object : public graphene::db::abstract_object<persistent_event_object>
+class persistent_event_object : public graphene::db::abstract_object<persistent_event_object,bookie_objects,persistent_event_object_type>
 {
    public:
-      static const uint8_t space_id = bookie_objects;
-      static const uint8_t type_id = persistent_event_object_type;
 
       event_object ephemeral_event_object;
 
@@ -85,11 +83,9 @@ void events_by_competitor_index::object_modified( const object& after )
 #endif
 
 //////////// betting_market_group_object //////////////////
-class persistent_betting_market_group_object : public graphene::db::abstract_object<persistent_betting_market_group_object>
+class persistent_betting_market_group_object : public graphene::db::abstract_object<persistent_betting_market_group_object,bookie_objects,persistent_betting_market_group_object_type>
 {
    public:
-      static const uint8_t space_id = bookie_objects;
-      static const uint8_t type_id = persistent_betting_market_group_object_type;
 
       betting_market_group_object ephemeral_betting_market_group_object;
 
@@ -108,11 +104,9 @@ typedef multi_index_container<
 typedef generic_index<persistent_betting_market_group_object, persistent_betting_market_group_multi_index_type> persistent_betting_market_group_index;
 
 //////////// betting_market_object //////////////////
-class persistent_betting_market_object : public graphene::db::abstract_object<persistent_betting_market_object>
+class persistent_betting_market_object : public graphene::db::abstract_object<persistent_betting_market_object,bookie_objects,persistent_betting_market_object_type>
 {
    public:
-      static const uint8_t space_id = bookie_objects;
-      static const uint8_t type_id = persistent_betting_market_object_type;
 
       betting_market_object ephemeral_betting_market_object;
 

@@ -5,12 +5,10 @@
 namespace graphene { namespace chain {
    using namespace graphene::db;
 
-   class random_number_object : public abstract_object<random_number_object>
+   class random_number_object : public abstract_object<random_number_object,protocol_ids,random_number_object_type>
    {
       public:
-         static constexpr uint8_t space_id = protocol_ids;
-         static constexpr uint8_t type_id  = random_number_object_type;
-
+     
          account_id_type account; /* account who requested random number */
          time_point_sec timestamp; /* date and time when the number is read */
          vector<uint64_t> random_number; /* random number(s) */

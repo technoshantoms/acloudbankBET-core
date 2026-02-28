@@ -41,11 +41,9 @@ namespace graphene { namespace chain {
          *
          * Content card the primary unit to give and store content information.
          */
-        class content_card_object : public graphene::db::abstract_object<content_card_object>
+        class content_card_object : public graphene::db::abstract_object<content_card_object,protocol_ids,content_card_object_type>
         {
         public:
-            static const uint8_t space_id = protocol_ids;
-            static const uint8_t type_id  = content_card_object_type;
 
             account_id_type subject_account;
             string   hash;

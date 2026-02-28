@@ -14,12 +14,9 @@ class database;
 
 struct by_sport_id;
 
-class event_group_object : public graphene::db::abstract_object< event_group_object >
+class event_group_object : public graphene::db::abstract_object< event_group_object,protocol_ids,event_group_object_type >
 {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id = event_group_object_type;
-
       internationalized_string_type name;
       sport_id_type sport_id;
     

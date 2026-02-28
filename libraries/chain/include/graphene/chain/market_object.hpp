@@ -41,11 +41,9 @@ using namespace graphene::db;
  *
  *  This limit_order_objects are indexed by @ref expiration and is automatically deleted on the first block after expiration.
  */
-class limit_order_object : public abstract_object<limit_order_object>
+class limit_order_object : public abstract_object<limit_order_object,protocol_ids,limit_order_object_type>
 {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id  = limit_order_object_type;
 
       time_point_sec   expiration;
       account_id_type  seller;
@@ -116,11 +114,9 @@ typedef generic_index<limit_order_object, limit_order_multi_index_type> limit_or
  * There should only be one call_order_object per asset pair per account and
  * they will all have the same call price.
  */
-class call_order_object : public abstract_object<call_order_object>
+class call_order_object : public abstract_object<call_order_object,protocol_ids,call_order_object_type>
 {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id  = call_order_object_type;
 
       asset get_collateral()const { return asset( collateral, call_price.base.asset_id ); }
       asset get_debt()const { return asset( debt, debt_type() ); }
@@ -164,11 +160,9 @@ class call_order_object : public abstract_object<call_order_object>
  *  On the @ref settlement_date the @ref balance will be converted to the collateral asset
  *  and paid to @ref owner and then this object will be deleted.
  */
-class force_settlement_object : public abstract_object<force_settlement_object>
+class force_settlement_object : public abstract_object<force_settlement_object,protocol_ids,force_settlement_object_type>
 {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id  = force_settlement_object_type;
 
       account_id_type   owner;
       asset             balance;

@@ -57,12 +57,9 @@ namespace graphene { namespace chain {
     *  This object exists as an implementation detail and its ID should never be referenced by
     *  a blockchain operation.
     */
-   class asset_dynamic_data_object : public abstract_object<asset_dynamic_data_object>
+   class asset_dynamic_data_object : public abstract_object<asset_dynamic_data_object,implementation_ids,impl_asset_dynamic_data_object_type>
    {
       public:
-         static constexpr uint8_t space_id = implementation_ids;
-         static constexpr uint8_t type_id  = impl_asset_dynamic_data_object_type;
-
          /// The number of shares currently in existence
          share_type current_supply;
          optional<share_type> sweeps_tickets_sold;
@@ -78,12 +75,9 @@ namespace graphene { namespace chain {
     *  All assets have a globally unique symbol name that controls how they are traded and an issuer who
     *  has authority over the parameters of the asset.
     */
-   class asset_object : public graphene::db::abstract_object<asset_object>
+   class asset_object : public graphene::db::abstract_object<asset_object,protocol_ids,asset_object_type>
    {
       public:
-         static constexpr uint8_t space_id = protocol_ids;
-         static constexpr uint8_t type_id  = asset_object_type;
-
          /// This function does not check if any registered asset has this symbol or not; it simply checks whether the
          /// symbol would be valid.
          /// @return true if symbol is a valid ticker symbol; false otherwise.
@@ -270,12 +264,9 @@ namespace graphene { namespace chain {
     *  @ingroup object
     *  @ingroup implementation
     */
-   class asset_bitasset_data_object : public abstract_object<asset_bitasset_data_object>
+   class asset_bitasset_data_object : public abstract_object<asset_bitasset_data_object,implementation_ids,impl_asset_bitasset_data_object_type>
    {
       public:
-         static constexpr uint8_t space_id = implementation_ids;
-         static constexpr uint8_t type_id  = impl_asset_bitasset_data_object_type;
-
          /// The asset this object belong to
          asset_id_type asset_id;
 
@@ -475,12 +466,9 @@ namespace graphene { namespace chain {
     *  @ingroup object
     *  @ingroup implementation
     */
-   class asset_dividend_data_object : public abstract_object<asset_dividend_data_object>
+   class asset_dividend_data_object : public abstract_object<asset_dividend_data_object,implementation_ids,impl_asset_dividend_data_object_type>
    {
       public:
-         static constexpr uint8_t space_id = implementation_ids;
-         static constexpr uint8_t type_id  = impl_asset_dividend_data_object_type;
-
          /// The tunable options for Dividend-paying assets are stored in this field.
          dividend_asset_options options;
 
@@ -519,12 +507,9 @@ namespace graphene { namespace chain {
    // pending dividend payouts were calculated (last maintenance interval).
    // At each maintenance interval, we will compare the current balance to the
    // balance stored here to see how much was deposited during that interval.
-   class total_distributed_dividend_balance_object : public abstract_object<total_distributed_dividend_balance_object>
+   class total_distributed_dividend_balance_object : public abstract_object<total_distributed_dividend_balance_object,implementation_ids,impl_total_distributed_dividend_balance_object_type>
    {
       public:
-         static constexpr uint8_t space_id = implementation_ids;
-         static constexpr uint8_t type_id  = impl_total_distributed_dividend_balance_object_type;
-
          asset_id_type dividend_holder_asset_type;
          asset_id_type dividend_payout_asset_type;
          share_type    balance_at_last_maintenance_interval;
@@ -549,12 +534,9 @@ namespace graphene { namespace chain {
    /**
     * @ingroup object
     */
-   class lottery_balance_object : public abstract_object<lottery_balance_object>
+   class lottery_balance_object : public abstract_object<lottery_balance_object,implementation_ids,impl_lottery_balance_object_type>
    {
       public:
-         static constexpr uint8_t space_id = implementation_ids;
-         static constexpr uint8_t type_id  = impl_lottery_balance_object_type;
-
          asset_id_type  lottery_id;
          asset          balance;
 
@@ -582,12 +564,9 @@ namespace graphene { namespace chain {
     */
    typedef generic_index<lottery_balance_object, lottery_balance_index_type> lottery_balance_index;
 
-class sweeps_vesting_balance_object : public abstract_object<sweeps_vesting_balance_object>
+class sweeps_vesting_balance_object : public abstract_object<sweeps_vesting_balance_object,implementation_ids,impl_sweeps_vesting_balance_object_type>
    {
       public:
-         static constexpr uint8_t space_id = implementation_ids;
-         static constexpr uint8_t type_id  = impl_sweeps_vesting_balance_object_type;
-
 
          account_id_type   owner;
          uint64_t          balance;

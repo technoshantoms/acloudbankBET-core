@@ -13,12 +13,9 @@ namespace graphene { namespace chain {
     * @brief Tracks the mappings between permission and operation types.
     * @ingroup object
     */
-   class custom_account_authority_object : public abstract_object<custom_account_authority_object>
+   class custom_account_authority_object : public abstract_object<custom_account_authority_object,protocol_ids,custom_account_authority_object_type>
    {
       public:
-         static const uint8_t space_id = protocol_ids;
-         static const uint8_t type_id  = custom_account_authority_object_type;
-
          custom_permission_id_type permission_id;
          int operation_type;
          time_point_sec valid_from;

@@ -35,23 +35,18 @@ struct by_event_id;
 struct by_settling_time;
 struct by_betting_market_group_id;
 
-class betting_market_rules_object : public graphene::db::abstract_object< betting_market_rules_object >
+class betting_market_rules_object : public graphene::db::abstract_object< betting_market_rules_object,protocol_ids,betting_market_rules_object_type >
 {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id = betting_market_rules_object_type;
 
       internationalized_string_type name;
 
       internationalized_string_type description;
 };
 
-class betting_market_group_object : public graphene::db::abstract_object< betting_market_group_object >
+class betting_market_group_object : public graphene::db::abstract_object< betting_market_group_object,protocol_ids,betting_market_group_object_type >
 {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id = betting_market_group_object_type;
-
       betting_market_group_object();
       betting_market_group_object(const betting_market_group_object& rhs);
       ~betting_market_group_object();
@@ -114,11 +109,9 @@ class betting_market_group_object : public graphene::db::abstract_object< bettin
       std::unique_ptr<impl> my;
 };
 
-class betting_market_object : public graphene::db::abstract_object< betting_market_object >
+class betting_market_object : public graphene::db::abstract_object< betting_market_object,protocol_ids,betting_market_object_type >
 {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id = betting_market_object_type;
 
       betting_market_object();
       betting_market_object(const betting_market_object& rhs);
@@ -166,11 +159,9 @@ class betting_market_object : public graphene::db::abstract_object< betting_mark
       std::unique_ptr<impl> my;
 };
 
-class bet_object : public graphene::db::abstract_object< bet_object >
+class bet_object : public graphene::db::abstract_object< bet_object,protocol_ids,bet_object_type >
 {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id = bet_object_type;
 
       account_id_type bettor_id;
       
@@ -201,12 +192,9 @@ class bet_object : public graphene::db::abstract_object< bet_object >
       share_type get_minimum_matching_amount() const;
 };
 
-class betting_market_position_object : public graphene::db::abstract_object< betting_market_position_object >
+class betting_market_position_object : public graphene::db::abstract_object< betting_market_position_object,implementation_ids,impl_betting_market_position_object_type >
 {
    public:
-      static constexpr uint8_t space_id = implementation_ids;
-      static constexpr uint8_t type_id = impl_betting_market_position_object_type;
-
       account_id_type bettor_id;
       
       betting_market_id_type betting_market_id;

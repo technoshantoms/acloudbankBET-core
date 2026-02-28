@@ -22,11 +22,9 @@ namespace graphene { namespace chain {
     * A room is a container for content_cards that share a common encryption key.
     * Only participants of the room can create content_cards in it.
     */
-   class room_object : public graphene::db::abstract_object<room_object>
+   class room_object : public graphene::db::abstract_object<room_object,protocol_ids,room_object_type>
    {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id  = room_object_type;
 
       account_id_type owner;       // Room owner (cannot be removed)
       string          name;        // Room name
@@ -42,11 +40,9 @@ namespace graphene { namespace chain {
     *
     * Represents a participant in a room with their encrypted content key.
     */
-   class room_participant_object : public graphene::db::abstract_object<room_participant_object>
+   class room_participant_object : public graphene::db::abstract_object<room_participant_object,protocol_ids,room_participant_object_type>
    {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id  = room_participant_object_type;
 
       room_id_type    room;           // Reference to room
       account_id_type participant;    // Participant account
@@ -111,11 +107,9 @@ namespace graphene { namespace chain {
     * @ingroup object
     * @ingroup protocol
     */
-   class room_key_epoch_object : public graphene::db::abstract_object<room_key_epoch_object>
+   class room_key_epoch_object : public graphene::db::abstract_object<room_key_epoch_object,protocol_ids,room_key_epoch_object_type>
    {
    public:
-      static constexpr uint8_t space_id = protocol_ids;
-      static constexpr uint8_t type_id  = room_key_epoch_object_type;
 
       room_id_type    room;
       uint32_t        epoch;          // Key epoch number

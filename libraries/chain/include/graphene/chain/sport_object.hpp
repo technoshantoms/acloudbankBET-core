@@ -10,12 +10,9 @@ namespace graphene { namespace chain {
 
 class database;
 
-class sport_object : public graphene::db::abstract_object< sport_object >
+class sport_object : public graphene::db::abstract_object< sport_object,protocol_ids, sport_object_type >
 {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id = sport_object_type;
-
       internationalized_string_type name;
 };
 

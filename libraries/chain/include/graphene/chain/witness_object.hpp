@@ -29,11 +29,9 @@
 namespace graphene { namespace chain {
    using namespace graphene::db;
 
-   class witness_object : public abstract_object<witness_object>
+  class witness_object : public abstract_object<witness_object, protocol_ids, witness_object_type>
    {
       public:
-         static constexpr uint8_t space_id = protocol_ids;
-         static constexpr uint8_t type_id = witness_object_type;
 
          account_id_type  witness_account;
          uint64_t         last_aslot = 0;

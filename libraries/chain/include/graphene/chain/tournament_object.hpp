@@ -30,11 +30,10 @@ namespace graphene { namespace chain {
    /// The tournament object has a lot of details, most of which are only of interest to anyone
    /// involved in the tournament.  The main `tournament_object` contains all of the information
    /// needed to display an overview of the tournament, this object contains the rest.
-   class tournament_details_object : public graphene::db::abstract_object<tournament_details_object>
+   class tournament_details_object : public graphene::db::abstract_object<tournament_details_object,protocol_ids ,tournament_details_object_type>
    {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id  = tournament_details_object_type;
+
 
       /// the tournament object for which this is the details
       tournament_id_type tournament_id;
@@ -63,12 +62,9 @@ namespace graphene { namespace chain {
       concluded
    };
 
-   class tournament_object : public graphene::db::abstract_object<tournament_object>
+   class tournament_object : public graphene::db::abstract_object<tournament_object,protocol_ids,tournament_object_type>
    {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id  = tournament_object_type;
-
       tournament_object();
       tournament_object(const tournament_object& rhs);
       ~tournament_object();

@@ -4,7 +4,7 @@
 #include <graphene/chain/game_object.hpp>
 
 #include <graphene/protocol/tournament.hpp>
-
+#include <graphene/db/object.hpp>
 #include <graphene/db/flat_index.hpp>
 #include <graphene/db/generic_index.hpp>
 
@@ -34,12 +34,9 @@ namespace graphene { namespace chain {
       match_complete
    };
 
-   class match_object : public graphene::db::abstract_object<match_object>
+   class match_object : public graphene::db::abstract_object<match_object,protocol_ids,match_object_type>
    {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id  = match_object_type;
-
       tournament_id_type tournament_id;
 
       /// The players in the match

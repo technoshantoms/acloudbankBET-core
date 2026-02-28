@@ -82,12 +82,8 @@ struct bucket_key
    }
 };
 
-struct bucket_object : public abstract_object<bucket_object>
+struct bucket_object : public abstract_object<bucket_object,MARKET_HISTORY_SPACE_ID,bucket_object_type>
 {  
-   //static constexpr uint8_t space_id = ACCOUNT_HISTORY_SPACE_ID;
-   //static constexpr uint8_t type_id  = 1; // market_history_plugin type, referenced from account_history_plugin.hpp
-   static constexpr uint8_t space_id = MARKET_HISTORY_SPACE_ID;
-   static constexpr uint8_t type_id  = bucket_object_type;
 
    price high()const { return asset( high_base, key.base ) / asset( high_quote, key.quote ); }
    price low()const { return asset( low_base, key.base ) / asset( low_quote, key.quote ); }
@@ -117,12 +113,8 @@ struct history_key {
     return std::tie( a.base, a.quote, a.sequence ) == std::tie( b.base, b.quote, b.sequence );
   }
 };
-struct order_history_object : public abstract_object<order_history_object>
+struct order_history_object : public abstract_object<order_history_object,MARKET_HISTORY_SPACE_ID,order_history_object_type>
 {  
-   //static constexpr uint8_t space_id = ACCOUNT_HISTORY_SPACE_ID;
-   //static constexpr uint8_t type_id  = 2; // market_history_plugin type, referenced from account_history_plugin.hpp
-   static constexpr uint8_t space_id = MARKET_HISTORY_SPACE_ID;
-   static constexpr uint8_t type_id  = order_history_object_type;
 
    history_key          key;
    fc::time_point_sec   time;
@@ -144,10 +136,8 @@ struct order_history_object_key_sequence_extractor
    result_type operator()(const order_history_object& o)const { return o.key.sequence; }
 };
 
-struct market_ticker_object : public abstract_object<market_ticker_object>
+struct market_ticker_object : public abstract_object<market_ticker_object,MARKET_HISTORY_SPACE_ID,market_ticker_object_type>
 {
-   static constexpr uint8_t space_id = MARKET_HISTORY_SPACE_ID;
-   static constexpr uint8_t type_id  = market_ticker_object_type;
 
    asset_id_type       base;
    asset_id_type       quote;
@@ -159,10 +149,8 @@ struct market_ticker_object : public abstract_object<market_ticker_object>
    fc::uint128_t       quote_volume;
 };
 
-struct market_ticker_meta_object : public abstract_object<market_ticker_meta_object>
+struct market_ticker_meta_object : public abstract_object<market_ticker_meta_object,MARKET_HISTORY_SPACE_ID,market_ticker_meta_object_type>
 {
-   static constexpr uint8_t space_id = MARKET_HISTORY_SPACE_ID;
-   static constexpr uint8_t type_id  = market_ticker_meta_object_type;
 
    object_id_type      rolling_min_order_his_id;
    bool                skip_min_order_his_id = false;

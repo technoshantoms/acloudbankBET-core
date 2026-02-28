@@ -7,7 +7,7 @@
 
 #include <graphene/protocol/tnt/tank_accessory_address.hpp>
 #include <graphene/protocol/asset.hpp>
-
+#include <graphene/db/object.hpp>
 #include <graphene/db/generic_index.hpp>
 
 namespace graphene { namespace chain {
@@ -28,11 +28,8 @@ using accessory_state_map = flat_map<stateful_accessory_address, ptnt::tank_acce
 ///
 /// This is the database object for the Tanks and Taps asset management framework. It represents a tank and tracks
 /// the tank's schematic and balance.
-class tank_object : public abstract_object<tank_object> {
+class tank_object : public abstract_object<tank_object,protocol_ids,tank_object_type> {
 public:
-   static constexpr uint8_t space_id = protocol_ids;
-   static constexpr uint8_t type_id = tank_object_type;
-
    /// The schematic of the tank
    ptnt::tank_schematic schematic;
    /// The balance of the tank (asset id is in the schematic)

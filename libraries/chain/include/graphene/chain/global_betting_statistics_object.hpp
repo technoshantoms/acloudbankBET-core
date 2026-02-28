@@ -10,12 +10,9 @@ namespace graphene { namespace chain {
 
 class database;
 
-class global_betting_statistics_object : public graphene::db::abstract_object< global_betting_statistics_object >
+class global_betting_statistics_object : public graphene::db::abstract_object< global_betting_statistics_object,implementation_ids,impl_global_betting_statistics_object_type >
 {
    public:
-      static const uint8_t space_id = implementation_ids;
-      static const uint8_t type_id = impl_global_betting_statistics_object_type;
-
       uint32_t number_of_active_events = 0;
       map<asset_id_type, share_type> total_amount_staked;
 };

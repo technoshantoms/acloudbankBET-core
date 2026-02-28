@@ -12,11 +12,9 @@ enum stats_object_type
    STATS_OBJECT_TYPE_COUNT ///< Sentry value which contains the number of different object types
 };
 
-class app_reward_object : public graphene::db::abstract_object<app_reward_object>
+class app_reward_object : public graphene::db::abstract_object<app_reward_object,AFFILIATE_STATS_SPACE_ID,app_reward_object_type>
 {
 public:
-   static const uint8_t space_id = AFFILIATE_STATS_SPACE_ID;
-   static const uint8_t type_id = app_reward_object_type;
 
    app_tag app;
    asset   total_payout;
@@ -50,11 +48,9 @@ typedef multi_index_container<
       > > > app_reward_multi_index_type;
 typedef generic_index<app_reward_object, app_reward_multi_index_type> app_reward_index;
 
-class referral_reward_object : public graphene::db::abstract_object<referral_reward_object>
+class referral_reward_object : public graphene::db::abstract_object<referral_reward_object,AFFILIATE_STATS_SPACE_ID,referral_reward_object_type>
 {
 public:
-   static const uint8_t space_id = AFFILIATE_STATS_SPACE_ID;
-   static const uint8_t type_id = referral_reward_object_type;
 
    account_id_type referral;
    asset           total_payout;

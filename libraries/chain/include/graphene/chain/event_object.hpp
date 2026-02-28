@@ -25,11 +25,9 @@ namespace graphene { namespace chain {
 
 class database;
 
-class event_object : public graphene::db::abstract_object< event_object >
+class event_object : public graphene::db::abstract_object< event_object,protocol_ids,event_object_type >
 {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id = event_object_type;
 
       event_object();
       event_object(const event_object& rhs);

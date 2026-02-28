@@ -16,12 +16,9 @@ namespace graphene
         struct by_expiration_date
         {
         };
-        class offer_object : public graphene::db::abstract_object<offer_object>
+        class offer_object : public graphene::db::abstract_object<offer_object,protocol_ids,offer_object_type>
         {
         public:
-            static constexpr uint8_t space_id = protocol_ids;
-            static constexpr uint8_t type_id = offer_object_type;
-
             account_id_type issuer;
 
             set<nft_id_type> item_ids;
@@ -38,12 +35,9 @@ namespace graphene
 
 
         class offer_history_object
-            : public graphene::db::abstract_object<offer_history_object>
+            : public graphene::db::abstract_object<offer_history_object,implementation_ids,impl_offer_history_object_type>
         {
         public:
-            static const uint8_t space_id = implementation_ids;
-            static const uint8_t type_id = impl_offer_history_object_type;
-
             account_id_type issuer;
 
             set<nft_id_type> item_ids;

@@ -35,11 +35,9 @@ namespace graphene { namespace chain {
       game_complete
    };
 
-   class game_object : public graphene::db::abstract_object<game_object>
+   class game_object : public graphene::db::abstract_object<game_object,protocol_ids,game_object_type>
    {
    public:
-      static const uint8_t space_id = protocol_ids;
-      static const uint8_t type_id  = game_object_type;
 
       match_id_type match_id;
 

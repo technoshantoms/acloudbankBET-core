@@ -20,11 +20,9 @@ namespace graphene { namespace chain {
          *
          * Commit-reveal data the primary unit to give and store commit-reveal object.
          */
-        class commit_reveal_object : public graphene::db::abstract_object<commit_reveal_object>
+        class commit_reveal_object : public graphene::db::abstract_object<commit_reveal_object,protocol_ids,commit_reveal_object_type>
         {
         public:
-            static constexpr uint8_t space_id = protocol_ids;
-            static constexpr uint8_t type_id  = commit_reveal_object_type;
 
             account_id_type account;
             string          hash;
