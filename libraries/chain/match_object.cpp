@@ -226,7 +226,7 @@ namespace graphene { namespace chain {
    }
 
    match_object::match_object(const match_object& rhs) : 
-      graphene::db::abstract_object<match_object>(rhs),
+      //graphene::db::abstract_object<match_object>(rhs),
       tournament_id(rhs.tournament_id),
       players(rhs.players),
       games(rhs.games),

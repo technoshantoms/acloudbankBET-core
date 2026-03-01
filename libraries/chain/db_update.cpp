@@ -31,7 +31,6 @@
 #include <graphene/chain/credit_offer_object.hpp>
 #include <graphene/chain/database.hpp>
 #include <graphene/chain/db_with.hpp>
-#include <graphene/chain/object.hpp>
 
 #include <graphene/chain/asset_object.hpp>
 #include <graphene/chain/global_property_object.hpp>

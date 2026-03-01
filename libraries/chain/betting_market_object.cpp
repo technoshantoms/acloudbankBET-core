@@ -260,7 +260,7 @@ betting_market_object::betting_market_object() :
 }
 
 betting_market_object::betting_market_object(const betting_market_object& rhs) : 
-   graphene::db::abstract_object<betting_market_object>(rhs),
+   //graphene::db::abstract_object<betting_market_object>(rhs),
    group_id(rhs.group_id),
    description(rhs.description),
    payout_condition(rhs.payout_condition),

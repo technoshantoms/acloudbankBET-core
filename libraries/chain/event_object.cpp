@@ -351,7 +351,7 @@ namespace graphene { namespace chain {
    }
 
    event_object::event_object(const event_object& rhs) : 
-      graphene::db::abstract_object<event_object>(rhs),
+      //graphene::db::abstract_object<event_object>(rhs),
       name(rhs.name),
       season(rhs.season),
       start_time(rhs.start_time),
