@@ -125,11 +125,9 @@ typedef multi_index_container<
 typedef generic_index<persistent_betting_market_object, persistent_betting_market_multi_index_type> persistent_betting_market_index;
 
 //////////// bet_object //////////////////
-class persistent_bet_object : public graphene::db::abstract_object<persistent_bet_object>
+class persistent_bet_object : public graphene::db::abstract_object<persistent_bet_object, bookie_objects, persistent_bet_object_type>
 {
    public:
-      static const uint8_t space_id = bookie_objects;
-      static const uint8_t type_id = persistent_bet_object_type;
 
       bet_object ephemeral_bet_object;
 
