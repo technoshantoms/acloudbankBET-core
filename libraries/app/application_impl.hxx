@@ -9,10 +9,13 @@
 #include <graphene/protocol/types.hpp>
 #include <graphene/net/message.hpp>
 
+#include "database_api_helper.hxx"
+
 namespace graphene { namespace app { namespace detail {
+using market_queue_type = std::map< std::pair<graphene::chain::asset_id_type, graphene::chain::asset_id_type>,
+                                    std::vector<fc::variant> >;
 
-
-class application_impl : public net::node_delegate, public std::enable_shared_from_this<application_impl>
+class application_impl : public net::node_delegate, public std::enable_shared_from_this<application_impl>, public database_api_helper
    {
    public:
       fc::optional<fc::temp_file> _lock_file;

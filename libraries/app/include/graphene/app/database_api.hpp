@@ -1692,6 +1692,17 @@ FC_API(graphene::app::database_api,
    (get_sweeps_vesting_balance_object)
    (get_sweeps_vesting_balance_available_for_claim)
 
+    // Credit offers and credit deals
+   (list_credit_offers)
+   (get_credit_offers_by_owner)
+   (get_credit_offers_by_asset)
+   (list_credit_deals)
+   (get_credit_deals_by_offer_id)
+   (get_credit_deals_by_offer_owner)
+   (get_credit_deals_by_borrower)
+   (get_credit_deals_by_debt_asset)
+   (get_credit_deals_by_collateral_asset)
+
    // NFT
    (nft_get_balance)
    (nft_owner_of)

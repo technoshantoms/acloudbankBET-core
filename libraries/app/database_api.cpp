@@ -1289,71 +1289,71 @@ vector<bet_object> database_api_impl::get_all_unmatched_bets_for_bettor(account_
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
-vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const {
-   return my->get_sidechain_addresses(sidechain_address_ids);
-}
+// vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const {
+//    return my->get_sidechain_addresses(sidechain_address_ids);
+// }
 
-vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const {
-   vector<optional<sidechain_address_object>> result;
-   result.reserve(sidechain_address_ids.size());
-   std::transform(sidechain_address_ids.begin(), sidechain_address_ids.end(), std::back_inserter(result),
-                  [this](sidechain_address_id_type id) -> optional<sidechain_address_object> {
-                     if (auto o = _db.find(id))
-                        return *o;
-                     return {};
-                  });
-   return result;
-}
+// vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const {
+//    vector<optional<sidechain_address_object>> result;
+//    result.reserve(sidechain_address_ids.size());
+//    std::transform(sidechain_address_ids.begin(), sidechain_address_ids.end(), std::back_inserter(result),
+//                   [this](sidechain_address_id_type id) -> optional<sidechain_address_object> {
+//                      if (auto o = _db.find(id))
+//                         return *o;
+//                      return {};
+//                   });
+//    return result;
+// }
 
-vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses_by_account(account_id_type account) const {
-   return my->get_sidechain_addresses_by_account(account);
-}
+// vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses_by_account(account_id_type account) const {
+//    return my->get_sidechain_addresses_by_account(account);
+// }
 
-vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses_by_account(account_id_type account) const {
-   vector<optional<sidechain_address_object>> result;
-   const auto &sidechain_addresses_range = _db.get_index_type<sidechain_address_index>().indices().get<by_account>().equal_range(account);
-   std::for_each(sidechain_addresses_range.first, sidechain_addresses_range.second,
-                 [&result](const sidechain_address_object &sao) {
-                    if (sao.expires == time_point_sec::maximum())
-                       result.push_back(sao);
-                 });
-   return result;
-}
+// vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses_by_account(account_id_type account) const {
+//    vector<optional<sidechain_address_object>> result;
+//    const auto &sidechain_addresses_range = _db.get_index_type<sidechain_address_index>().indices().get<by_account>().equal_range(account);
+//    std::for_each(sidechain_addresses_range.first, sidechain_addresses_range.second,
+//                  [&result](const sidechain_address_object &sao) {
+//                     if (sao.expires == time_point_sec::maximum())
+//                        result.push_back(sao);
+//                  });
+//    return result;
+// }
 
-vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const {
-   return my->get_sidechain_addresses_by_sidechain(sidechain);
-}
+// vector<optional<sidechain_address_object>> database_api::get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const {
+//    return my->get_sidechain_addresses_by_sidechain(sidechain);
+// }
 
-vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const {
-   vector<optional<sidechain_address_object>> result;
-   const auto &sidechain_addresses_range = _db.get_index_type<sidechain_address_index>().indices().get<by_sidechain>().equal_range(sidechain);
-   std::for_each(sidechain_addresses_range.first, sidechain_addresses_range.second,
-                 [&result](const sidechain_address_object &sao) {
-                    if (sao.expires == time_point_sec::maximum())
-                       result.push_back(sao);
-                 });
-   return result;
-}
+// vector<optional<sidechain_address_object>> database_api_impl::get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const {
+//    vector<optional<sidechain_address_object>> result;
+//    const auto &sidechain_addresses_range = _db.get_index_type<sidechain_address_index>().indices().get<by_sidechain>().equal_range(sidechain);
+//    std::for_each(sidechain_addresses_range.first, sidechain_addresses_range.second,
+//                  [&result](const sidechain_address_object &sao) {
+//                     if (sao.expires == time_point_sec::maximum())
+//                        result.push_back(sao);
+//                  });
+//    return result;
+// }
 
-fc::optional<sidechain_address_object> database_api::get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const {
-   return my->get_sidechain_address_by_account_and_sidechain(account, sidechain);
-}
+// fc::optional<sidechain_address_object> database_api::get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const {
+//    return my->get_sidechain_address_by_account_and_sidechain(account, sidechain);
+// }
 
-fc::optional<sidechain_address_object> database_api_impl::get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const {
-   const auto &idx = _db.get_index_type<sidechain_address_index>().indices().get<by_account_and_sidechain_and_expires>();
-   auto itr = idx.find(boost::make_tuple(account, sidechain, time_point_sec::maximum()));
-   if (itr != idx.end())
-      return *itr;
-   return {};
-}
+// fc::optional<sidechain_address_object> database_api_impl::get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const {
+//    const auto &idx = _db.get_index_type<sidechain_address_index>().indices().get<by_account_and_sidechain_and_expires>();
+//    auto itr = idx.find(boost::make_tuple(account, sidechain, time_point_sec::maximum()));
+//    if (itr != idx.end())
+//       return *itr;
+//    return {};
+// }
 
-uint64_t database_api::get_sidechain_addresses_count() const {
-   return my->get_sidechain_addresses_count();
-}
+// uint64_t database_api::get_sidechain_addresses_count() const {
+//    return my->get_sidechain_addresses_count();
+// }
 
-uint64_t database_api_impl::get_sidechain_addresses_count() const {
-   return _db.get_index_type<sidechain_address_index>().indices().size();
-}
+// uint64_t database_api_impl::get_sidechain_addresses_count() const {
+//    return _db.get_index_type<sidechain_address_index>().indices().size();
+// }
 
 //////////////////////////////////////////////////////////////////////
 //                                                                  //

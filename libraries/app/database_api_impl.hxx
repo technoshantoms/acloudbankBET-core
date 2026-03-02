@@ -6,7 +6,7 @@
 #include <graphene/app/database_api.hpp>
 
 #include <fc/bloom_filter.hpp>
-
+#include "database_api_helper.hxx"
 #define GET_REQUIRED_FEES_MAX_RECURSION 4
 
 namespace graphene { namespace app {
@@ -14,7 +14,7 @@ namespace graphene { namespace app {
 typedef std::map< std::pair<graphene::chain::asset_id_type, graphene::chain::asset_id_type>,
                   std::vector<fc::variant> > market_queue_type;
 
-class database_api_impl : public std::enable_shared_from_this<database_api_impl>
+class database_api_impl : public std::enable_shared_from_this<database_api_impl>, public database_api_helper
 {
    public:
       explicit database_api_impl( graphene::chain::database& db, const application_options* app_options );
@@ -121,11 +121,11 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       vector<uint64_t> get_random_number_ex(uint64_t minimum, uint64_t maximum, uint64_t selections, bool duplicates) const;
       uint64_t get_random_number(uint64_t bound) const;
    // Sidechain addresses
-   vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
-   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
-   vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
-   fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const;
-   uint64_t get_sidechain_addresses_count() const;
+   // vector<optional<sidechain_address_object>> get_sidechain_addresses(const vector<sidechain_address_id_type> &sidechain_address_ids) const;
+   // vector<optional<sidechain_address_object>> get_sidechain_addresses_by_account(account_id_type account) const;
+   // vector<optional<sidechain_address_object>> get_sidechain_addresses_by_sidechain(sidechain_type sidechain) const;
+   // fc::optional<sidechain_address_object> get_sidechain_address_by_account_and_sidechain(account_id_type account, sidechain_type sidechain) const;
+   // uint64_t get_sidechain_addresses_count() const;
 
     // SON members
    //vector<optional<son_object>> get_sons(const vector<son_id_type> &son_ids) const;
@@ -432,10 +432,11 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
                               const flat_set<account_id_type>& impacted_accounts);
       void on_applied_block();
 
+// private:
+
       ////////////////////////////////////////////////
       // Member variables
       ////////////////////////////////////////////////
-   private:
       bool _notify_remove_create = false;
       bool _enabled_auto_subscription = true;
 
@@ -458,6 +459,7 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       const application_options* _app_options = nullptr;
 
       const graphene::api_helper_indexes::amount_in_collateral_index* amount_in_collateral_index;
+      //const graphene::api_helper_indexes::next_object_ids_index* next_object_ids_index;
 };
 
 } } // graphene::app
