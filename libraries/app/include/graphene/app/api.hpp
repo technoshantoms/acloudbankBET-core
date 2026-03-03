@@ -145,6 +145,7 @@ namespace graphene { namespace app {
             operation_history_id_type start = operation_history_id_type()
          )const;
 
+         
          /**
           * @brief Get the history of operations related to the specified account no later than the specified time
           * @param account_name_or_id The account name or ID whose history should be queried
@@ -161,11 +162,11 @@ namespace graphene { namespace app {
           * 4. One or more optional parameters can be omitted from the end of the parameter list, and the optional
           *    parameters in the middle cannot be omitted (but can be @a null).
           */
-         vector<operation_history_object> get_account_history_by_time(
-            const std::string& account_name_or_id,
-            const optional<uint32_t>& limit = optional<uint32_t>(),
-            const optional<fc::time_point_sec>& start = optional<fc::time_point_sec>()
-         )const;
+         // vector<operation_history_object> get_account_history_by_time(
+         //    const std::string& account_name_or_id,
+         //    const optional<uint32_t>& limit = optional<uint32_t>(),
+         //    const optional<fc::time_point_sec>& start = optional<fc::time_point_sec>()
+         // )const;
 
          /**
           * @brief Get operations relevant to the specified account filtering by operation type
@@ -225,7 +226,10 @@ namespace graphene { namespace app {
           * @param limit Maximum records to return
           * @return a list of order_history objects, in "most recent first" order
           */
-         vector<order_history_object> get_fill_order_history( std::string a, std::string b, uint32_t limit )const;
+         vector<order_history_object> get_fill_order_history(
+               const std::string& a,
+               const std::string& b,
+               uint32_t limit )const;
 
          /**
           * @brief Get OHLCV data of a trading pair in a time range
@@ -240,14 +244,17 @@ namespace graphene { namespace app {
           */
          vector<bucket_object> get_market_history( std::string a, std::string b, uint32_t bucket_seconds,
                                                    fc::time_point_sec start, fc::time_point_sec end )const;
-         vector<account_balance_object> list_core_accounts() const;
 
          /**
           * @brief Get OHLCV time bucket lengths supported (configured) by this API server
           * @return A list of time bucket lengths in seconds. E.G. if the result contains a number "300",
           * it means this API server supports OHLCV data aggregated in 5-minute buckets.
           */
-         flat_set<uint32_t> get_market_history_buckets()const;
+         vector<account_balance_object> list_core_accounts() const;
+         flat_set<uint32_t> get_market_history_buckets() const;
+         uint32_t api_limit_get_account_history_operations = 100;
+         uint32_t api_limit_get_account_history = 100;
+         uint32_t api_limit_get_relative_account_history = 100;
 
       private:
            application& _app;
@@ -385,6 +392,9 @@ namespace graphene { namespace app {
          application& _app;
    };
 
+   /**
+    * @brief The asset_api class allows query of info about asset holders.
+    */
 class crypto_api {
 public:
    crypto_api();
@@ -411,15 +421,11 @@ public:
 
    range_proof_info range_get_info(const std::vector<char> &proof);
 };
-
-
-   /**
-    * @brief The asset_api class allows query of info about asset holders.
-    */
    class asset_api
    {
       public:
-         explicit asset_api(graphene::app::application& app);
+         asset_api(graphene::app::application& app);
+         ~asset_api();
 
          struct account_asset_balance
          {
@@ -444,7 +450,7 @@ public:
 
          /**
           * @brief Get asset holders count for a specific asset
-          * @param asset_symbol_or_id The specific asset symbol or id
+          * @param asset The specific asset id or symbol
           * @return Holders count for the specified asset
           */
          int64_t get_asset_holders_count( const std::string& asset_symbol_or_id )const;
@@ -471,7 +477,8 @@ public:
          :_app(app), database_api( std::ref(*app.chain_database()), &(app.get_options()) ){}
          //virtual ~orders_api() {}
 
-          /**
+
+         /**
           * @brief summary data of a group of limit orders
           */
          struct limit_order_group
@@ -501,8 +508,7 @@ public:
           * @param quote_asset symbol or ID of asset being purchased
           * @param group Maximum price diff within each order group, have to be one of configured values
           * @param start Optional price to indicate the first order group to retrieve
-          * @param limit Maximum number of order groups to retrieve, must not exceed the configured value of
-          *              @a api_limit_get_grouped_limit_orders
+          * @param limit Maximum number of order groups to retrieve (must not exceed 101)
           * @return The grouped limit orders, ordered from best offered price to worst
           */
          vector< limit_order_group > get_grouped_limit_orders( const std::string& base_asset,
@@ -510,7 +516,6 @@ public:
                                                                uint16_t group,
                                                                const optional<price>& start,
                                                                uint32_t limit )const;
-
       private:
          application& _app;
          graphene::app::database_api database_api;
@@ -526,7 +531,7 @@ public:
          custom_operations_api(application& app):_app(app), database_api( *app.chain_database(),
                &(app.get_options()) ){}
 
-          /**
+      /**
        * @brief Get stored objects
        *
        * @param account_name_or_id The account name or ID to get info from. Optional.
@@ -670,6 +675,7 @@ FC_API(graphene::app::history_api,
        (get_fill_order_history)
        (get_market_history)
        (get_market_history_buckets)
+       (list_core_accounts)
      )
 FC_API(graphene::app::block_api,
        (get_blocks)
@@ -699,7 +705,7 @@ FC_API(graphene::app::crypto_api,
       )
 FC_API(graphene::app::asset_api,
        (get_asset_holders)
-	   (get_asset_holders_count)
+      (get_asset_holders_count)
        (get_all_asset_holders)
      )
 FC_API(graphene::app::orders_api,
