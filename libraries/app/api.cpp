@@ -36,6 +36,8 @@
 #include <graphene/chain/withdraw_permission_object.hpp>
 #include <graphene/chain/worker_object.hpp>
 
+#include "database_api_helper.hxx"
+
 #include <fc/crypto/base64.hpp>
 #include <fc/crypto/hex.hpp>
 #include <fc/rpc/api_connection.hpp>
@@ -335,15 +337,17 @@ namespace graphene { namespace app {
        return *_custom_operations_api;
     }
 
-    vector<order_history_object> history_api::get_fill_order_history( std::string asset_a, std::string asset_b,
+    vector<order_history_object> history_api::get_fill_order_history( const std::string& asset_a,
+                                                                      const std::string& asset_b,
                                                                       uint32_t limit )const
     {
        auto market_hist_plugin = _app.get_plugin<market_history_plugin>( "market_history" );
        FC_ASSERT( market_hist_plugin, "Market history plugin is not enabled" );
        FC_ASSERT(_app.chain_database());
        const auto& db = *_app.chain_database();
-       asset_id_type a = database_api.get_asset_id_from_string( asset_a );
-       asset_id_type b = database_api.get_asset_id_from_string( asset_b );
+       database_api_helper db_api_helper( _app );
+       asset_id_type a = db_api_helper.get_asset_from_string( asset_a )->get_id();
+       asset_id_type b = db_api_helper.get_asset_from_string( asset_b )->get_id();
        if( a > b ) std::swap(a,b);
        const auto& history_idx = db.get_index_type<graphene::market_history::history_index>().indices().get<by_key>();
        history_key hkey;
@@ -351,15 +355,13 @@ namespace graphene { namespace app {
        hkey.quote = b;
        hkey.sequence = std::numeric_limits<int64_t>::min();
 
-       uint32_t count = 0;
        auto itr = history_idx.lower_bound( hkey );
        vector<order_history_object> result;
-       while( itr != history_idx.end() && count < limit)
+       while( itr != history_idx.end() && result.size() < limit )
        {
           if( itr->key.base != a || itr->key.quote != b ) break;
           result.push_back( *itr );
           ++itr;
-          ++count;
        }
 
        return result;
@@ -428,14 +430,55 @@ namespace graphene { namespace app {
 
        return result;
     }
-
-    vector<operation_history_object> history_api::get_account_history_operations( const std::string account_id_or_name,
-                                                                       int64_t operation_type,
-                                                                       operation_history_id_type start,
-                                                                       operation_history_id_type stop,
-                                                                       uint32_t limit ) const
+    vector<operation_history_object> history_api::get_account_history_by_time(
+            const std::string& account_name_or_id,
+            const optional<uint32_t>& olimit,
+            const optional<fc::time_point_sec>& ostart ) const
     {
-       FC_ASSERT( _app.chain_database() );
+       FC_ASSERT( _app.chain_database(), "database unavailable" );
+       const auto& db = *_app.chain_database();
+
+       const auto configured_limit = _app.get_options().api_limit_get_account_history;
+       uint32_t limit = olimit.valid() ? *olimit : configured_limit;
+       FC_ASSERT( limit <= configured_limit,
+                  "limit can not be greater than ${configured_limit}",
+                  ("configured_limit", configured_limit) );
+
+       vector<operation_history_object> result;
+       account_id_type account;
+       try {
+          database_api_helper db_api_helper( _app );
+          account = db_api_helper.get_account_from_string(account_name_or_id)->get_id();
+       } catch( const fc::exception& ) { return result; }
+
+       fc::time_point_sec start = ostart.valid() ? *ostart : fc::time_point_sec::maximum();
+
+       const auto& op_hist_idx = db.get_index_type<operation_history_index>().indices().get<by_time>();
+       auto op_hist_itr = op_hist_idx.lower_bound( start );
+       if( op_hist_itr == op_hist_idx.end() )
+          return result;
+
+       const auto& acc_hist_idx = db.get_index_type<account_history_index>().indices().get<by_op>();
+       auto itr = acc_hist_idx.lower_bound( boost::make_tuple( account, op_hist_itr->get_id() ) );
+       auto itr_end = acc_hist_idx.upper_bound( account );
+
+       while( itr != itr_end && result.size() < limit )
+       {
+          result.emplace_back( itr->operation_id(db) );
+          ++itr;
+       }
+
+       return result;
+    }
+
+    vector<operation_history_object> history_api::get_account_history_operations(
+          const std::string& account_id_or_name,
+          int64_t operation_type,
+          operation_history_id_type start,
+          operation_history_id_type stop,
+          uint32_t limit ) const
+    {
+       FC_ASSERT( _app.chain_database(), "database unavailable" );
        const auto& db = *_app.chain_database();
 
        const auto configured_limit = _app.get_options().api_limit_get_account_history_operations;
@@ -446,11 +489,12 @@ namespace graphene { namespace app {
        vector<operation_history_object> result;
        account_id_type account;
        try {
-          account = database_api.get_account_id_from_string(account_id_or_name);
+          database_api_helper db_api_helper( _app );
+          account = db_api_helper.get_account_from_string(account_id_or_name)->get_id();
        } catch(...) { return result; }
        const auto& stats = account(db).statistics(db);
-       if( stats.most_recent_op == account_transaction_history_id_type() ) return result;
-       const account_transaction_history_object* node = &stats.most_recent_op(db);
+       if( stats.most_recent_op == account_history_id_type() ) return result;
+       const account_history_object* node = &stats.most_recent_op(db);
        if( start == operation_history_id_type() )
           start = node->operation_id;
 
@@ -461,12 +505,12 @@ namespace graphene { namespace app {
              if(node->operation_id(db).op.which() == operation_type)
                result.push_back( node->operation_id(db) );
           }
-          if( node->next == account_transaction_history_id_type() )
+          if( node->next == account_history_id_type() )
              node = nullptr;
           else node = &node->next(db);
        }
        if( stop.instance.value == 0 && result.size() < limit ) {
-          auto head = db.find(account_transaction_history_id_type());
+          const auto* head = db.find(account_history_id_type());
           if (head != nullptr && head->account == account && head->operation_id(db).op.which() == operation_type)
             result.push_back(head->operation_id(db));
        }
@@ -474,12 +518,13 @@ namespace graphene { namespace app {
     }
 
 
-    vector<operation_history_object> history_api::get_relative_account_history( const std::string account_id_or_name,
+
+    vector<operation_history_object> history_api::get_relative_account_history( const std::string& account_id_or_name,
                                                                                 uint64_t stop,
                                                                                 uint32_t limit,
                                                                                 uint64_t start ) const
     {
-       FC_ASSERT( _app.chain_database() );
+       FC_ASSERT( _app.chain_database(), "database unavailable" );
        const auto& db = *_app.chain_database();
 
        const auto configured_limit = _app.get_options().api_limit_get_relative_account_history;
@@ -490,7 +535,8 @@ namespace graphene { namespace app {
        vector<operation_history_object> result;
        account_id_type account;
        try {
-          account = database_api.get_account_id_from_string(account_id_or_name);
+          database_api_helper db_api_helper( _app );
+          account = db_api_helper.get_account_from_string(account_id_or_name)->get_id();
        } catch(...) { return result; }
        const auto& stats = account(db).statistics(db);
        if( start == 0 )
@@ -500,7 +546,7 @@ namespace graphene { namespace app {
 
        if( start >= stop && start > stats.removed_ops && limit > 0 )
        {
-          const auto& hist_idx = db.get_index_type<account_transaction_history_index>();
+          const auto& hist_idx = db.get_index_type<account_history_index>();
           const auto& by_seq_idx = hist_idx.indices().get<by_seq>();
 
           auto itr = by_seq_idx.upper_bound( boost::make_tuple( account, start ) );
@@ -568,6 +614,7 @@ namespace graphene { namespace app {
        FC_ASSERT(_app.chain_database());
 
        const auto& db = *_app.chain_database();
+       database_api_helper db_api_helper( _app );
        asset_id_type a = database_api.get_asset_id_from_string( asset_a );
        asset_id_type b = database_api.get_asset_id_from_string( asset_b );
        vector<bucket_object> result;
@@ -648,14 +695,16 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
           ) { }
     asset_api::~asset_api() { }
 
-    vector<account_asset_balance> asset_api::get_asset_holders( std::string asset, uint32_t start, uint32_t limit ) const
+   vector<asset_api::account_asset_balance> asset_api::get_asset_holders( const std::string& asset_symbol_or_id,
+                                                                           uint32_t start, uint32_t limit ) const
     {
        const auto configured_limit = _app.get_options().api_limit_get_asset_holders;
        FC_ASSERT( limit <= configured_limit,
                   "limit can not be greater than ${configured_limit}",
                   ("configured_limit", configured_limit) );
 
-       asset_id_type asset_id = database_api.get_asset_id_from_string( asset );
+       database_api_helper db_api_helper( _app );
+       asset_id_type asset_id = db_api_helper.get_asset_from_string( asset_symbol_or_id )->get_id();
        const auto& bal_idx = _db.get_index_type< account_balance_index >().indices().get< by_asset_balance >();
        auto range = bal_idx.equal_range( boost::make_tuple( asset_id ) );
 
@@ -685,13 +734,14 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
 
        return result;
     }
-    // get number of asset holders.
-    int asset_api::get_asset_holders_count( std::string asset ) const {
+   // get number of asset holders.
+    int64_t asset_api::get_asset_holders_count( const std::string& asset_symbol_or_id ) const {
        const auto& bal_idx = _db.get_index_type< account_balance_index >().indices().get< by_asset_balance >();
-       asset_id_type asset_id = database_api.get_asset_id_from_string( asset );
+       database_api_helper db_api_helper( _app );
+       asset_id_type asset_id = db_api_helper.get_asset_from_string( asset_symbol_or_id )->get_id();
        auto range = bal_idx.equal_range( boost::make_tuple( asset_id ) );
 
-       int count = boost::distance(range) - 1;
+       int64_t count = boost::distance(range) - 1;
 
        return count;
     }
@@ -729,11 +779,11 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
       return plugin->tracked_groups();
    }
 
-   vector< limit_order_group > orders_api::get_grouped_limit_orders( std::string base_asset,
-                                                               std::string quote_asset,
-                                                               uint16_t group,
-                                                               optional<price> start,
-                                                               uint32_t limit )const
+   vector< orders_api::limit_order_group > orders_api::get_grouped_limit_orders( const std::string& base_asset,
+                                                                                 const std::string& quote_asset,
+                                                                                 uint16_t group,
+                                                                                 const optional<price>& start,
+                                                                                 uint32_t limit )const
    {
       const auto configured_limit = _app.get_options().api_limit_get_grouped_limit_orders;
       FC_ASSERT( limit <= configured_limit,
@@ -745,8 +795,9 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
       const auto& limit_groups = plugin->limit_order_groups();
       vector< limit_order_group > result;
 
-      asset_id_type base_asset_id = database_api.get_asset_id_from_string( base_asset );
-      asset_id_type quote_asset_id = database_api.get_asset_id_from_string( quote_asset );
+      database_api_helper db_api_helper( _app );
+      asset_id_type base_asset_id = db_api_helper.get_asset_from_string( base_asset )->get_id();
+      asset_id_type quote_asset_id = db_api_helper.get_asset_from_string( quote_asset )->get_id();
 
       price max_price = price::max( base_asset_id, quote_asset_id );
       price min_price = price::min( base_asset_id, quote_asset_id );

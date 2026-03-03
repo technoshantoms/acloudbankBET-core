@@ -404,6 +404,10 @@ void application_impl::set_api_limit() {
       _app_options.api_limit_get_tickets =
             _options->at("api-limit-get-tickets").as<uint64_t>();
    }
+    if(_options->count("api-limit-get-storage-info") > 0) {
+      _app_options.api_limit_get_storage_info =
+            _options->at("api-limit-get-storage-info").as<uint32_t>();
+   }
 }
 
 graphene::chain::genesis_state_type application_impl::initialize_genesis_state() const
@@ -1227,6 +1231,9 @@ void application::set_program_options(boost::program_options::options_descriptio
          ("api-limit-get-tickets",
           bpo::value<uint64_t>()->default_value(default_opts.api_limit_get_tickets),
           "Set maximum limit value for database APIs which query for tickets")
+         ("api-limit-get-storage-info",
+          bpo::value<uint32_t>()->default_value(default_opts.api_limit_get_storage_info),
+          "Set maximum limit value for APIs which query for account storage info")
          ;
    command_line_options.add(configuration_file_options);
    command_line_options.add_options()

@@ -73,6 +73,7 @@ namespace graphene { namespace app {
          uint64_t api_limit_get_withdraw_permissions_by_recipient = 101;
          uint32_t api_limit_get_credit_offers = 101;
          uint64_t api_limit_get_tickets = 101;
+         uint32_t api_limit_get_storage_info = 101;
 
          static const application_options& get_default()
          {
