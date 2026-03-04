@@ -427,18 +427,6 @@ public:
          asset_api(graphene::app::application& app);
          ~asset_api();
 
-         struct account_asset_balance
-         {
-            string          name;
-            account_id_type account_id;
-            share_type      amount;
-         };
-         struct asset_holders
-         {
-            asset_id_type   asset_id;
-            int64_t         count;
-         };
-
          /**
           * @brief Get asset holders for a specific asset
           * @param asset The specific asset id or symbol
@@ -453,7 +441,7 @@ public:
           * @param asset The specific asset id or symbol
           * @return Holders count for the specified asset
           */
-         int64_t get_asset_holders_count( const std::string& asset_symbol_or_id )const;
+        int64_t get_asset_holders_count( const std::string& asset_symbol_or_id )const;
 
          /**
           * @brief Get all asset holders
@@ -705,7 +693,7 @@ FC_API(graphene::app::crypto_api,
       )
 FC_API(graphene::app::asset_api,
        (get_asset_holders)
-      (get_asset_holders_count)
+       (get_asset_holders_count)
        (get_all_asset_holders)
      )
 FC_API(graphene::app::orders_api,
