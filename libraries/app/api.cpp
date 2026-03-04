@@ -689,14 +689,13 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
 
        return result;
     }
-    // get number of asset holders.
-    int64_t asset_api::get_asset_holders_count( const std::string& asset_symbol_or_id ) const {
+   // get number of asset holders.
+    int asset_api::get_asset_holders_count( std::string asset ) const {
        const auto& bal_idx = _db.get_index_type< account_balance_index >().indices().get< by_asset_balance >();
-       database_api_helper db_api_helper( _app );
        asset_id_type asset_id = database_api.get_asset_id_from_string( asset );
        auto range = bal_idx.equal_range( boost::make_tuple( asset_id ) );
 
-       int64_t count = boost::distance(range) - 1;
+       int count = boost::distance(range) - 1;
 
        return count;
     }
@@ -734,11 +733,11 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
       return plugin->tracked_groups();
    }
 
- vector< orders_api::limit_order_group > orders_api::get_grouped_limit_orders( const std::string& base_asset,
-                                                                                 const std::string& quote_asset,
-                                                                                 uint16_t group,
-                                                                                 const optional<price>& start,
-                                                                                 uint32_t limit )const
+   vector< limit_order_group > orders_api::get_grouped_limit_orders( std::string base_asset,
+                                                               std::string quote_asset,
+                                                               uint16_t group,
+                                                               optional<price> start,
+                                                               uint32_t limit )const
    {
       const auto configured_limit = _app.get_options().api_limit_get_grouped_limit_orders;
       FC_ASSERT( limit <= configured_limit,
@@ -750,9 +749,8 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
       const auto& limit_groups = plugin->limit_order_groups();
       vector< limit_order_group > result;
 
-      database_api_helper db_api_helper( _app );
-      asset_id_type base_asset_id = db_api_helper.get_asset_from_string( base_asset )->get_id();
-      asset_id_type quote_asset_id = db_api_helper.get_asset_from_string( quote_asset )->get_id();
+      asset_id_type base_asset_id = database_api.get_asset_id_from_string( base_asset );
+      asset_id_type quote_asset_id = database_api.get_asset_id_from_string( quote_asset );
 
       price max_price = price::max( base_asset_id, quote_asset_id );
       price min_price = price::min( base_asset_id, quote_asset_id );

@@ -441,7 +441,7 @@ public:
           * @param asset The specific asset id or symbol
           * @return Holders count for the specified asset
           */
-        int64_t get_asset_holders_count( const std::string& asset_symbol_or_id )const;
+         int get_asset_holders_count( std::string asset )const;
 
          /**
           * @brief Get all asset holders
@@ -469,19 +469,19 @@ public:
          /**
           * @brief summary data of a group of limit orders
           */
-         struct limit_order_group
-         {
-            explicit limit_order_group( const std::pair<limit_order_group_key,limit_order_group_data>& p )
-               :  min_price( p.first.min_price ),
-                  max_price( p.second.max_price ),
-                  total_for_sale( p.second.total_for_sale )
-                  {}
-            limit_order_group() = default;
+         // struct limit_order_group
+         // {
+         //    explicit limit_order_group( const std::pair<limit_order_group_key,limit_order_group_data>& p )
+         //       :  min_price( p.first.min_price ),
+         //          max_price( p.second.max_price ),
+         //          total_for_sale( p.second.total_for_sale )
+         //          {}
+         //    limit_order_group() = default;
 
-            price         min_price; ///< possible lowest price in the group
-            price         max_price; ///< possible highest price in the group
-            share_type    total_for_sale; ///< total amount of asset for sale, asset id is min_price.base.asset_id
-         };
+         //    price         min_price; ///< possible lowest price in the group
+         //    price         max_price; ///< possible highest price in the group
+         //    share_type    total_for_sale; ///< total amount of asset for sale, asset id is min_price.base.asset_id
+         // };
 
          /**
           * @brief Get tracked groups configured by the server.
@@ -499,10 +499,10 @@ public:
           * @param limit Maximum number of order groups to retrieve (must not exceed 101)
           * @return The grouped limit orders, ordered from best offered price to worst
           */
-         vector< limit_order_group > get_grouped_limit_orders( const std::string& base_asset,
-                                                               const std::string& quote_asset,
+         vector< limit_order_group > get_grouped_limit_orders( std::string base_asset,
+                                                               std::string quote_asset,
                                                                uint16_t group,
-                                                               const optional<price>& start,
+                                                               optional<price> start,
                                                                uint32_t limit )const;
       private:
          application& _app;
