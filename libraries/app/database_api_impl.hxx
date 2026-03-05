@@ -6,7 +6,7 @@
 #include <graphene/app/database_api.hpp>
 
 #include <fc/bloom_filter.hpp>
-#include "database_api_helper.hxx"
+#include "database_api_helper.hxx"    
 #define GET_REQUIRED_FEES_MAX_RECURSION 4
 
 namespace graphene { namespace app {
@@ -14,7 +14,7 @@ namespace graphene { namespace app {
 typedef std::map< std::pair<graphene::chain::asset_id_type, graphene::chain::asset_id_type>,
                   std::vector<fc::variant> > market_queue_type;
 
-class database_api_impl : public std::enable_shared_from_this<database_api_impl>, public database_api_helper
+class database_api_impl : public std::enable_shared_from_this<database_api_impl>, public database_api_helper 
 {
    public:
       explicit database_api_impl( graphene::chain::database& db, const application_options* app_options );
