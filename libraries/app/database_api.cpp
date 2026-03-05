@@ -173,7 +173,7 @@ database_api_helper::database_api_helper( graphene::chain::database& db, const a
 { // Nothing else to do
 }
 
-database_api_helper::database_api_helper( const graphene::app::application& app )
+database_api_helper::database_api_helper( graphene::app::application& app )
 :_db( *app.chain_database() ), _app_options( &app.get_options() )
 { // Nothing else to do
 }

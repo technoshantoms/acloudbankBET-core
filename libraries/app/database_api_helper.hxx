@@ -6,7 +6,7 @@ class database_api_helper
 {
 public:
    database_api_helper( graphene::chain::database& db, const application_options* app_options );
-   explicit database_api_helper( const graphene::app::application& app );
+   explicit database_api_helper( graphene::app::application& app );
 
    // Member variables
    graphene::chain::database& _db;
