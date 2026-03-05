@@ -2,6 +2,9 @@
  * AcloudBank
  *
  */
+
+#include <graphene/app/database_api.hpp>
+
 #include "database_api_impl.hxx"
 
 #include <graphene/chain/account_object.hpp>
@@ -171,12 +174,12 @@ database_api_helper::database_api_helper( graphene::chain::database& db, const a
 }
 
 database_api_helper::database_api_helper( const graphene::app::application& app )
-:_db( std::ref(*app.chain_database()) ), _app_options( &(app.get_options()) )
+:_db( *app.chain_database() ), _app_options( &app.get_options() )
 { // Nothing else to do
 }
 
 database_api_impl::database_api_impl( graphene::chain::database& db, const application_options* app_options )
-:database_api_helper( _db(db), _app_options(app_options) )
+:database_api_helper( db, app_options )
 {
    dlog("creating database api ${x}", ("x",int64_t(this)) );
    _new_connection = _db.new_objects.connect([this](const vector<object_id_type>& ids,
