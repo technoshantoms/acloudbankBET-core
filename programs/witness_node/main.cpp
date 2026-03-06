@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
       node->register_plugin<graphene::es_objects::es_objects_plugin>();
       node->register_plugin<graphene::bookie::bookie_plugin>();
       //node->register_plugin<peerplays_sidechain::peerplays_sidechain_plugin>();
-      node->register_plugin<affiliate_stats::affiliate_stats_plugin>();
+      node->register_plugin<graphene::affiliate_stats::affiliate_stats_plugin>();
       node->register_plugin<graphene::grouped_orders::grouped_orders_plugin>();
       node->register_plugin<graphene::api_helper_indexes::api_helper_indexes>();
       node->register_plugin<graphene::custom_operations::custom_operations_plugin>();
@@ -151,15 +151,6 @@ int main(int argc, char** argv) {
          disable_default_logging();
          std::stringstream ss;
          ss << "Error parsing command line: " << e.what();
-         my_log( ss.str() );
-         return EXIT_FAILURE;
-      }
-      if( plugins.count("postgres_indexer") > 0 &&
-          (plugins.count("account_history") > 0 || plugins.count("elasticsearch") > 0) ) {
-         disable_default_logging();
-         std::stringstream ss;
-         ss << "Plugin conflict: Cannot load postgres_indexer plugin together with "
-               "account_history or elasticsearch plugin";
          my_log( ss.str() );
          return EXIT_FAILURE;
       }
@@ -204,6 +195,15 @@ int main(int argc, char** argv) {
          disable_default_logging();
          std::stringstream ss;
          ss << "Plugin conflict: Cannot load both account_history plugin and elasticsearch plugin";
+         my_log( ss.str() );
+         return EXIT_FAILURE;
+      }
+      if( plugins.count("postgres_indexer") > 0 &&
+        (plugins.count("account_history") > 0 || plugins.count("elasticsearch") > 0) ) {
+         disable_default_logging();
+         std::stringstream ss;
+         ss << "Plugin conflict: Cannot load postgres_indexer plugin together with "
+               "account_history or elasticsearch plugin";
          my_log( ss.str() );
          return EXIT_FAILURE;
       }
