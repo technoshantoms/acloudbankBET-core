@@ -68,7 +68,7 @@ accounts_list_plugin::accounts_list_plugin(graphene::app::application& app) :
  plugin(app),
  my(std::make_unique<detail::accounts_list_plugin_impl>(*this))
 {
-   return "accounts_list constuctor";
+// do nothing else
 }
 
 accounts_list_plugin::~accounts_list_plugin() = default;
