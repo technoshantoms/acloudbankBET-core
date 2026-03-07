@@ -38,7 +38,6 @@ INSTALL( FILES ${HEADERS} DESTINATION "include/graphene/app" )
 
 add_library( graphene_plugin
              plugin.cpp
-
              include/graphene/app/plugin.hpp
            )
 

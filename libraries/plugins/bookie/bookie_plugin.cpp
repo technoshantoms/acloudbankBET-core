@@ -461,13 +461,12 @@ asset bookie_plugin_impl::get_total_matched_bet_amount_for_betting_market_group(
 }
 } // end namespace detail
 
-//bookie_plugin::bookie_plugin() :
-//   my( new detail::bookie_plugin_impl(*this) )
-//{
-//}
-//bookie_plugin::~bookie_plugin()
-//{
-//}
+bookie_plugin::bookie_plugin(graphene::app::application& app) :
+plugin(app),
+my(std::make_unique<detail::bookie_plugin_impl>(*this))
+{
+}
+bookie_plugin::~bookie_plugin()  = default;
 
 std::string bookie_plugin::plugin_name()const
 {

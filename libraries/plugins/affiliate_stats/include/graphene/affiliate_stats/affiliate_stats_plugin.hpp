@@ -30,8 +30,8 @@ namespace detail
 class affiliate_stats_plugin : public graphene::app::plugin
 {
    public:
-      //affiliate_stats_plugin();
-      //virtual ~affiliate_stats_plugin();
+      explicit affiliate_stats_plugin(graphene::app::application& app);
+      virtual ~affiliate_stats_plugin() override;
 
       std::string plugin_name()const override;
       virtual void plugin_set_program_options(

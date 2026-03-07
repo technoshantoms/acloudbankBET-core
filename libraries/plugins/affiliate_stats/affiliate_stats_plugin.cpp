@@ -150,10 +150,11 @@ void affiliate_reward_index::on_remove( const object& obj )
 
 } // end namespace detail
 
-//affiliate_stats_plugin::affiliate_stats_plugin()
-//   : my( new detail::affiliate_stats_plugin_impl(*this) ) {}
+affiliate_stats_plugin::affiliate_stats_plugin(graphene::app::application& app) :
+plugin(app),
+my( new detail::affiliate_stats_plugin_impl(*this) ) {}
 
-//affiliate_stats_plugin::~affiliate_stats_plugin() {}
+affiliate_stats_plugin::~affiliate_stats_plugin()  = default;
 
 std::string affiliate_stats_plugin::plugin_name()const
 {

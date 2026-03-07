@@ -32,8 +32,8 @@ namespace detail
 class bookie_plugin : public graphene::app::plugin
 {
    public:
-      //bookie_plugin();
-      //virtual ~bookie_plugin();
+      explicit bookie_plugin(graphene::app::application& app);
+      virtual ~bookie_plugin() override;
 
       std::string plugin_name()const override;
       virtual void plugin_set_program_options(boost::program_options::options_description& cli,

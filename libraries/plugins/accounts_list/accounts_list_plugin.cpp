@@ -64,17 +64,15 @@ void accounts_list_plugin_impl::list_accounts()
 }
 } // end namespace detail
 
-// SHALL REVISIT...
-/*accounts_list_plugin::accounts_list_plugin() 
-Satia please work on me.
-: my( new detail::accounts_list_plugin_impl(*this) )
+accounts_list_plugin::accounts_list_plugin(graphene::app::application& app) :
+ plugin(app),
+ my(std::make_unique<detail::accounts_list_plugin_impl>(*this))
 {
    return "accounts_list constuctor";
-}*/
+}
 
-/*accounts_list_plugin::~accounts_list_plugin()
-{
-}*/
+accounts_list_plugin::~accounts_list_plugin() = default;
+
 
 std::string accounts_list_plugin::plugin_name()const
 {
