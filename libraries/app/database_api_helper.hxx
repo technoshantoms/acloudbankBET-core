@@ -8,7 +8,7 @@ public:
    database_api_helper( graphene::chain::database& db, const application_options* app_options );
    explicit database_api_helper( graphene::app::application& app );
 
-   // Member variables
+          // Member variables
    graphene::chain::database& _db;
    const application_options* _app_options = nullptr;
 

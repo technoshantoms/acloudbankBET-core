@@ -455,8 +455,8 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
 
       map< pair<asset_id_type,asset_id_type>, std::function<void(const variant&)> > _market_subscriptions;
 
-      //graphene::chain::database& _db;
-      //const application_options* _app_options = nullptr;
+      // graphene::chain::database& _db;
+      // const application_options* _app_options = nullptr;
 
       const graphene::api_helper_indexes::amount_in_collateral_index* amount_in_collateral_index;
       //const graphene::api_helper_indexes::next_object_ids_index* next_object_ids_index;
