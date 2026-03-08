@@ -78,9 +78,6 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       vector<tournament_object> get_tournaments_by_state(tournament_id_type stop, unsigned limit, tournament_id_type start, tournament_state state);
       vector<tournament_id_type> get_registered_tournaments(account_id_type account_filter, uint32_t limit) const;
 
-  
-    // gpos
-   gpos_info get_gpos_info(const account_id_type account) const;
    // Account Role
    vector<account_role_object> get_account_roles_by_owner(account_id_type owner) const;
 

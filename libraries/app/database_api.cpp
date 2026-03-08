@@ -43,6 +43,9 @@ namespace graphene { namespace app {
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
+// gpos
+gpos_info get_gpos_info(const account_id_type account) const;
+
 vector<credit_offer_object> database_api::list_credit_offers(
             const optional<uint32_t>& limit,
             const optional<credit_offer_id_type>& start_id )const
