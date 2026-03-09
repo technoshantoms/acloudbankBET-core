@@ -3133,7 +3133,7 @@ graphene::app::gpos_info database_api::get_gpos_info(const account_id_type accou
    return my->get_gpos_info(account);
 }
 
-graphene::app::gpos_info database_api_helper::get_gpos_info(const account_id_type account)  {
+graphene::app::gpos_info database_api_impl::get_gpos_info(const account_id_type account)  {
    FC_ASSERT(_db.head_block_time() > HARDFORK_GPOS_TIME); //Can be deleted after GPOS hardfork time
    gpos_info result;
 

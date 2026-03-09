@@ -13,7 +13,7 @@ public:
    const application_options* _app_options = nullptr;
 
    // gpos
-      gpos_info get_gpos_info( const account_id_type account);
+   //gpos_info get_gpos_info( const account_id_type account);
 
    // Accounts
    const account_object* get_account_from_string( const std::string& name_or_id,

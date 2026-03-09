@@ -1647,6 +1647,37 @@ double database::calculate_vesting_factor(const account_object& stake_account)
    vesting_factor = numerator / number_of_subperiods;
    return vesting_factor;
 }
+    // get in what sub period we are
+uint32_t database::get_gpos_current_subperiod()
+{
+   if(this->head_block_time() < HARDFORK_GPOS_TIME)  //Can be deleted after GPOS hardfork time
+      return 0;
+
+   fc::time_point_sec last_date_voted;
+
+   const auto &gpo = this->get_global_properties();
+   const auto vesting_period = gpo.parameters.gpos_period();
+   const auto vesting_subperiod = gpo.parameters.gpos_subperiod();
+   const auto period_start = fc::time_point_sec(gpo.parameters.gpos_period_start());
+
+   //  variables needed
+   const auto number_of_subperiods = vesting_period / vesting_subperiod;
+   const auto now = this->head_block_time();
+   auto seconds_since_period_start = now.sec_since_epoch() - period_start.sec_since_epoch();
+
+   // get in what sub period we are
+   uint32_t current_subperiod = 0;
+   std::list<uint32_t> period_list(number_of_subperiods);
+   std::iota(period_list.begin(), period_list.end(), 1);
+
+   std::for_each(period_list.begin(), period_list.end(),[&](uint32_t period) {
+      if(seconds_since_period_start >= vesting_subperiod * (period - 1) &&
+            seconds_since_period_start < vesting_subperiod * period)
+         current_subperiod = period;
+   });
+
+   return current_subperiod;
+}
 void database::perform_chain_maintenance(const signed_block& next_block, const global_property_object& global_props)
 { try {
    const auto& gpo = get_global_properties();
