@@ -44,7 +44,7 @@ namespace graphene { namespace app {
 //////////////////////////////////////////////////////////////////////
 
 // gpos
-gpos_info get_gpos_info(const account_id_type account) const;
+gpos_info get_gpos_info(const account_id_type account) ;
 
 vector<credit_offer_object> database_api::list_credit_offers(
             const optional<uint32_t>& limit,
@@ -3129,11 +3129,11 @@ vector<permission_object> database_api_impl::get_permissions( const account_id_t
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
-graphene::app::gpos_info database_api::get_gpos_info(const account_id_type account) const {
+graphene::app::gpos_info database_api::get_gpos_info(const account_id_type account)  {
    return my->get_gpos_info(account);
 }
 
-graphene::app::gpos_info database_api_impl::get_gpos_info(const account_id_type account) const {
+graphene::app::gpos_info database_api_helper::get_gpos_info(const account_id_type account)  {
    FC_ASSERT(_db.head_block_time() > HARDFORK_GPOS_TIME); //Can be deleted after GPOS hardfork time
    gpos_info result;
 

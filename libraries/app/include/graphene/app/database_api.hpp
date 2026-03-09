@@ -1369,7 +1369,7 @@ class database_api
    /**
     * @return account and network GPOS information
     */
-   gpos_info get_gpos_info(const account_id_type account) const;
+   gpos_info get_gpos_info(const account_id_type account);
        //////////
       // RBAC //
       //////////
