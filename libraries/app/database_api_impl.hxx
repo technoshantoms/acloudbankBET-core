@@ -81,6 +81,9 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
    // Account Role
    vector<account_role_object> get_account_roles_by_owner(account_id_type owner) const;
 
+    // gpos
+   gpos_info get_gpos_info(const account_id_type account);
+
    // rbac
    vector<custom_permission_object> get_custom_permissions(const account_id_type account) const;
    fc::optional<custom_permission_object> get_custom_permission_by_name(const account_id_type account, const string &permission_name) const;
