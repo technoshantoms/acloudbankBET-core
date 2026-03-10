@@ -618,6 +618,41 @@ namespace graphene { namespace chain {
       private:
          optional<undo_database::session>       _pending_tx_session;
          vector< unique_ptr<op_evaluator> >     _operation_evaluators;
+         vector< unique_ptr<op_evaluator> >     _consensus_operation_evaluators;
+
+          template<typename EvaluatorType, bool DiscardExceptions>
+         op_evaluator::evaluator_handle register_evaluator(vector<unique_ptr<op_evaluator>>& registry) {
+            auto op_tag = operation::tag<typename EvaluatorType::operation_type>::value;
+            FC_ASSERT(registry.size() > (size_t)op_tag,
+                      "Cannot register evaluator for operation type ${T}: operation type is too large.",
+                      ("T", op_tag));
+            auto& eval_ptr = registry[op_tag];
+            if (eval_ptr == nullptr) {
+                eval_ptr = std::make_unique<op_evaluator_impl<EvaluatorType, DiscardExceptions>>();
+                return {eval_ptr.get(), op_tag};
+            } else {
+                auto new_evaluator = std::make_unique<op_evaluator_impl<EvaluatorType, DiscardExceptions>>();
+                return eval_ptr->append_evaluator(std::move(new_evaluator));
+            }
+         }
+         template<typename EvaluatorType>
+         op_evaluator::evaluator_handle register_consensus_evaluator() {
+            return register_evaluator<EvaluatorType, false>(_consensus_operation_evaluators);
+         }
+         void delete_evaluator(vector<unique_ptr<op_evaluator>>& registry, op_evaluator::evaluator_handle&& handle)
+         {
+            if ((uint64_t)handle.get_operation_type() < registry.size()) {
+               auto& eval_ptr = registry[handle.get_operation_type()];
+               if (eval_ptr.get() == handle.pointer)
+                  eval_ptr = eval_ptr->take_next();
+               else
+                  eval_ptr->delete_evaluator(std::move(handle));
+            }
+         }
+         void delete_consensus_evaluator(op_evaluator::evaluator_handle&& handle)
+         {
+            delete_evaluator(_consensus_operation_evaluators, std::move(handle));
+         }
 
          template<class Index>
          vector<std::reference_wrapper<const typename Index::object_type>> sort_votable_objects(size_t count)const;
