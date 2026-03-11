@@ -124,7 +124,7 @@ database& generic_evaluator::db()const { return trx_state->db(); }
    {
      db().adjust_balance(fee_payer, fee_from_account);
    }
-   object_id_type generic_evaluator::get_relative_id( object_id_type rel_id )const
+   object_id_type consensus_evaluator::get_relative_id( object_id_type rel_id )const
    {
      if (!is_relative(rel_id))
        FC_THROW("get_relative_id() called for non-relative id ${id}", ("id", rel_id));

@@ -10,7 +10,7 @@
 namespace graphene { namespace chain {
 
    class database;
-   //class consensus_evaluator;
+   class consensus_evaluator;
    class generic_evaluator;
    class transaction_evaluation_state;
    class account_object;
@@ -18,90 +18,89 @@ namespace graphene { namespace chain {
    class asset_object;
    class asset_dynamic_data_object;
 
-   // class consensus_evaluator
-   // {
-   // public:
-   //    virtual ~consensus_evaluator() = default;
+   class consensus_evaluator
+   {
+   public:
+      virtual ~consensus_evaluator(){}
 
-   //    virtual int get_type()const = 0;
-   //    virtual operation_result start_evaluate(transaction_evaluation_state& eval_state, const operation& op, bool apply);
+      virtual int get_type()const = 0;
+      virtual operation_result start_evaluate(transaction_evaluation_state& eval_state, const operation& op, bool apply);
 
-   //    /**
-   //     * @note derived classes should ASSUME that the default validation that is
-   //     * indepenent of chain state should be performed by op.validate() and should
-   //     * not perform these extra checks.
-   //     */
-   //    virtual operation_result evaluate(const operation& op) = 0;
-   //    virtual operation_result apply(const operation& op) = 0;
+      /**
+       * @note derived classes should ASSUME that the default validation that is
+       * indepenent of chain state should be performed by op.validate() and should
+       * not perform these extra checks.
+       */
+      virtual operation_result evaluate(const operation& op) = 0;
+      virtual operation_result apply(const operation& op) = 0;
 
-   //    /**
-   //     * Routes the fee to where it needs to go.  The default implementation
-   //     * routes the fee to the account_statistics_object of the fee_paying_account.
-   //     *
-   //     * Before pay_fee() is called, the fee is computed by prepare_fee() and has been
-   //     * moved out of the fee_paying_account and (if paid in a non-CORE asset) converted
-   //     * by the asset's fee pool.
-   //     *
-   //     * Therefore, when pay_fee() is called, the fee only exists in this->core_fee_paid.
-   //     * So pay_fee() need only increment the receiving balance.
-   //     *
-   //     * The default implementation simply calls account_statistics_object->pay_fee() to
-   //     * increment pending_fees or pending_vested_fees.
-   //     */
-   //    virtual void pay_fee();
+      /**
+       * Routes the fee to where it needs to go.  The default implementation
+       * routes the fee to the account_statistics_object of the fee_paying_account.
+       *
+       * Before pay_fee() is called, the fee is computed by prepare_fee() and has been
+       * moved out of the fee_paying_account and (if paid in a non-CORE asset) converted
+       * by the asset's fee pool.
+       *
+       * Therefore, when pay_fee() is called, the fee only exists in this->core_fee_paid.
+       * So pay_fee() need only increment the receiving balance.
+       *
+       * The default implementation simply calls account_statistics_object->pay_fee() to
+       * increment pending_fees or pending_vested_fees.
+       */
+      virtual void pay_fee();
 
-   //    database& db()const;
+      database& db()const;
 
-   //    //void check_required_authorities(const operation& op);
-   // protected:
-   //    /**
-   //     * @brief Fetch objects relevant to fee payer and set pointer members
-   //     * @param account_id Account which is paying the fee
-   //     * @param fee The fee being paid. May be in assets other than core.
-   //     *
-   //     * This method verifies that the fee is valid and sets the object pointer members and the fee fields. It should
-   //     * be called during do_evaluate.
-   //     *
-   //     * In particular, core_fee_paid field is set by prepare_fee().
-   //     */
-   //    void prepare_fee(account_id_type account_id, asset fee);
+      //void check_required_authorities(const operation& op);
+   protected:
+      /**
+       * @brief Fetch objects relevant to fee payer and set pointer members
+       * @param account_id Account which is paying the fee
+       * @param fee The fee being paid. May be in assets other than core.
+       *
+       * This method verifies that the fee is valid and sets the object pointer members and the fee fields. It should
+       * be called during do_evaluate.
+       *
+       * In particular, core_fee_paid field is set by prepare_fee().
+       */
+      void prepare_fee(account_id_type account_id, asset fee);
 
-   //    /**
-   //     * Convert the fee into BTS through the exchange pool.
-   //     *
-   //     * Reads core_fee_paid field for how much CORE is deducted from the exchange pool,
-   //     * and fee_from_account for how much USD is added to the pool.
-   //     *
-   //     * Since prepare_fee() does the validation checks ensuring the account and fee pool
-   //     * have sufficient balance and the exchange rate is correct,
-   //     * those validation checks are not replicated here.
-   //     *
-   //     * Rather than returning a value, this method fills in core_fee_paid field.
-   //     */
-     
-   // // void convert_fee();
+      /**
+       * Convert the fee into BTS through the exchange pool.
+       *
+       * Reads core_fee_paid field for how much CORE is deducted from the exchange pool,
+       * and fee_from_account for how much USD is added to the pool.
+       *
+       * Since prepare_fee() does the validation checks ensuring the account and fee pool
+       * have sufficient balance and the exchange rate is correct,
+       * those validation checks are not replicated here.
+       *
+       * Rather than returning a value, this method fills in core_fee_paid field.
+       */
+      void convert_fee();
 
-   //  //  object_id_type get_relative_id( object_id_type rel_id )const;
+      object_id_type get_relative_id( object_id_type rel_id )const;
 
-   //    /**
-   //     * pay_fee() for FBA subclass should simply call this method
-   //     */
-   //    void pay_fba_fee( uint64_t fba_id );
+      /**
+       * pay_fee() for FBA subclass should simply call this method
+       */
+      void pay_fba_fee( uint64_t fba_id );
 
-   //    // the next two functions are helpers that allow template functions declared in this 
-   //    // header to call db() without including database.hpp, which would
-   //    // cause a circular dependency
-   //    share_type calculate_fee_for_operation(const operation& op) const;
-   //    void db_adjust_balance(const account_id_type& fee_payer, asset fee_from_account);
+      // the next two functions are helpers that allow template functions declared in this 
+      // header to call db() without including database.hpp, which would
+      // cause a circular dependency
+      share_type calculate_fee_for_operation(const operation& op) const;
+      void db_adjust_balance(const account_id_type& fee_payer, asset fee_from_account);
 
-   //    asset                            fee_from_account;
-   //    share_type                       core_fee_paid;
-   //    const account_object*            fee_paying_account = nullptr;
-   //    const account_statistics_object* fee_paying_account_statistics = nullptr;
-   //    const asset_object*              fee_asset          = nullptr;
-   //    const asset_dynamic_data_object* fee_asset_dyn_data = nullptr;
-   //    transaction_evaluation_state*    trx_state;
-   // };
+      asset                            fee_from_account;
+      share_type                       core_fee_paid;
+      const account_object*            fee_paying_account = nullptr;
+      const account_statistics_object* fee_paying_account_statistics = nullptr;
+      const asset_object*              fee_asset          = nullptr;
+      const asset_dynamic_data_object* fee_asset_dyn_data = nullptr;
+      transaction_evaluation_state*    trx_state;
+   };
 
    class generic_evaluator
    {
@@ -190,31 +189,7 @@ namespace graphene { namespace chain {
    class op_evaluator
    {
    public:
-      class evaluator_handle {
-           // Move-only semantics, and only friends can construct
-           evaluator_handle(const op_evaluator* pointer, operation::tag_type type)
-               : pointer(pointer), operation_type(type) {}
-           evaluator_handle(const evaluator_handle&) = delete;
-           evaluator_handle& operator=(const evaluator_handle&) = delete;
-
-           friend class database;
-           friend class op_evaluator;
-   //template<typename, bool>
-   // friend class op_evaluator_impl;
-
-           // Pointer to the handled evaluator
-           const op_evaluator* pointer;
-           // Tag of the handled evaluator
-           operation::tag_type operation_type;
-
-       public:
-           evaluator_handle(evaluator_handle&&) = default;
-           evaluator_handle& operator=(evaluator_handle&&) = default;
-
-           operation::tag_type get_operation_type() const { return operation_type; }
-       };
       virtual ~op_evaluator(){}
-     // std::unique_ptr<op_evaluator> take_next() { return std::move(next_evaluator); }
       virtual operation_result evaluate(transaction_evaluation_state& eval_state, const operation& op, bool apply) = 0;
    };
 

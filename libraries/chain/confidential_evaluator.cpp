@@ -51,7 +51,7 @@ void transfer_to_blind_evaluator::pay_fee()
    if( db().head_block_time() >= HARDFORK_563_TIME )
       pay_fba_fee( fba_accumulator_id_transfer_to_blind );
    else
-      generic_evaluator::pay_fee();
+      consensus_evaluator::pay_fee();
 }
 
 void_result transfer_from_blind_evaluator::do_evaluate( const transfer_from_blind_operation& o )
@@ -95,7 +95,7 @@ void transfer_from_blind_evaluator::pay_fee()
    if( db().head_block_time() >= HARDFORK_563_TIME )
       pay_fba_fee( fba_accumulator_id_transfer_from_blind );
    else
-      generic_evaluator::pay_fee();
+      consensus_evaluator::pay_fee();
 }
 
 void_result blind_transfer_evaluator::do_evaluate( const blind_transfer_operation& o )
@@ -152,7 +152,7 @@ void blind_transfer_evaluator::pay_fee()
    if( db().head_block_time() >= HARDFORK_563_TIME )
       pay_fba_fee( fba_accumulator_id_blind_transfer );
    else
-      generic_evaluator::pay_fee();
+      consensus_evaluator::pay_fee();
 }
 
 } } // graphene::chain
