@@ -232,7 +232,7 @@ void lottery_asset_create_evaluator::pay_fee()
 {
    fee_is_odd = core_fee_paid.value & 1;
    core_fee_paid -= core_fee_paid.value/2;
-   //consensus_evaluator::pay_fee();
+   generic_evaluator::pay_fee();
 }
 
 object_id_type lottery_asset_create_evaluator::do_apply( const lottery_asset_create_operation& op )
