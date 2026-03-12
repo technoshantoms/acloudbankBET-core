@@ -46,9 +46,13 @@
 #include <graphene/chain/custom_authority_object.hpp>
 
 #include <fc/io/raw.hpp>
-// SATIA COMMENT
-//FC_REFLECT_DERIVED_NO_TYPENAME( graphene::chain::balance_object, (graphene::db::object),
-//                    (owner)(balance)(vesting_policy)(last_claim_date) )
+
+namespace graphene { namespace chain {
+FC_IMPLEMENT_EXCEPTION(no_transition, 100000, "Invalid state transition");
+} }
+
+FC_REFLECT_DERIVED_NO_TYPENAME( graphene::chain::balance_object, (graphene::db::object),
+                    (owner)(balance)(vesting_policy)(last_claim_date) )
 
 FC_REFLECT_DERIVED_NO_TYPENAME( graphene::chain::ico_balance_object, (graphene::db::object),
                     (eth_address)(balance) )
