@@ -60,6 +60,7 @@
 #include <websocketpp/version.hpp>
 
 #include <sstream>
+#include <iostream>
 
 #ifdef WIN32
 # include <signal.h>
@@ -89,6 +90,7 @@ void my_log( const std::string& s )
 int main(int argc, char** argv) {
    fc::print_stacktrace_on_segfault();
    auto node = std::make_unique<graphene::app::application>();
+   //app::application* node = new app::application();
    fc::oexception unhandled_exception;
    try {
       bpo::options_description app_options("R-Squared Witness Node");
