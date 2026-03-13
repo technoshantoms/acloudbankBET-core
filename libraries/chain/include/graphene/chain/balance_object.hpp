@@ -27,7 +27,7 @@
 
 namespace graphene { namespace chain {
 
-   class balance_object : public abstract_object<balance_object,protocol_ids,balance_object_type>
+   class balance_object : public abstract_object<balance_object, protocol_ids, balance_object_type>
    {
       public:
          bool is_vesting_balance()const

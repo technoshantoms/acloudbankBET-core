@@ -345,8 +345,8 @@ namespace graphene { namespace app {
        FC_ASSERT(_app.chain_database());
        const auto& db = *_app.chain_database();
        database_api_helper db_api_helper( _app );
-       asset_id_type a = db_api_helper.get_asset_from_string( asset_a )->get_id();
-       asset_id_type b = db_api_helper.get_asset_from_string( asset_b )->get_id();
+       asset_id_type a = db_api_helper.get_asset_id_from_string( asset_a )->get_id();
+       asset_id_type b = db_api_helper.get_asset_id_from_string( asset_b )->get_id();
        if( a > b ) std::swap(a,b);
        const auto& history_idx = db.get_index_type<graphene::market_history::history_index>().indices().get<by_key>();
        history_key hkey;
@@ -383,7 +383,7 @@ namespace graphene { namespace app {
        account_id_type account;
        try {
            database_api_helper db_api_helper( _app );
-          account = db_api_helper.get_account_from_string(account_id_or_name)->get_id();
+          account = db_api_helper.get_account_id_from_string(account_id_or_name)->get_id();
           const account_transaction_history_object& node = account(db).statistics(db).most_recent_op(db);
           if(start == operation_history_id_type() || start.instance.value > node.operation_id.instance.value)
              start = node.operation_id;
@@ -449,7 +449,7 @@ namespace graphene { namespace app {
        account_id_type account;
        try {
           database_api_helper db_api_helper( _app );
-          account = db_api_helper.get_account_from_string(account_id_or_name)->get_id();
+          account = db_api_helper.get_account_id_from_string(account_id_or_name)->get_id();
        } catch(...) { return result; }
        const auto& stats = account(db).statistics(db);
        if( stats.most_recent_op == account_transaction_history_id_type() ) return result;
@@ -493,7 +493,7 @@ namespace graphene { namespace app {
        account_id_type account;
        try {
           database_api_helper db_api_helper( _app );
-          account = db_api_helper.get_account_from_string(account_id_or_name)->get_id();
+          account = db_api_helper.get_account_id_from_string(account_id_or_name)->get_id();
        } catch(...) { return result; }
        const auto& stats = account(db).statistics(db);
        if( start == 0 )
@@ -785,7 +785,7 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
       if( o_account_name_or_id.valid() )
       {
          const string& account_name_or_id = *o_account_name_or_id;
-         const account_id_type account_id = db_api_helper.get_account_from_string(account_name_or_id)->get_id();
+         const account_id_type account_id = db_api_helper.get_account_id_from_string(account_name_or_id)->get_id();
          if( catalog.valid() )
          {
             if( key.valid() )

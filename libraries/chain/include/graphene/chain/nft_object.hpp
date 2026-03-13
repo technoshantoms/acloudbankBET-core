@@ -47,10 +47,10 @@ namespace graphene { namespace chain {
          bool is_lottery() const { return lottery_data.valid(); }
          uint32_t get_owner_num() const { return owner.instance.value; }
          time_point_sec get_lottery_expiration() const;
-         asset get_lottery_jackpot( database &db) const;
-         share_type get_token_current_supply( database &db) const;
-         vector<account_id_type> get_holders( database &db) const;
-         vector<uint64_t> get_ticket_ids( database &db) const;
+         asset get_lottery_jackpot( database &db);
+         share_type get_token_current_supply( database &db);
+         vector<account_id_type> get_holders( database &db);
+         vector<uint64_t> get_ticket_ids( database &db) ;
          void distribute_benefactors_part(database &db);
          map<account_id_type, vector<uint16_t>> distribute_winners_part(database &db);
          void distribute_sweeps_holders_part(database &db);
