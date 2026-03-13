@@ -179,47 +179,47 @@ optional< vesting_balance_id_type > database::deposit_lazy_vesting(
 
    return vbo.id;
 }
-asset database::get_market_fee_vesting_balance(const account_id_type &account_id, const asset_id_type &asset_id)
-{
-   auto& vesting_balances = get_index_type<vesting_balance_index>().indices().get<by_vesting_type>();
-   const auto& key = detail::vbo_mfs_key{account_id, asset_id};
-   auto vbo_it = vesting_balances.find(key, key, key);
+// asset database::get_market_fee_vesting_balance(const account_id_type &account_id, const asset_id_type &asset_id)
+// {
+//    auto& vesting_balances = get_index_type<vesting_balance_index>().indices().get<by_vesting_type>();
+//    const auto& key = detail::vbo_mfs_key{account_id, asset_id};
+//    auto vbo_it = vesting_balances.find(key, key, key);
 
-   if( vbo_it == vesting_balances.end() )
-   {
-      return asset(0, asset_id);
-   }
-   return vbo_it->balance;
-}
+//    if( vbo_it == vesting_balances.end() )
+//    {
+//       return asset(0, asset_id);
+//    }
+//    return vbo_it->balance;
+// }
 
-void database::deposit_market_fee_vesting_balance(const account_id_type &account_id, const asset &delta)
-{ try {
-   FC_ASSERT( delta.amount >= 0, "Invalid negative value for balance");
+// void database::deposit_market_fee_vesting_balance(const account_id_type &account_id, const asset &delta)
+// { try {
+//    FC_ASSERT( delta.amount >= 0, "Invalid negative value for balance");
 
-   if( delta.amount == 0 )
-      return;
+//    if( delta.amount == 0 )
+//       return;
 
-   auto& vesting_balances = get_index_type<vesting_balance_index>().indices().get<by_vesting_type>();
-   const auto& key = detail::vbo_mfs_key{account_id, delta.asset_id};
-   auto vbo_it = vesting_balances.find(key, key, key);
+//    auto& vesting_balances = get_index_type<vesting_balance_index>().indices().get<by_vesting_type>();
+//    const auto& key = detail::vbo_mfs_key{account_id, delta.asset_id};
+//    auto vbo_it = vesting_balances.find(key, key, key);
 
-   auto block_time = head_block_time();
+//    auto block_time = head_block_time();
 
-   if( vbo_it == vesting_balances.end() )
-   {
-      create<vesting_balance_object>([&account_id, &delta](vesting_balance_object &vbo) {
-         vbo.owner = account_id;
-         vbo.balance = delta;
-         vbo.balance_type = vesting_balance_type::market_fee_sharing;
-         vbo.policy = instant_vesting_policy{};
-      });
-   } else {
-      modify( *vbo_it, [&block_time, &delta]( vesting_balance_object& vbo )
-      {
-         vbo.deposit_vested(block_time, delta);
-      });
-   }
-} FC_CAPTURE_AND_RETHROW( (account_id)(delta) ) }
+//    if( vbo_it == vesting_balances.end() )
+//    {
+//       create<vesting_balance_object>([&account_id, &delta](vesting_balance_object &vbo) {
+//          vbo.owner = account_id;
+//          vbo.balance = delta;
+//          vbo.balance_type = vesting_balance_type::market_fee_sharing;
+//          vbo.policy = instant_vesting_policy{};
+//       });
+//    } else {
+//       modify( *vbo_it, [&block_time, &delta]( vesting_balance_object& vbo )
+//       {
+//          vbo.deposit_vested(block_time, delta);
+//       });
+//    }
+// } FC_CAPTURE_AND_RETHROW( (account_id)(delta) ) }
 
 optional< vesting_balance_id_type > database::deposit_lazy_vesting(
    const optional< vesting_balance_id_type >& ovbid,
@@ -303,7 +303,6 @@ void database::deposit_cashback(const account_object& acct, share_type amount, b
       {
          _acct.cashback_vb = *new_vbid;
       } );
-
       modify( acct.statistics( *this ), []( account_statistics_object& aso )
       {
          aso.has_cashback_vb = true;

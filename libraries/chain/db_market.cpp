@@ -1039,100 +1039,116 @@ asset database::calculate_market_fee( const asset_object& trade_asset, const ass
    return percent_fee;
 }
 
-
-asset database::pay_market_fees(const account_object* seller, const asset_object& recv_asset, const asset& receives,
-                                const bool& is_maker, const optional<asset>& calculated_market_fees )
+asset database::pay_market_fees( const asset_object& recv_asset, const asset& receives )
 {
-   const auto market_fees = ( calculated_market_fees.valid() ? *calculated_market_fees
-                                    : calculate_market_fee( recv_asset, receives, is_maker ) );
-   auto issuer_fees = market_fees;
-   FC_ASSERT( issuer_fees <= receives, "Market fee shouldn't be greater than receives");
+   auto issuer_fees = calculate_market_fee( recv_asset, receives );
+   assert(issuer_fees <= receives );
+
    //Don't dirty undo state if not actually collecting any fees
-   if ( issuer_fees.amount > 0 )
+   if( issuer_fees.amount > 0 )
    {
-      // Share market fees to the network
-      const uint16_t network_percent = get_global_properties().parameters.get_market_fee_network_percent();
-      if( network_percent > 0 )
-      {
-         const auto network_fees_amt = detail::calculate_percent( issuer_fees.amount, network_percent );
-         FC_ASSERT( network_fees_amt <= issuer_fees.amount,
-                    "Fee shared to the network shouldn't be greater than total market fee" );
-         if( network_fees_amt > 0 )
-         {
-            const asset network_fees = recv_asset.amount( network_fees_amt );
-            deposit_market_fee_vesting_balance( GRAPHENE_COMMITTEE_ACCOUNT, network_fees );
-            issuer_fees -= network_fees;
-         }
-      }
+      const auto& recv_dyn_data = recv_asset.dynamic_asset_data_id(*this);
+      modify( recv_dyn_data, [&]( asset_dynamic_data_object& obj ){
+                   //idump((issuer_fees));
+         obj.accumulated_fees += issuer_fees.amount;
+      });
    }
 
-   // Process the remaining fees
-   if ( issuer_fees.amount > 0 )
-   {
-      // calculate and pay rewards
-      asset reward = recv_asset.amount(0);
-
-      auto is_rewards_allowed = [&recv_asset, seller]() {
-         if (seller == nullptr)
-            return false;
-         const auto &white_list = recv_asset.options.extensions.value.whitelist_market_fee_sharing;
-         return ( !white_list || (*white_list).empty() 
-               || ( (*white_list).find(seller->registrar) != (*white_list).end() ) );
-      };
-
-      if ( is_rewards_allowed() )
-      {
-         const auto reward_percent = recv_asset.options.extensions.value.reward_percent;
-         if ( reward_percent && *reward_percent )
-         {
-            const auto reward_value = detail::calculate_percent(issuer_fees.amount, *reward_percent);
-            if ( reward_value > 0 && is_authorized_asset(*this, seller->registrar(*this), recv_asset) )
-            {
-               reward = recv_asset.amount(reward_value);
-               FC_ASSERT( reward <= issuer_fees, "Market reward should not be greater than issuer fees");
-               // cut referrer percent from reward
-               auto registrar_reward = reward;
-
-               auto registrar = seller->registrar;
-               auto referrer = seller->referrer;
-
-               // for funds going to temp-account, redirect to committee-account
-               if( registrar == GRAPHENE_TEMP_ACCOUNT )
-                  registrar = GRAPHENE_COMMITTEE_ACCOUNT;
-               if( referrer == GRAPHENE_TEMP_ACCOUNT )
-                  referrer = GRAPHENE_COMMITTEE_ACCOUNT;
-
-               if( referrer != registrar )
-               {
-                  const auto referrer_rewards_value = detail::calculate_percent( reward.amount,
-                                                                                 seller->referrer_rewards_percentage );
-
-                  if ( referrer_rewards_value > 0 && is_authorized_asset(*this, referrer(*this), recv_asset) )
-                  {
-                     FC_ASSERT ( referrer_rewards_value <= reward.amount.value,
-                                 "Referrer reward shouldn't be greater than total reward" );
-                     const asset referrer_reward = recv_asset.amount(referrer_rewards_value);
-                     registrar_reward -= referrer_reward;
-                     deposit_market_fee_vesting_balance(referrer, referrer_reward);
-                  }
-               }
-               if( registrar_reward.amount > 0 )
-                  deposit_market_fee_vesting_balance(registrar, registrar_reward);
-            }
-         }
-      }
-
-      if( issuer_fees.amount > reward.amount )
-      {
-         const auto& recv_dyn_data = recv_asset.dynamic_asset_data_id(*this);
-         modify( recv_dyn_data, [&issuer_fees, &reward]( asset_dynamic_data_object& obj ){
-            obj.accumulated_fees += issuer_fees.amount - reward.amount;
-         });
-      }
-   }
-
-   return market_fees;
+   return issuer_fees;
 }
+// asset database::pay_market_fees(const account_object* seller, const asset_object& recv_asset, const asset& receives,
+//                                 const bool& is_maker, const optional<asset>& calculated_market_fees )
+// {
+//    const auto market_fees = ( calculated_market_fees.valid() ? *calculated_market_fees
+//                                     : calculate_market_fee( recv_asset, receives, is_maker ) );
+//    auto issuer_fees = market_fees;
+//    FC_ASSERT( issuer_fees <= receives, "Market fee shouldn't be greater than receives");
+//    //Don't dirty undo state if not actually collecting any fees
+//    if ( issuer_fees.amount > 0 )
+//    {
+//       // Share market fees to the network
+//       const uint16_t network_percent = get_global_properties().parameters.get_market_fee_network_percent();
+//       if( network_percent > 0 )
+//       {
+//          const auto network_fees_amt = detail::calculate_percent( issuer_fees.amount, network_percent );
+//          FC_ASSERT( network_fees_amt <= issuer_fees.amount,
+//                     "Fee shared to the network shouldn't be greater than total market fee" );
+//          if( network_fees_amt > 0 )
+//          {
+//             const asset network_fees = recv_asset.amount( network_fees_amt );
+//             deposit_market_fee_vesting_balance( GRAPHENE_COMMITTEE_ACCOUNT, network_fees );
+//             issuer_fees -= network_fees;
+//          }
+//       }
+//    }
+
+//    // Process the remaining fees
+//    if ( issuer_fees.amount > 0 )
+//    {
+//       // calculate and pay rewards
+//       asset reward = recv_asset.amount(0);
+
+//       auto is_rewards_allowed = [&recv_asset, seller]() {
+//          if (seller == nullptr)
+//             return false;
+//          const auto &white_list = recv_asset.options.extensions.value.whitelist_market_fee_sharing;
+//          return ( !white_list || (*white_list).empty() 
+//                || ( (*white_list).find(seller->registrar) != (*white_list).end() ) );
+//       };
+
+//       if ( is_rewards_allowed() )
+//       {
+//          const auto reward_percent = recv_asset.options.extensions.value.reward_percent;
+//          if ( reward_percent && *reward_percent )
+//          {
+//             const auto reward_value = detail::calculate_percent(issuer_fees.amount, *reward_percent);
+//             if ( reward_value > 0 && is_authorized_asset(*this, seller->registrar(*this), recv_asset) )
+//             {
+//                reward = recv_asset.amount(reward_value);
+//                FC_ASSERT( reward <= issuer_fees, "Market reward should not be greater than issuer fees");
+//                // cut referrer percent from reward
+//                auto registrar_reward = reward;
+
+//                auto registrar = seller->registrar;
+//                auto referrer = seller->referrer;
+
+//                // for funds going to temp-account, redirect to committee-account
+//                if( registrar == GRAPHENE_TEMP_ACCOUNT )
+//                   registrar = GRAPHENE_COMMITTEE_ACCOUNT;
+//                if( referrer == GRAPHENE_TEMP_ACCOUNT )
+//                   referrer = GRAPHENE_COMMITTEE_ACCOUNT;
+
+//                if( referrer != registrar )
+//                {
+//                   const auto referrer_rewards_value = detail::calculate_percent( reward.amount,
+//                                                                                  seller->referrer_rewards_percentage );
+
+//                   if ( referrer_rewards_value > 0 && is_authorized_asset(*this, referrer(*this), recv_asset) )
+//                   {
+//                      FC_ASSERT ( referrer_rewards_value <= reward.amount.value,
+//                                  "Referrer reward shouldn't be greater than total reward" );
+//                      const asset referrer_reward = recv_asset.amount(referrer_rewards_value);
+//                      registrar_reward -= referrer_reward;
+//                      deposit_market_fee_vesting_balance(referrer, referrer_reward);
+//                   }
+//                }
+//                if( registrar_reward.amount > 0 )
+//                   deposit_market_fee_vesting_balance(registrar, registrar_reward);
+//             }
+//          }
+//       }
+
+//       if( issuer_fees.amount > reward.amount )
+//       {
+//          const auto& recv_dyn_data = recv_asset.dynamic_asset_data_id(*this);
+//          modify( recv_dyn_data, [&issuer_fees, &reward]( asset_dynamic_data_object& obj ){
+//             obj.accumulated_fees += issuer_fees.amount - reward.amount;
+//          });
+//       }
+//    }
+
+//    return market_fees;
+// }
 
 /***
  * @brief Calculate force-settlement fee and give it to issuer of the settled asset
