@@ -44,7 +44,7 @@ namespace graphene { namespace chain {
    class account_role_object;
 
    struct budget_record;
-   //enum class vesting_balance_type;
+   enum class vesting_balance_type;
 
    /**
     *   @class database
@@ -389,10 +389,9 @@ namespace graphene { namespace chain {
             const optional< vesting_balance_id_type >& ovbid,
             share_type amount,
             uint32_t req_vesting_seconds,
-            //vesting_balance_type balance_type,
+            vesting_balance_type balance_type,
             account_id_type req_owner,
             bool require_vesting );
-
          // helper to handle cashback rewards
          void deposit_cashback(const account_object& acct, share_type amount, bool require_vesting = true);
          // helper to handle witness pay

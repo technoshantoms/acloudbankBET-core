@@ -132,53 +132,6 @@ void database::adjust_sweeps_vesting_balance(account_id_type account, int64_t de
    }
 }
 
-optional< vesting_balance_id_type > database::deposit_lazy_vesting(
-   const optional< vesting_balance_id_type >& ovbid,
-   share_type amount, uint32_t req_vesting_seconds,
-   account_id_type req_owner,
-   bool require_vesting )
-{
-   if( amount == 0 )
-      return optional< vesting_balance_id_type >();
-
-   fc::time_point_sec now = head_block_time();
-
-   while( true )
-   {
-      if( !ovbid.valid() )
-         break;
-      const vesting_balance_object& vbo = (*ovbid)(*this);
-      if( vbo.owner != req_owner )
-         break;
-      if( vbo.policy.which() != vesting_policy::tag< cdd_vesting_policy >::value )
-         break;
-      if( vbo.policy.get< cdd_vesting_policy >().vesting_seconds != req_vesting_seconds )
-         break;
-      modify( vbo, [&]( vesting_balance_object& _vbo )
-      {
-         if( require_vesting )
-            _vbo.deposit(now, amount);
-         else
-            _vbo.deposit_vested(now, amount);
-      } );
-      return optional< vesting_balance_id_type >();
-   }
-
-   const vesting_balance_object& vbo = create< vesting_balance_object >( [&]( vesting_balance_object& _vbo )
-   {
-      _vbo.owner = req_owner;
-      _vbo.balance = amount;
-
-      cdd_vesting_policy policy;
-      policy.vesting_seconds = req_vesting_seconds;
-      policy.coin_seconds_earned = require_vesting ? 0 : amount.value * policy.vesting_seconds;
-      policy.coin_seconds_earned_last_update = now;
-
-      _vbo.policy = policy;
-   } );
-
-   return vbo.id;
-}
 // asset database::get_market_fee_vesting_balance(const account_id_type &account_id, const asset_id_type &asset_id)
 // {
 //    auto& vesting_balances = get_index_type<vesting_balance_index>().indices().get<by_vesting_type>();
@@ -294,6 +247,7 @@ void database::deposit_cashback(const account_object& acct, share_type amount, b
       acct.cashback_vb,
       amount,
       get_global_properties().parameters.cashback_vesting_period_seconds,
+      vesting_balance_type::cashback,
       acct.id,
       require_vesting );
 

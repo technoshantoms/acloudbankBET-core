@@ -149,6 +149,12 @@ namespace graphene { namespace chain {
       dormant_vesting_policy
    > vesting_policy;
 
+    enum class vesting_balance_type {   unspecified,
+                                       cashback,
+                                       worker,
+                                       witness,
+                                       market_fee_sharing };
+
    /**
     * Vesting balance object is a balance that is locked by the blockchain for a period of time.
     */
@@ -166,7 +172,7 @@ namespace graphene { namespace chain {
          vesting_policy policy;
 
          /// We can have 3 types of vesting, gpos, son and the rest
-         vesting_balance_type balance_type = vesting_balance_type::normal;
+         vesting_balance_type balance_type = vesting_balance_type::unspecified;
 
          vesting_balance_object() {}
          
@@ -263,7 +269,9 @@ FC_REFLECT(graphene::chain::cdd_vesting_policy,
            (coin_seconds_earned_last_update)
           )
 
-FC_REFLECT(graphene::chain::dormant_vesting_policy, )
+//FC_REFLECT(graphene::chain::dormant_vesting_policy, )
+//FC_REFLECT_EMPTY( graphene::chain::instant_vesting_policy )
+FC_REFLECT_EMPTY( graphene::chain::dormant_vesting_policy )
 
 FC_REFLECT_TYPENAME( graphene::chain::vesting_policy )
 
@@ -273,6 +281,8 @@ FC_REFLECT_DERIVED(graphene::chain::vesting_balance_object, (graphene::db::objec
                    (policy)
                    (balance_type)
                   )
+FC_REFLECT_ENUM( graphene::chain::vesting_balance_type, (unspecified)(cashback)(worker)
+               (witness)(market_fee_sharing) )
 
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::linear_vesting_policy )
 GRAPHENE_DECLARE_EXTERNAL_SERIALIZATION( graphene::chain::cdd_vesting_policy )
