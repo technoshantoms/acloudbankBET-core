@@ -24,6 +24,7 @@
 #pragma once
 
 #include <graphene/db/generic_index.hpp>
+#include <graphene/protocol/asset.hpp>
 
 #include <boost/multi_index/composite_key.hpp>
 #include <boost/multi_index/hashed_index.hpp>
