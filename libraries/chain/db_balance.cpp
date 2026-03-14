@@ -275,6 +275,7 @@ void database::deposit_witness_pay(const witness_object& wit, share_type amount)
       wit.pay_vb,
       amount,
       get_global_properties().parameters.witness_pay_vesting_seconds,
+      vesting_balance_type::witness,
       wit.witness_account,
       true );
 
