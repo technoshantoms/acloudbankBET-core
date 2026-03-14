@@ -1039,23 +1039,6 @@ asset database::calculate_market_fee( const asset_object& trade_asset, const ass
    return percent_fee;
 }
 
-asset database::pay_market_fees( const asset_object& recv_asset, const asset& receives )
-{
-   auto issuer_fees = calculate_market_fee( recv_asset, receives );
-   assert(issuer_fees <= receives );
-
-   //Don't dirty undo state if not actually collecting any fees
-   if( issuer_fees.amount > 0 )
-   {
-      const auto& recv_dyn_data = recv_asset.dynamic_asset_data_id(*this);
-      modify( recv_dyn_data, [&]( asset_dynamic_data_object& obj ){
-                   //idump((issuer_fees));
-         obj.accumulated_fees += issuer_fees.amount;
-      });
-   }
-
-   return issuer_fees;
-}
 asset database::pay_market_fees(const account_object* seller, const asset_object& recv_asset, const asset& receives,
                                 const bool& is_maker, const optional<asset>& calculated_market_fees )
 {

@@ -212,11 +212,6 @@ struct proposal_operation_hardfork_visitor
        FC_ASSERT( block_time >= HARDFORK_1000_TIME, "event_update_status_operation not allowed yet!" );
    }
 
-   void operator()(const vesting_balance_create_operation &vbco) const {
-      if(block_time < HARDFORK_GPOS_TIME)
-      FC_ASSERT( vbco.balance_type == vesting_balance_type::normal, "balance_type in vesting create not allowed yet!" );
-   }
-
    void operator()(const custom_permission_create_operation &v) const {
        FC_ASSERT( block_time >= HARDFORK_NFT_TIME, "custom_permission_create_operation not allowed yet!" );
    }

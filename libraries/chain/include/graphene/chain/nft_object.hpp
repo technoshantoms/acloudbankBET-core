@@ -8,7 +8,7 @@
 namespace graphene { namespace chain {
    using namespace graphene::db;
 
-   class nft_lottery_balance_object : public abstract_object<nft_lottery_balance_object,implementation_ids,impl_nft_lottery_balance_object_type>
+   class nft_lottery_balance_object : public abstract_object<nft_lottery_balance_object, implementation_ids, impl_nft_lottery_balance_object_type>
    {
       public:
          // Total Progressive jackpot carried over from previous lotteries
@@ -28,7 +28,7 @@ namespace graphene { namespace chain {
       nft_lottery_balance_id_type lottery_balance_id;
    };
 
-   class nft_metadata_object : public abstract_object<nft_metadata_object,protocol_ids,nft_metadata_object_type>
+   class nft_metadata_object : public abstract_object<nft_metadata_object, protocol_ids, nft_metadata_object_type>
    {
       public:
          account_id_type owner;
@@ -47,19 +47,20 @@ namespace graphene { namespace chain {
          bool is_lottery() const { return lottery_data.valid(); }
          uint32_t get_owner_num() const { return owner.instance.value; }
          time_point_sec get_lottery_expiration() const;
-         asset get_lottery_jackpot( database &db);
-         share_type get_token_current_supply( database &db);
-         vector<account_id_type> get_holders( database &db);
-         vector<uint64_t> get_ticket_ids( database &db) ;
+         asset get_lottery_jackpot(const database &db) const;
+         share_type get_token_current_supply(const database &db) const;
+         vector<account_id_type> get_holders(const database &db) const;
+         vector<uint64_t> get_ticket_ids(const database &db) const;
          void distribute_benefactors_part(database &db);
          map<account_id_type, vector<uint16_t>> distribute_winners_part(database &db);
          void distribute_sweeps_holders_part(database &db);
          void end_lottery(database &db);
    };
 
-   class nft_object : public abstract_object<nft_object,protocol_ids,nft_object_type>
+   class nft_object : public abstract_object<nft_object, protocol_ids, nft_object_type>
    {
       public:
+
          nft_metadata_id_type    nft_metadata_id;
          account_id_type         owner;
          account_id_type         approved;

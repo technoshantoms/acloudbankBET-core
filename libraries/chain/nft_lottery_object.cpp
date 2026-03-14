@@ -12,14 +12,14 @@ namespace graphene
             return time_point_sec();
         }
 
-        asset nft_metadata_object::get_lottery_jackpot( database &db)
+        asset nft_metadata_object::get_lottery_jackpot(const database &db) const
         {
             if (lottery_data)
                 return lottery_data->lottery_balance_id(db).jackpot;
             return asset();
         }
 
-        share_type nft_metadata_object::get_token_current_supply( database &db)
+        share_type nft_metadata_object::get_token_current_supply(const database &db) const
         {
             share_type current_supply;
             const auto &idx_lottery_by_md = db.get_index_type<nft_index>().indices().get<by_metadata>();
@@ -28,7 +28,7 @@ namespace graphene
             return current_supply;
         }
 
-        vector<account_id_type> nft_metadata_object::get_holders( database &db)
+        vector<account_id_type> nft_metadata_object::get_holders(const database &db) const
         {
             const auto &idx_lottery_by_md = db.get_index_type<nft_index>().indices().get<by_metadata>();
             auto lottery_range = idx_lottery_by_md.equal_range(id);
@@ -41,7 +41,7 @@ namespace graphene
             return holders;
         }
 
-        vector<uint64_t> nft_metadata_object::get_ticket_ids( database &db)
+        vector<uint64_t> nft_metadata_object::get_ticket_ids(const database &db) const
         {
             const auto &idx_lottery_by_md = db.get_index_type<nft_index>().indices().get<by_metadata>();
             auto lottery_range = idx_lottery_by_md.equal_range(id);

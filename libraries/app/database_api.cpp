@@ -3146,7 +3146,7 @@ graphene::app::gpos_info database_api_impl::get_gpos_info(const account_id_type 
    result.award = _db.get_balance(dividend_distribution_account, asset_id_type()(_db));
 
    share_type total_amount;
-   auto balance_type = vesting_balance_type::gpos;
+   auto balance_type = vesting_balance_type::unspecified;
 
    // get only once a collection of accounts that hold nonzero vesting balances of the dividend asset
    const vesting_balance_index &vesting_index = _db.get_index_type<vesting_balance_index>();
@@ -3161,7 +3161,7 @@ graphene::app::gpos_info database_api_impl::get_gpos_info(const account_id_type 
    auto vesting_range = _db.get_index_type<vesting_balance_index>().indices().get<by_account>().equal_range(account);
    std::for_each(vesting_range.first, vesting_range.second,
                  [&account_vbos](const vesting_balance_object &balance) {
-                    if (balance.balance.amount > 0 && balance.balance_type == vesting_balance_type::gpos && balance.balance.asset_id == asset_id_type())
+                    if (balance.balance.amount > 0 && balance.balance_type == vesting_balance_type::unspecified && balance.balance.asset_id == asset_id_type())
                        account_vbos.emplace_back(balance);
                  });
 
