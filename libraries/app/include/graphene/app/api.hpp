@@ -226,10 +226,7 @@ namespace graphene { namespace app {
           * @param limit Maximum records to return
           * @return a list of order_history objects, in "most recent first" order
           */
-         vector<order_history_object> get_fill_order_history(
-               const std::string& a,
-               const std::string& b,
-               uint32_t limit )const;
+          vector<order_history_object> get_fill_order_history( std::string a, std::string b, uint32_t limit )const;
 
          /**
           * @brief Get OHLCV data of a trading pair in a time range
