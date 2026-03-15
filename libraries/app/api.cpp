@@ -336,17 +336,15 @@ namespace graphene { namespace app {
        return *_custom_operations_api;
     }
 
-    vector<order_history_object> history_api::get_fill_order_history( const std::string& asset_a,
-                                                                      const std::string& asset_b,
+    vector<order_history_object> history_api::get_fill_order_history( std::string asset_a, std::string asset_b,
                                                                       uint32_t limit )const
     {
        auto market_hist_plugin = _app.get_plugin<market_history_plugin>( "market_history" );
        FC_ASSERT( market_hist_plugin, "Market history plugin is not enabled" );
        FC_ASSERT(_app.chain_database());
        const auto& db = *_app.chain_database();
-       database_api_helper db_api_helper( _app );
-       asset_id_type a = db_api_helper.get_asset_id_from_string( asset_a )->get_id();
-       asset_id_type b = db_api_helper.get_asset_id_from_string( asset_b )->get_id();
+       asset_id_type a = database_api.get_asset_id_from_string( asset_a );
+       asset_id_type b = database_api.get_asset_id_from_string( asset_b );
        if( a > b ) std::swap(a,b);
        const auto& history_idx = db.get_index_type<graphene::market_history::history_index>().indices().get<by_key>();
        history_key hkey;
@@ -354,13 +352,15 @@ namespace graphene { namespace app {
        hkey.quote = b;
        hkey.sequence = std::numeric_limits<int64_t>::min();
 
+       uint32_t count = 0;
        auto itr = history_idx.lower_bound( hkey );
        vector<order_history_object> result;
-       while( itr != history_idx.end() && result.size() < limit )
+       while( itr != history_idx.end() && count < limit)
        {
           if( itr->key.base != a || itr->key.quote != b ) break;
           result.push_back( *itr );
           ++itr;
+          ++count;
        }
 
        return result;
@@ -371,7 +371,7 @@ namespace graphene { namespace app {
                                                                        uint32_t limit,
                                                                        operation_history_id_type start ) const
     {
-       FC_ASSERT( _app.chain_database(), "database unavailable" );
+       FC_ASSERT( _app.chain_database() );
        const auto& db = *_app.chain_database();
 
        const auto configured_limit = _app.get_options().api_limit_get_account_history;
@@ -382,8 +382,7 @@ namespace graphene { namespace app {
        vector<operation_history_object> result;
        account_id_type account;
        try {
-           database_api_helper db_api_helper( _app );
-          account = db_api_helper.get_account_id_from_string(account_id_or_name)->get_id();
+          account = database_api.get_account_id_from_string(account_id_or_name);
           const account_transaction_history_object& node = account(db).statistics(db).most_recent_op(db);
           if(start == operation_history_id_type() || start.instance.value > node.operation_id.instance.value)
              start = node.operation_id;
