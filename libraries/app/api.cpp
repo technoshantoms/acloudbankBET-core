@@ -382,7 +382,7 @@ namespace graphene { namespace app {
        vector<operation_history_object> result;
        account_id_type account;
        try {
-          account = database_api.get_account_from_string(account_id_or_name);
+          account = database_api.get_account_id_from_string(account_id_or_name);
           const account_transaction_history_object& node = account(db).statistics(db).most_recent_op(db);
           if(start == operation_history_id_type() || start.instance.value > node.operation_id.instance.value)
              start = node.operation_id;

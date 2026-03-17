@@ -154,7 +154,6 @@ void_result nft_mint_evaluator::do_evaluate( const nft_mint_operation& op )
    FC_ASSERT( itr_nft_md != idx_nft_md.end(), "NFT metadata not found" );
    FC_ASSERT( itr_nft_md->owner == op.payer, "Only metadata owner can mint NFT" );
 
-   FC_ASSERT(itr_nft_md->get_token_current_supply(db()) < itr_nft_md->max_supply, "NFTs can't be minted more than max_supply");
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 

@@ -13,17 +13,17 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/msm/back/tools.hpp>
 
-namespace graphene { namespace chain {
-   enum class event_state {
-      upcoming,
-      frozen_upcoming,
-      in_progress,
-      frozen_in_progress,
-      finished,
-      canceled,
-      settled
-   };
-} }
+// namespace graphene { namespace chain {
+//    enum class event_state {
+//       upcoming,
+//       frozen_upcoming,
+//       in_progress,
+//       frozen_in_progress,
+//       finished,
+//       canceled,
+//       settled
+//    };
+// } }
 
 FC_REFLECT_ENUM(graphene::chain::event_state, 
                 (upcoming)
@@ -35,6 +35,15 @@ FC_REFLECT_ENUM(graphene::chain::event_state,
                 (settled))
 
 namespace graphene { namespace chain {
+    enum class event_state {
+      upcoming,
+      frozen_upcoming,
+      in_progress,
+      frozen_in_progress,
+      finished,
+      canceled,
+      settled
+   };
 
    namespace msm = boost::msm;
    namespace mpl = boost::mpl;

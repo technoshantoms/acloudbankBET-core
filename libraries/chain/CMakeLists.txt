@@ -62,6 +62,8 @@ add_library( graphene_chain
 
              custom_account_authority_evaluator.cpp
              custom_permission_evaluator.cpp
+             
+             affiliate_payout.cpp
              offer_object.cpp
              offer_evaluator.cpp
              nft_evaluator.cpp
@@ -82,7 +84,6 @@ add_library( graphene_chain
              game_object.cpp
              sport_evaluator.cpp
 
-             affiliate_payout.cpp
             
              tnt/object.cpp
              tnt/evaluators.cpp

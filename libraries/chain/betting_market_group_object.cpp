@@ -7,7 +7,6 @@
 #include <graphene/chain/event_object.hpp>
 #include <graphene/chain/database.hpp>
 #include <boost/integer/common_factor_rt.hpp>
-//#include <graphene/protocol/types.hpp>
 
 #include <boost/msm/back/state_machine.hpp>
 #include <boost/msm/front/state_machine_def.hpp>
@@ -15,18 +14,18 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/msm/back/tools.hpp>
 
-namespace graphene { namespace chain {
-   enum class betting_market_group_state {
-      upcoming,
-      frozen_upcoming,
-      in_play,
-      frozen_in_play,
-      closed,
-      graded,
-      canceled,
-      settled
-   };
-} }
+// namespace graphene { namespace chain {
+//  enum class betting_market_group_state {
+//       upcoming,
+//       frozen_upcoming,
+//       in_play,
+//       frozen_in_play,
+//       closed,
+//       graded,
+//       canceled,
+//       settled
+//    };
+// } }
 
 FC_REFLECT_ENUM(graphene::chain::betting_market_group_state, 
                 (upcoming)
@@ -39,6 +38,17 @@ FC_REFLECT_ENUM(graphene::chain::betting_market_group_state,
                 (settled))
 
 namespace graphene { namespace chain {
+
+    enum class betting_market_group_state {
+      upcoming,
+      frozen_upcoming,
+      in_play,
+      frozen_in_play,
+      closed,
+      graded,
+      canceled,
+      settled
+   };
 
 namespace msm = boost::msm;
 namespace mpl = boost::mpl;

@@ -27,34 +27,6 @@ namespace graphene { namespace protocol {
       uint32_t max_custom_authority_restrictions = GRAPHENE_DEFAULT_MAX_CUSTOM_AUTHORITY_RESTRICTIONS;
    };
 
-struct parameter_extension
-   {
-      optional< bet_multiplier_type > min_bet_multiplier;
-      optional< bet_multiplier_type > max_bet_multiplier;
-      optional< uint16_t >            betting_rake_fee_percentage;
-      optional< flat_map<bet_multiplier_type, bet_multiplier_type> > permitted_betting_odds_increments;
-      optional< uint16_t >            live_betting_delay_time;
-
-      optional< uint16_t >            sweeps_distribution_percentage    = SWEEPS_DEFAULT_DISTRIBUTION_PERCENTAGE;
-      optional< asset_id_type >       sweeps_distribution_asset         = SWEEPS_DEFAULT_DISTRIBUTION_ASSET;
-      optional< account_id_type >     sweeps_vesting_accumulator_account= SWEEPS_ACCUMULATOR_ACCOUNT;
-      /* gpos parameters */
-      optional < uint32_t >           gpos_period                       = GPOS_PERIOD;
-      optional < uint32_t >           gpos_subperiod                    = GPOS_SUBPERIOD;
-      optional < uint32_t >           gpos_period_start                 = GPOS_PERIOD_START.sec_since_epoch();
-      optional < uint32_t >           gpos_vesting_lockin_period        = GPOS_VESTING_LOCKIN_PERIOD;
-     /* rbac parameters */
-      optional < uint16_t >           rbac_max_permissions_per_account    = RBAC_MAX_PERMISSIONS_PER_ACCOUNT;
-      optional < uint32_t >           rbac_max_account_authority_lifetime = RBAC_MAX_ACCOUNT_AUTHORITY_LIFETIME;
-      optional < uint16_t >           rbac_max_authorities_per_permission = RBAC_MAX_AUTHS_PER_PERMISSION;
-      /* Account Roles - Permissions Parameters */
-      optional < uint16_t >           account_roles_max_per_account    = ACCOUNT_ROLES_MAX_PER_ACCOUNT;
-      optional < uint32_t >           account_roles_max_lifetime       = ACCOUNT_ROLES_MAX_LIFETIME;
-
-      optional < asset_id_type >      btc_asset                         = asset_id_type();
-      optional < asset_id_type >      hbd_asset                         = asset_id_type();
-      optional < asset_id_type >      hive_asset                        = asset_id_type();
-   };
    struct chain_parameters
    {
       /** using a shared_ptr breaks the circular dependency created between operations and the fee schedule */
@@ -111,10 +83,36 @@ struct parameter_extension
          optional< htlc_options > updatable_htlc_options;
          optional< custom_authority_options_type > custom_authority_options;
          optional< tnt::parameters_type > updatable_tnt_options;
-         optional< parameter_extension > updatable_nft_options;
+         //optional< parameter_extension > updatable_nft_options;
          optional< uint16_t > market_fee_network_percent;
          optional< uint16_t > maker_fee_discount_percent;
          optional< uint16_t > electoral_threshold;
+
+          optional< bet_multiplier_type > min_bet_multiplier;
+          optional< bet_multiplier_type > max_bet_multiplier;
+          optional< uint16_t >            betting_rake_fee_percentage;
+          optional< flat_map<bet_multiplier_type, bet_multiplier_type> > permitted_betting_odds_increments;
+          optional< uint16_t >            live_betting_delay_time;
+
+          optional< uint16_t >            sweeps_distribution_percentage    = SWEEPS_DEFAULT_DISTRIBUTION_PERCENTAGE;
+          optional< asset_id_type >       sweeps_distribution_asset         = SWEEPS_DEFAULT_DISTRIBUTION_ASSET;
+          optional< account_id_type >     sweeps_vesting_accumulator_account= SWEEPS_ACCUMULATOR_ACCOUNT;
+      /* gpos parameters */
+          optional < uint32_t >           gpos_period                       = GPOS_PERIOD;
+          optional < uint32_t >           gpos_subperiod                    = GPOS_SUBPERIOD;
+          optional < uint32_t >           gpos_period_start                 = GPOS_PERIOD_START.sec_since_epoch();
+          optional < uint32_t >           gpos_vesting_lockin_period        = GPOS_VESTING_LOCKIN_PERIOD;
+     /* rbac parameters */
+          optional < uint16_t >           rbac_max_permissions_per_account    = RBAC_MAX_PERMISSIONS_PER_ACCOUNT;
+          optional < uint32_t >           rbac_max_account_authority_lifetime = RBAC_MAX_ACCOUNT_AUTHORITY_LIFETIME;
+          optional < uint16_t >           rbac_max_authorities_per_permission = RBAC_MAX_AUTHS_PER_PERMISSION;
+      /* Account Roles - Permissions Parameters */
+          optional < uint16_t >           account_roles_max_per_account    = ACCOUNT_ROLES_MAX_PER_ACCOUNT;
+          optional < uint32_t >           account_roles_max_lifetime       = ACCOUNT_ROLES_MAX_LIFETIME;
+
+      // optional < asset_id_type >      btc_asset                         = asset_id_type();
+      // optional < asset_id_type >      hbd_asset                         = asset_id_type();
+      // optional < asset_id_type >      hive_asset                        = asset_id_type();
       };
 
       extension<ext> extensions;
@@ -137,63 +135,30 @@ struct parameter_extension
       /// If @ref electoral_threshold is valid, return the value it contains, otherwise return 0
       uint16_t get_electoral_threshold() const;
 
-    inline uint16_t sweeps_distribution_percentage()const {
-         return  SWEEPS_DEFAULT_DISTRIBUTION_PERCENTAGE;
-      }
-      inline asset_id_type sweeps_distribution_asset()const {
-         return  SWEEPS_DEFAULT_DISTRIBUTION_ASSET;
-      }
-      inline account_id_type sweeps_vesting_accumulator_account()const {
-         return  SWEEPS_ACCUMULATOR_ACCOUNT;
-      }
-      inline uint16_t rbac_max_permissions_per_account()const {
-         return  RBAC_MAX_PERMISSIONS_PER_ACCOUNT;
-      }
-      inline uint32_t rbac_max_account_authority_lifetime()const {
-         return  RBAC_MAX_ACCOUNT_AUTHORITY_LIFETIME;
-      }
-      inline uint16_t rbac_max_authorities_per_permission()const {
-         return  RBAC_MAX_AUTHS_PER_PERMISSION;
-      }
-      inline uint16_t account_roles_max_per_account()const {
-         return  ACCOUNT_ROLES_MAX_PER_ACCOUNT;
-      }
-      inline uint32_t account_roles_max_lifetime()const {
-         return  ACCOUNT_ROLES_MAX_LIFETIME;
-      }
-
+   
       inline bet_multiplier_type min_bet_multiplier()const {
-         return  GRAPHENE_DEFAULT_MIN_BET_MULTIPLIER;
+         return extensions.value.min_bet_multiplier.valid() ? *extensions.value.min_bet_multiplier : GRAPHENE_DEFAULT_MIN_BET_MULTIPLIER;
       }
       inline bet_multiplier_type max_bet_multiplier()const {
-         return GRAPHENE_DEFAULT_MAX_BET_MULTIPLIER;
+         return extensions.value.max_bet_multiplier.valid() ? *extensions.value.max_bet_multiplier : GRAPHENE_DEFAULT_MAX_BET_MULTIPLIER;
       }
       inline uint16_t betting_rake_fee_percentage()const {
-         return  GRAPHENE_DEFAULT_RAKE_FEE_PERCENTAGE;
+         return extensions.value.betting_rake_fee_percentage.valid() ? *extensions.value.betting_rake_fee_percentage : GRAPHENE_DEFAULT_RAKE_FEE_PERCENTAGE;
       }
-      inline const flat_map<bet_multiplier_type, bet_multiplier_type>& permitted_betting_odds_increments()const {
-         static const flat_map<bet_multiplier_type, bet_multiplier_type> _default = GRAPHENE_DEFAULT_PERMITTED_BETTING_ODDS_INCREMENTS;
-         return  _default;
-      }
+   
       inline uint16_t live_betting_delay_time()const {
-         return  GRAPHENE_DEFAULT_LIVE_BETTING_DELAY_TIME;
+         return extensions.value.live_betting_delay_time.valid() ? *extensions.value.live_betting_delay_time : GRAPHENE_DEFAULT_LIVE_BETTING_DELAY_TIME;
       }
-       inline uint32_t gpos_period()const {
-         return  GPOS_PERIOD; /// total seconds of current gpos period
+      inline uint16_t sweeps_distribution_percentage()const {
+         return extensions.value.sweeps_distribution_percentage.valid() ? *extensions.value.sweeps_distribution_percentage : SWEEPS_DEFAULT_DISTRIBUTION_PERCENTAGE;
       }
-      inline uint32_t gpos_subperiod()const {
-         return  GPOS_SUBPERIOD; /// gpos_period % gpos_subperiod = 0
+      inline asset_id_type sweeps_distribution_asset()const {
+         return extensions.value.sweeps_distribution_asset.valid() ? *extensions.value.sweeps_distribution_asset : SWEEPS_DEFAULT_DISTRIBUTION_ASSET;
       }
-      inline uint32_t gpos_period_start()const {
-         return  GPOS_PERIOD_START.sec_since_epoch();
+      inline account_id_type sweeps_vesting_accumulator_account()const {
+         return extensions.value.sweeps_vesting_accumulator_account.valid() ? *extensions.value.sweeps_vesting_accumulator_account : SWEEPS_ACCUMULATOR_ACCOUNT;
       }
-      inline uint32_t gpos_vesting_lockin_period()const {
-         return  GPOS_VESTING_LOCKIN_PERIOD; /// GPOS vesting lockin period
-      }
-
-      /*
-
-       inline uint32_t gpos_period()const {
+      inline uint32_t gpos_period()const {
          return extensions.value.gpos_period.valid() ? *extensions.value.gpos_period : GPOS_PERIOD; /// total seconds of current gpos period
       }
       inline uint32_t gpos_subperiod()const {
@@ -204,16 +169,6 @@ struct parameter_extension
       }
       inline uint32_t gpos_vesting_lockin_period()const {
          return extensions.value.gpos_vesting_lockin_period.valid() ? *extensions.value.gpos_vesting_lockin_period : GPOS_VESTING_LOCKIN_PERIOD; /// GPOS vesting lockin period
-      }
-
-      inline uint16_t sweeps_distribution_percentage()const {
-         return extensions.value.sweeps_distribution_percentage.valid() ? *extensions.value.sweeps_distribution_percentage : SWEEPS_DEFAULT_DISTRIBUTION_PERCENTAGE;
-      }
-      inline asset_id_type sweeps_distribution_asset()const {
-         return extensions.value.sweeps_distribution_asset.valid() ? *extensions.value.sweeps_distribution_asset : SWEEPS_DEFAULT_DISTRIBUTION_ASSET;
-      }
-      inline account_id_type sweeps_vesting_accumulator_account()const {
-         return extensions.value.sweeps_vesting_accumulator_account.valid() ? *extensions.value.sweeps_vesting_accumulator_account : SWEEPS_ACCUMULATOR_ACCOUNT;
       }
       inline uint16_t rbac_max_permissions_per_account()const {
          return extensions.value.rbac_max_permissions_per_account.valid() ? *extensions.value.rbac_max_permissions_per_account : RBAC_MAX_PERMISSIONS_PER_ACCOUNT;
@@ -229,8 +184,12 @@ struct parameter_extension
       }
       inline uint32_t account_roles_max_lifetime()const {
          return extensions.value.account_roles_max_lifetime.valid() ? *extensions.value.account_roles_max_lifetime : ACCOUNT_ROLES_MAX_LIFETIME;
-      }*/
-      
+      }
+      inline const flat_map<bet_multiplier_type, bet_multiplier_type>& permitted_betting_odds_increments()const {
+         static const flat_map<bet_multiplier_type, bet_multiplier_type> _default = GRAPHENE_DEFAULT_PERMITTED_BETTING_ODDS_INCREMENTS;
+         return extensions.value.permitted_betting_odds_increments.valid() ? *extensions.value.permitted_betting_odds_increments : _default;
+      }
+
       private:
       static void safe_copy(chain_parameters& to, const chain_parameters& from);
    };
@@ -249,29 +208,37 @@ FC_REFLECT( graphene::protocol::custom_authority_options_type,
       (max_custom_authority_restrictions)
 )
 
-FC_REFLECT( graphene::protocol::parameter_extension,
-   (min_bet_multiplier)
-   (max_bet_multiplier)
-   (betting_rake_fee_percentage)
-   (live_betting_delay_time)
-   (rbac_max_permissions_per_account)
-   (rbac_max_account_authority_lifetime)
-   (rbac_max_authorities_per_permission)
-   (account_roles_max_per_account)
-   (account_roles_max_lifetime)
-   (sweeps_distribution_percentage)
-   (sweeps_distribution_asset)
-   (sweeps_vesting_accumulator_account)
-)
 
 FC_REFLECT( graphene::protocol::chain_parameters::ext,
       (updatable_htlc_options)
       (custom_authority_options)
       (updatable_tnt_options)
-      (updatable_nft_options)
+     // (updatable_nft_options)
       (market_fee_network_percent)
       (maker_fee_discount_percent)
       (electoral_threshold)
+
+      (min_bet_multiplier)
+      (max_bet_multiplier)
+      (betting_rake_fee_percentage)
+      (live_betting_delay_time)
+      (permitted_betting_odds_increments)
+
+      (sweeps_distribution_percentage)
+      (sweeps_distribution_asset)
+      (sweeps_vesting_accumulator_account)
+
+      (gpos_period)
+      (gpos_subperiod)
+      (gpos_period_start)
+      (gpos_vesting_lockin_period)
+
+      (rbac_max_permissions_per_account)
+      (rbac_max_account_authority_lifetime)
+      (rbac_max_authorities_per_permission)
+
+      (account_roles_max_per_account)
+      (account_roles_max_lifetime)
 )
 
 FC_REFLECT( graphene::protocol::chain_parameters,

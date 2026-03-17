@@ -129,6 +129,25 @@ namespace graphene { namespace protocol {
                     "The electoral_threshold parameter can not be more than " + 
                     std::to_string(rsquared_witnesses_active_max) );
       }
+
+
+     if( extensions.value.min_bet_multiplier.valid() )
+         FC_ASSERT( *extensions.value.min_bet_multiplier >= GRAPHENE_BETTING_MIN_MULTIPLIER &&
+                    *extensions.value.min_bet_multiplier <= GRAPHENE_BETTING_MAX_MULTIPLIER );
+      if( extensions.value.max_bet_multiplier.valid() )
+         FC_ASSERT( *extensions.value.max_bet_multiplier >= GRAPHENE_BETTING_MIN_MULTIPLIER &&
+                    *extensions.value.max_bet_multiplier <= GRAPHENE_BETTING_MAX_MULTIPLIER );
+      if( extensions.value.min_bet_multiplier.valid() && extensions.value.max_bet_multiplier.valid() )
+         FC_ASSERT( *extensions.value.min_bet_multiplier < *extensions.value.max_bet_multiplier );
+
+      if( extensions.value.betting_rake_fee_percentage.valid() )
+      {
+         FC_ASSERT( *extensions.value.betting_rake_fee_percentage >= TOURNAMENT_MINIMAL_RAKE_FEE_PERCENTAGE,
+                    "Rake fee percentage must not be less than ${min}", ("min",TOURNAMENT_MINIMAL_RAKE_FEE_PERCENTAGE));
+         FC_ASSERT( *extensions.value.betting_rake_fee_percentage <= TOURNAMENT_MAXIMAL_RAKE_FEE_PERCENTAGE,
+                    "Rake fee percentage must not be greater than ${max}", ("max", TOURNAMENT_MAXIMAL_RAKE_FEE_PERCENTAGE));
+      }
+
    }
 
    uint16_t chain_parameters::get_market_fee_network_percent() const
