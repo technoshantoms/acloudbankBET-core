@@ -213,7 +213,7 @@ FC_REFLECT( graphene::protocol::chain_parameters::ext,
       (updatable_htlc_options)
       (custom_authority_options)
       (updatable_tnt_options)
-     // (updatable_nft_options)
+      //(updatable_nft_options)
       (market_fee_network_percent)
       (maker_fee_discount_percent)
       (electoral_threshold)

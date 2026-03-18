@@ -13,17 +13,17 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/msm/back/tools.hpp>
 
-// namespace graphene { namespace chain {
-//    enum class event_state {
-//       upcoming,
-//       frozen_upcoming,
-//       in_progress,
-//       frozen_in_progress,
-//       finished,
-//       canceled,
-//       settled
-//    };
-// } }
+namespace graphene { namespace chain {
+   enum class event_state {
+      upcoming,
+      frozen_upcoming,
+      in_progress,
+      frozen_in_progress,
+      finished,
+      canceled,
+      settled
+   };
+} }
 
 FC_REFLECT_ENUM(graphene::chain::event_state, 
                 (upcoming)
@@ -35,15 +35,6 @@ FC_REFLECT_ENUM(graphene::chain::event_state,
                 (settled))
 
 namespace graphene { namespace chain {
-    enum class event_state {
-      upcoming,
-      frozen_upcoming,
-      in_progress,
-      frozen_in_progress,
-      finished,
-      canceled,
-      settled
-   };
 
    namespace msm = boost::msm;
    namespace mpl = boost::mpl;
@@ -360,7 +351,7 @@ namespace graphene { namespace chain {
    }
 
    event_object::event_object(const event_object& rhs) : 
-      //graphene::db::abstract_object<event_object>(rhs),
+      graphene::db::abstract_object<event_object,protocol_ids,event_object_type>(rhs),
       name(rhs.name),
       season(rhs.season),
       start_time(rhs.start_time),
@@ -375,7 +366,7 @@ namespace graphene { namespace chain {
 
    event_object& event_object::operator=(const event_object& rhs)
    {
-      //graphene::db::abstract_object<event_object>::operator=(rhs);
+      //graphene::db::abstract_object<event_object,protocol_ids,event_object_type >::operator=(rhs);
       id = rhs.id;
       name = rhs.name;
       season = rhs.season;
@@ -440,8 +431,8 @@ namespace graphene { namespace chain {
       static bool state_constants_are_correct = verify_event_status_constants();
       (void)&state_constants_are_correct;
       event_state state = (event_state)my->state_machine.current_state()[0];
-      // Satia, please impl. me?
-      //ddump((state)); 
+      
+      //ddump((state));
    
       switch (state)
       {
@@ -567,5 +558,3 @@ namespace fc {
       const_cast<int*>(event_obj.my->state_machine.current_state())[0] = (int)status;
    }
 } //end namespace fc
-
-

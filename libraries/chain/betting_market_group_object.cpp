@@ -14,18 +14,18 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/msm/back/tools.hpp>
 
-// namespace graphene { namespace chain {
-//  enum class betting_market_group_state {
-//       upcoming,
-//       frozen_upcoming,
-//       in_play,
-//       frozen_in_play,
-//       closed,
-//       graded,
-//       canceled,
-//       settled
-//    };
-// } }
+namespace graphene { namespace chain {
+   enum class betting_market_group_state {
+      upcoming,
+      frozen_upcoming,
+      in_play,
+      frozen_in_play,
+      closed,
+      graded,
+      canceled,
+      settled
+   };
+} }
 
 FC_REFLECT_ENUM(graphene::chain::betting_market_group_state, 
                 (upcoming)
@@ -38,17 +38,6 @@ FC_REFLECT_ENUM(graphene::chain::betting_market_group_state,
                 (settled))
 
 namespace graphene { namespace chain {
-
-    enum class betting_market_group_state {
-      upcoming,
-      frozen_upcoming,
-      in_play,
-      frozen_in_play,
-      closed,
-      graded,
-      canceled,
-      settled
-   };
 
 namespace msm = boost::msm;
 namespace mpl = boost::mpl;
@@ -341,7 +330,7 @@ betting_market_group_object::betting_market_group_object() :
 }
 
 betting_market_group_object::betting_market_group_object(const betting_market_group_object& rhs) : 
-   //graphene::db::abstract_object<betting_market_group_object>(rhs),
+   graphene::db::abstract_object<betting_market_group_object,protocol_ids,betting_market_group_object_type>(rhs),
    description(rhs.description),
    event_id(rhs.event_id),
    rules_id(rhs.rules_id),
