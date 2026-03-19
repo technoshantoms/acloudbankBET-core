@@ -330,7 +330,7 @@ betting_market_group_object::betting_market_group_object() :
 }
 
 betting_market_group_object::betting_market_group_object(const betting_market_group_object& rhs) : 
-   graphene::db::abstract_object<betting_market_group_object,protocol_ids,betting_market_group_object_type>(rhs),
+   //graphene::db::abstract_object<betting_market_group_object, protocol_ids, betting_market_group >(rhs),
    description(rhs.description),
    event_id(rhs.event_id),
    rules_id(rhs.rules_id),

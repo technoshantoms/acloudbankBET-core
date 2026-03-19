@@ -435,7 +435,7 @@ namespace graphene { namespace chain {
    }
 
    tournament_object::tournament_object(const tournament_object& rhs) : 
-      graphene::db::abstract_object<tournament_object,protocol_ids,tournament_object_type>(rhs),
+     // graphene::db::abstract_object<tournament_object,protocol_ids, tournament >(rhs),
       creator(rhs.creator),
       options(rhs.options),
       start_time(rhs.start_time),
