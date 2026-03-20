@@ -11,8 +11,8 @@
 
 namespace graphene { namespace app {
 
-typedef std::map< std::pair<graphene::chain::asset_id_type, graphene::chain::asset_id_type>,
-                  std::vector<fc::variant> > market_queue_type;
+using market_queue_type = std::map< std::pair<graphene::chain::asset_id_type, graphene::chain::asset_id_type>,
+                                    std::vector<fc::variant> >;
 
 class database_api_impl : public std::enable_shared_from_this<database_api_impl>, public database_api_helper 
 {
@@ -49,7 +49,8 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       vector<flat_set<account_id_type>> get_key_references( vector<public_key_type> key )const;
       bool is_public_key_registered(string public_key) const;
 
-      
+      // Accounts
+      account_id_type get_account_id_from_string(const std::string& name_or_id)const;
       vector<optional<account_object>> get_accounts( const vector<std::string>& account_names_or_ids,
                                                      optional<bool> subscribe )const;
       std::map<string,full_account> get_full_accounts( const vector<string>& names_or_ids,
@@ -296,6 +297,12 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
                                                                uint32_t epoch,
                                                                const account_id_type participant ) const;
 
+      ////////////////////////////////////////////////
+      // Accounts
+      ////////////////////////////////////////////////
+
+      const account_object* get_account_from_string( const std::string& name_or_id,
+                                                     bool throw_if_not_found = true ) const;
 
       ////////////////////////////////////////////////
       // Assets
