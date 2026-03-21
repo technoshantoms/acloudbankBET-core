@@ -36,8 +36,6 @@
 #include <graphene/chain/withdraw_permission_object.hpp>
 #include <graphene/chain/worker_object.hpp>
 
-#include "database_api_helper.hxx"
-
 #include <fc/crypto/base64.hpp>
 #include <fc/crypto/hex.hpp>
 #include <fc/rpc/api_connection.hpp>
@@ -568,7 +566,6 @@ namespace graphene { namespace app {
        FC_ASSERT(_app.chain_database());
 
        const auto& db = *_app.chain_database();
-       database_api_helper db_api_helper( _app );
        asset_id_type a = database_api.get_asset_id_from_string( asset_a );
        asset_id_type b = database_api.get_asset_id_from_string( asset_b );
        vector<bucket_object> result;
@@ -591,6 +588,7 @@ namespace graphene { namespace app {
        }
        return result;
     } FC_CAPTURE_AND_RETHROW( (asset_a)(asset_b)(bucket_seconds)(start)(end) ) }
+
      crypto_api::crypto_api(){};
 
 commitment_type crypto_api::blind(const blind_factor_type &blind, uint64_t value) {
@@ -649,13 +647,13 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
           ) { }
     asset_api::~asset_api() { }
 
-    vector<account_asset_balance> asset_api::get_asset_holders( std::string asset, uint32_t start, uint32_t limit ) const
+ vector<account_asset_balance> asset_api::get_asset_holders( std::string asset, uint32_t start, uint32_t limit ) const
     {
        const auto configured_limit = _app.get_options().api_limit_get_asset_holders;
        FC_ASSERT( limit <= configured_limit,
                   "limit can not be greater than ${configured_limit}",
                   ("configured_limit", configured_limit) );
-       database_api_helper db_api_helper( _app );
+
        asset_id_type asset_id = database_api.get_asset_id_from_string( asset );
        const auto& bal_idx = _db.get_index_type< account_balance_index >().indices().get< by_asset_balance >();
        auto range = bal_idx.equal_range( boost::make_tuple( asset_id ) );
@@ -765,73 +763,20 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
       return result;
    }
 
-   // custom operations api
-  vector<account_storage_object> custom_operations_api::get_storage_info(
-         const optional<std::string>& o_account_name_or_id,
-         const optional<std::string>& catalog,
-         const optional<std::string>& key,
-         const optional<uint32_t>& limit,
-         const optional<account_storage_id_type>& start_id )const
+  // custom operations api
+   vector<account_storage_object> custom_operations_api::get_storage_info(std::string account_id_or_name,
+         std::string catalog)const
    {
       auto plugin = _app.get_plugin<graphene::custom_operations::custom_operations_plugin>("custom_operations");
-      FC_ASSERT( plugin, "The custom_operations plugin is not enabled" );
+      FC_ASSERT( plugin );
 
-      database_api_helper db_api_helper( _app );
-      const auto& storage_index = _app.chain_database()->get_index_type<account_storage_index>().indices();
-
-      if( o_account_name_or_id.valid() )
-      {
-         const string& account_name_or_id = *o_account_name_or_id;
-         const account_id_type account_id = db_api_helper.get_account_from_string(account_name_or_id)->get_id();
-         if( catalog.valid() )
-         {
-            if( key.valid() )
-               return db_api_helper.get_objects_by_x< account_storage_object,
-                                                      account_storage_id_type
-                                                     >( &application_options::api_limit_get_storage_info,
-                                                        storage_index.get<by_account_catalog_key>(),
-                                                        limit, start_id, account_id, *catalog, *key );
-            else
-               return db_api_helper.get_objects_by_x< account_storage_object,
-                                                      account_storage_id_type
-                                                     >( &application_options::api_limit_get_storage_info,
-                                                        storage_index.get<by_account_catalog>(),
-                                                        limit, start_id, account_id, *catalog );
-         }
-         else
-         {
-            FC_ASSERT( !key.valid(), "Can not specify key if catalog is not specified" );
-            return db_api_helper.get_objects_by_x< account_storage_object,
-                                                   account_storage_id_type
-                                                  >( &application_options::api_limit_get_storage_info,
-                                                     storage_index.get<custom_operations::by_account>(),
-                                                     limit, start_id, account_id );
-         }
-      }
-      else if( catalog.valid() )
-      {
-         if( key.valid() )
-            return db_api_helper.get_objects_by_x< account_storage_object,
-                                                   account_storage_id_type
-                                                  >( &application_options::api_limit_get_storage_info,
-                                                     storage_index.get<by_catalog_key>(),
-                                                     limit, start_id, *catalog, *key );
-         else
-            return db_api_helper.get_objects_by_x< account_storage_object,
-                                                   account_storage_id_type
-                                                  >( &application_options::api_limit_get_storage_info,
-                                                     storage_index.get<by_catalog>(),
-                                                     limit, start_id, *catalog );
-      }
-      else
-      {
-         FC_ASSERT( !key.valid(), "Can not specify key if catalog is not specified" );
-         return db_api_helper.get_objects_by_x< account_storage_object,
-                                                account_storage_id_type
-                                               >( &application_options::api_limit_get_storage_info,
-                                                  storage_index.get<by_id>(),
-                                                  limit, start_id );
-      }
-
+      const auto account_id = database_api.get_account_id_from_string(account_id_or_name);
+      vector<account_storage_object> results;
+      const auto& storage_index = _app.chain_database()->get_index_type<account_storage_index>();
+      const auto& by_account_catalog_idx = storage_index.indices().get<by_account_catalog_key>();
+      auto range = by_account_catalog_idx.equal_range(make_tuple(account_id, catalog));
+      for( const account_storage_object& aso : boost::make_iterator_range( range.first, range.second ) )
+         results.push_back(aso);
+      return results;
    }
 } } // graphene::app
