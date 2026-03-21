@@ -11,8 +11,8 @@
 
 namespace graphene { namespace app {
 
-using market_queue_type = std::map< std::pair<graphene::chain::asset_id_type, graphene::chain::asset_id_type>,
-                                    std::vector<fc::variant> >;
+typedef std::map< std::pair<graphene::chain::asset_id_type, graphene::chain::asset_id_type>,
+                  std::vector<fc::variant> > market_queue_type;
 
 class database_api_impl : public std::enable_shared_from_this<database_api_impl>, public database_api_helper 
 {
@@ -82,7 +82,7 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
    vector<account_role_object> get_account_roles_by_owner(account_id_type owner) const;
 
     // gpos
-   gpos_info get_gpos_info(const account_id_type account);
+   //gpos_info get_gpos_info(const account_id_type account);
 
    // rbac
    vector<custom_permission_object> get_custom_permissions(const account_id_type account) const;
@@ -148,7 +148,7 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
    vector<bet_object> get_unmatched_bets_for_bettor(betting_market_id_type, account_id_type) const;
    vector<bet_object> get_all_unmatched_bets_for_bettor(account_id_type) const;
 
-   // Lottery Assets
+    // Lottery Assets
    vector<asset_object> get_lotteries(asset_id_type stop = asset_id_type(),
                                       unsigned limit = 100,
                                       asset_id_type start = asset_id_type()) const;

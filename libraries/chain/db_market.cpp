@@ -1039,6 +1039,7 @@ asset database::calculate_market_fee( const asset_object& trade_asset, const ass
    return percent_fee;
 }
 
+
 asset database::pay_market_fees(const account_object* seller, const asset_object& recv_asset, const asset& receives,
                                 const bool& is_maker, const optional<asset>& calculated_market_fees )
 {

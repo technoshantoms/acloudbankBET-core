@@ -30,7 +30,6 @@
 #include <graphene/chain/special_authority_object.hpp>
 #include <graphene/chain/operation_history_object.hpp>
 #include <graphene/chain/nft_object.hpp>
-#include <graphene/chain/asset_object.hpp>
 
 #include <graphene/protocol/fee_schedule.hpp>
 

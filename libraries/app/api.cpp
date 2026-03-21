@@ -447,8 +447,7 @@ namespace graphene { namespace app {
        vector<operation_history_object> result;
        account_id_type account;
        try {
-          database_api_helper db_api_helper( _app );
-          account = db_api_helper.get_account_from_string(account_id_or_name)->get_id();
+          account = database_api.get_account_id_from_string(account_id_or_name);
        } catch(...) { return result; }
        const auto& stats = account(db).statistics(db);
        if( stats.most_recent_op == account_transaction_history_id_type() ) return result;
@@ -480,7 +479,7 @@ namespace graphene { namespace app {
                                                                                 uint32_t limit,
                                                                                 uint64_t start ) const
     {
-       FC_ASSERT( _app.chain_database(), "database unavailable" );
+       FC_ASSERT( _app.chain_database() );
        const auto& db = *_app.chain_database();
 
        const auto configured_limit = _app.get_options().api_limit_get_relative_account_history;
@@ -491,8 +490,7 @@ namespace graphene { namespace app {
        vector<operation_history_object> result;
        account_id_type account;
        try {
-          database_api_helper db_api_helper( _app );
-          account = db_api_helper.get_account_from_string(account_id_or_name)->get_id();
+          account = database_api.get_account_id_from_string(account_id_or_name);
        } catch(...) { return result; }
        const auto& stats = account(db).statistics(db);
        if( start == 0 )
