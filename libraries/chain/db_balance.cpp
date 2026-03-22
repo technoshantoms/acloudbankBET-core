@@ -72,6 +72,35 @@ void database::adjust_balance(account_id_type account, asset delta )
 
 } FC_CAPTURE_AND_RETHROW( (account)(delta) ) }
 
+  namespace detail {
+
+   /**
+    * Used as a key to search vesting_balance_object in the index
+   */
+   struct vbo_mfs_key
+   {
+      account_id_type   account_id;
+      asset_id_type     asset_id;
+
+      vbo_mfs_key(const account_id_type& account, const asset_id_type& asset):
+         account_id(account),
+         asset_id(asset)
+      {}
+
+      bool operator()(const vbo_mfs_key& k, const vesting_balance_object& vbo)const
+      {
+         return ( vbo.balance_type == vesting_balance_type::market_fee_sharing ) &&
+                  ( k.asset_id == vbo.balance.asset_id ) &&
+                  ( k.account_id == vbo.owner );
+      }
+
+      uint64_t operator()(const vbo_mfs_key& k)const
+      {
+         return vbo_mfs_hash(k.account_id, k.asset_id);
+      }
+   };
+} //detail
+
 
 void database::adjust_balance(asset_id_type lottery_id, asset delta)
 {

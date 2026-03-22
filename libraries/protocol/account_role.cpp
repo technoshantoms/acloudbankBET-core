@@ -59,3 +59,9 @@ namespace graphene
 
     } // namespace protocol
 } // namespace graphene
+
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION(graphene::protocol::account_role_create_operation::fee_parameters_type)
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION(graphene::protocol::account_role_update_operation::fee_parameters_type)
+
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION(graphene::protocol::account_role_create_operation )
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION(graphene::protocol::account_role_update_operation)

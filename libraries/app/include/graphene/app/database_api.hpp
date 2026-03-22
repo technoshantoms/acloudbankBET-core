@@ -1658,7 +1658,7 @@ FC_API(graphene::app::database_api,
    (get_room_key_epoch)
 
    // gpos
-   (get_gpos_info)
+  // (get_gpos_info)
 
    //rbac
    (get_custom_permissions)

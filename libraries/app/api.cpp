@@ -763,7 +763,7 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
       return result;
    }
 
-  // custom operations api
+   // custom operations api
    vector<account_storage_object> custom_operations_api::get_storage_info(std::string account_id_or_name,
          std::string catalog)const
    {
@@ -779,4 +779,5 @@ range_proof_info crypto_api::range_get_info(const std::vector<char> &proof) {
          results.push_back(aso);
       return results;
    }
+
 } } // graphene::app

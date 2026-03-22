@@ -97,3 +97,14 @@ share_type nft_set_approval_for_all_operation::calculate_fee(const fee_parameter
 
 } // namespace protocol
 } // namespace graphene
+
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::nft_metadata_create_operation::fee_parameters_type )
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::nft_metadata_update_operation::fee_parameters_type )
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::nft_mint_operation::fee_parameters_type )
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::nft_safe_transfer_from_operation::fee_parameters_type )
+
+
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::nft_metadata_create_operation)
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::nft_metadata_update_operation)
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::nft_mint_operation)
+GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::nft_safe_transfer_from_operation )
