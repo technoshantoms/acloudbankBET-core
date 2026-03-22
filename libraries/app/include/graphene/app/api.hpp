@@ -516,7 +516,12 @@ public:
          custom_operations_api(application& app):_app(app), database_api( *app.chain_database(),
                &(app.get_options()) ){}
 
-   vector<account_storage_object> get_storage_info(std::string account_name_or_id, std::string catalog)const;
+     vector<account_storage_object> get_storage_info(
+            const optional<std::string>& account_name_or_id = optional<std::string>(),
+            const optional<std::string>& catalog = optional<std::string>(),
+            const optional<std::string>& key = optional<std::string>(),
+            const optional<uint32_t>& limit = optional<uint32_t>(),
+            const optional<account_storage_id_type>& start_id = optional<account_storage_id_type>() )const;
 
    private:
          application& _app;
