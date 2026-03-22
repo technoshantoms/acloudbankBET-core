@@ -16,9 +16,54 @@
 #include <graphene/chain/witness_schedule_object.hpp>
 
 #include <graphene/protocol/fee_schedule.hpp>
+#include <graphene/protocol/operations.hpp>
+#include <graphene/protocol/betting_market.hpp>
 
 #include <fc/io/raw.hpp>
 #include <fc/thread/parallel.hpp>
+
+#include <fc/crypto/digest.hpp>
+#include <fc/thread/non_preemptable_scope_check.hpp>
+
+namespace {
+
+   struct proposed_operations_digest_accumulator
+   {
+      typedef void result_type;
+
+      void operator()(const graphene::chain::proposal_create_operation& proposal)
+      {
+         for (auto& operation: proposal.proposed_ops)
+         {
+            proposed_operations_digests.push_back(fc::digest(operation.op));
+         }
+      }
+
+      //empty template method is needed for all other operation types
+      //we can ignore them, we are interested in only proposal_create_operation
+      template<class T>
+      void operator()(const T&)
+      {}
+
+      std::vector<fc::sha256> proposed_operations_digests;
+   };
+
+   std::vector<fc::sha256> gather_proposed_operations_digests(const graphene::chain::transaction& trx)
+   {
+      proposed_operations_digest_accumulator digest_accumulator;
+
+      for (auto& operation: trx.operations)
+      {
+         if( operation.which() != graphene::chain::operation::tag<graphene::chain::betting_market_group_create_operation>::value
+          && operation.which() != graphene::chain::operation::tag<graphene::chain::betting_market_create_operation>::value )
+            operation.visit(digest_accumulator);
+         else
+            edump( ("Found dup"));
+      }
+
+      return digest_accumulator.proposed_operations_digests;
+   }
+}
 
 namespace graphene { namespace chain {
 
@@ -623,6 +668,8 @@ void database::_apply_block( const signed_block& next_block )
    // Are we at the maintenance interval?
    if( maint_needed )
       perform_chain_maintenance(next_block, global_props);
+   check_ending_lotteries();
+   check_ending_nft_lotteries();
 
    create_block_summary(next_block);
    clear_expired_transactions();

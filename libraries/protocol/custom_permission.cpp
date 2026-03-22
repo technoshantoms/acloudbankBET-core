@@ -1,6 +1,8 @@
 #include <graphene/protocol/custom_permission.hpp>
 #include <graphene/protocol/operations.hpp>
 
+#include <fc/io/raw.hpp>
+
 namespace graphene
 {
 namespace protocol

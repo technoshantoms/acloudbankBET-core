@@ -3924,6 +3924,64 @@ const asset_object* database_api_impl::get_asset_from_string( const std::string&
    return asset_ptr;
 }
 
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+// Private methods                                                  //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
+const account_object* database_api_helper::get_account_from_string( const std::string& name_or_id,
+                                                                  bool throw_if_not_found ) const
+{
+   // TODO cache the result to avoid repeatly fetching from db
+   if( name_or_id.empty() )
+   {
+      if( throw_if_not_found )
+         FC_THROW_EXCEPTION( fc::assert_exception, "no such account" );
+      else
+         return nullptr;
+   }
+   const account_object* account_ptr = nullptr;
+   if( 0 != std::isdigit(name_or_id[0]) )
+      account_ptr = _db.find(fc::variant(name_or_id, 1).as<account_id_type>(1));
+   else
+   {
+      const auto& idx = _db.get_index_type<account_index>().indices().get<by_name>();
+      auto itr = idx.find(name_or_id);
+      if (itr != idx.end())
+         account_ptr = &(*itr);
+   }
+   if(throw_if_not_found)
+      FC_ASSERT( account_ptr, "no such account" );
+   return account_ptr;
+}
+
+const asset_object* database_api_helper::get_asset_from_string( const std::string& symbol_or_id,
+                                                              bool throw_if_not_found ) const
+{
+   // TODO cache the result to avoid repeatly fetching from db
+   if( symbol_or_id.empty() )
+   {
+      if( throw_if_not_found )
+         FC_THROW_EXCEPTION( fc::assert_exception, "no such asset" );
+      else
+         return nullptr;
+   }
+   const asset_object* asset_ptr = nullptr;
+   if( 0 != std::isdigit(symbol_or_id[0]) )
+      asset_ptr = _db.find(fc::variant(symbol_or_id, 1).as<asset_id_type>(1));
+   else
+   {
+      const auto& idx = _db.get_index_type<asset_index>().indices().get<by_symbol>();
+      auto itr = idx.find(symbol_or_id);
+      if (itr != idx.end())
+         asset_ptr = &(*itr);
+   }
+   if(throw_if_not_found)
+      FC_ASSERT( asset_ptr, "no such asset" );
+   return asset_ptr;
+}
+
 // helper function
 vector<optional<extended_asset_object>> database_api_impl::get_assets( const vector<asset_id_type>& asset_ids,
                                                                        optional<bool> subscribe )const
