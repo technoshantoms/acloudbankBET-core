@@ -13,6 +13,7 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/msm/back/tools.hpp>
 
+#include <fc/io/raw.hpp>
 namespace graphene { namespace chain {
    enum class event_state {
       upcoming,

@@ -12,6 +12,8 @@
 
 #include <sstream>
 
+#include <fc/io/raw.hpp>
+
 namespace graphene { namespace chain {
    class event_object;
 } }
